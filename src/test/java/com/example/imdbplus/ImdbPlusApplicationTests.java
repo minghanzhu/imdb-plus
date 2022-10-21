@@ -67,4 +67,66 @@ class ImdbPlusApplicationTests {
     void contextLoads() {
     }
 
+    /**
+     * Test the user sign up functionality with a single test user.
+     * The expected result is that the test user is added to the database.
+     */
+    @Test
+    void testUserSave() throws Exception {
+
+        String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+
+        // POST request to add a new user
+        String jsonInputString = "{\"" +
+                "username\":\"" + testUsername + "\"," +
+                "\"email\":\"   \"," +
+                "\"accountSetting\":{" +
+                "\"isPrivate\":true," +
+                "\"isAdult\":false}" +
+                "}";
+        String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user");
+
+        JSONObject jsonObject = new JSONObject(response);
+        String username = jsonObject.getString("username");
+        assert username.equals(testUsername);
+
+        // DELETE the added test user to clean up
+        String userId = jsonObject.getString("userId");
+        deleteRequest(dynamoDBEndpoint + "/user/" + userId);
+    }
+
+    /**
+     * Test the user sign up functionality with duplicate usernames.
+     * The expected behavior is that the second test user with the same username should not be added to the database.
+     */
+    @Test
+    void testUserSaveDuplicatedUsername() throws Exception {
+
+        String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+
+        // POST request to add a new user
+        String jsonInputString = "{\"" +
+                "username\":\"" + testUsername + "\"," +
+                "\"email\":\"   \"," +
+                "\"accountSetting\":{" +
+                "\"isPrivate\":true," +
+                "\"isAdult\":false}" +
+                "}";
+        String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user");
+
+        // Assert POST request to add a new user with the same username should return HTTP 400
+        String response2 = null;
+        try {
+            response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/user");
+        } catch (IOException e) {
+            response2 = e.getMessage();
+            assert response2.contains("400");
+        }
+
+        // DELETE the added test user to clean up
+        JSONObject jsonObject = new JSONObject(response);
+        String userId = jsonObject.getString("userId");
+        deleteRequest(dynamoDBEndpoint + "/user/" + userId);
+    }
+
 }
