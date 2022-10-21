@@ -8,6 +8,8 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.example.imdbplus.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -18,10 +20,10 @@ public class UserRepository {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
-    public String save(User user) {
-        // Add new user to the database if the username does not exist
-        HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+    // Add new user to the database if the username does not exist
+    public ResponseEntity<User> save(User user) {
         // scan the table to see if the username exists
+        HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
         eav.put(":v1", new AttributeValue().withS(user.getUsername()));
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
                 .withFilterExpression("username = :v1")
@@ -30,9 +32,10 @@ public class UserRepository {
         List<User> replies = dynamoDBMapper.scan(User.class, scanExpression);
         if (replies.size() == 0) {
             dynamoDBMapper.save(user);
-            return "User saved successfully";
+            return ResponseEntity.ok(user);
         } else {
-            return "Username already exists";
+            // otherwise, return a 400 error
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
