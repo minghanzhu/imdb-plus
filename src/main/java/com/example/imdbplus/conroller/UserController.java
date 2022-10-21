@@ -13,7 +13,7 @@ public class UserController {
 
     // Add new user to the database
     @PostMapping("/user")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
+    public ResponseEntity saveUser(@RequestBody User user) {
         return userRepository.save(user);
     }
 
