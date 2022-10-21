@@ -25,13 +25,19 @@ public class UserController {
 
     // Delete user by userId
     @DeleteMapping("/user/{id}")
-    public String deleteUser(@PathVariable("id") String userId) {
-        return userRepository.delete(userId);
+    public String deleteUser(@PathVariable("id") String userId, @RequestHeader("Authorization") String accessToken) {
+        return userRepository.delete(userId, accessToken);
     }
 
     // Update user by userId
     @PutMapping("/user/{id}")
     public String updateUser(@PathVariable("id") String userId, @RequestBody User user) {
         return userRepository.update(userId, user);
+    }
+
+    // View user's profile
+    @GetMapping("/user/profile")
+    public User viewProfile(@RequestHeader("Authorization") String token) {
+        return userRepository.getUser(token);
     }
 }

@@ -43,10 +43,14 @@ public class UserRepository {
         return dynamoDBMapper.load(User.class, userId);
     }
 
-    public String delete(String userId) {
+    public String delete(String userId, String accessToken) {
         User user = dynamoDBMapper.load(User.class, userId);
-        dynamoDBMapper.delete(user);
-        return "User deleted successfully";
+        if (user.getAccessToken().equals(accessToken)) {
+            dynamoDBMapper.delete(user);
+            return "User deleted successfully";
+        } else {
+            return "Invalid access token";
+        }
     }
 
     public String update(String userId, User user) {

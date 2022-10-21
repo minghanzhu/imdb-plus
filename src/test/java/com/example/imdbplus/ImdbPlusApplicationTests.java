@@ -42,7 +42,7 @@ class ImdbPlusApplicationTests {
         }
     }
 
-    public static String deleteRequest(String urlString) throws IOException {
+    public static String deleteRequest(String urlString, String accessToken) throws IOException {
         URL url = new URL(urlString);
         java.net.HttpURLConnection con = (java.net.HttpURLConnection) url.openConnection();
         try {
@@ -51,6 +51,7 @@ class ImdbPlusApplicationTests {
             throw new RuntimeException(e);
         }
         con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Authorization", accessToken);
         con.setDoOutput(true);
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
@@ -92,7 +93,8 @@ class ImdbPlusApplicationTests {
 
         // DELETE the added test user to clean up
         String userId = jsonObject.getString("userId");
-        deleteRequest(dynamoDBEndpoint + "/user/" + userId);
+        String accessToken = jsonObject.getString("accessToken");
+        deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
     }
 
     /**
@@ -126,7 +128,8 @@ class ImdbPlusApplicationTests {
         // DELETE the added test user to clean up
         JSONObject jsonObject = new JSONObject(response);
         String userId = jsonObject.getString("userId");
-        deleteRequest(dynamoDBEndpoint + "/user/" + userId);
+        String accessToken = jsonObject.getString("accessToken");
+        deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
     }
 
 }
