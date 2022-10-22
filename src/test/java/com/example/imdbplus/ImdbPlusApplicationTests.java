@@ -137,7 +137,6 @@ class ImdbPlusApplicationTests {
      * Test the timeline save functionality with a single test user and a single test timeline.
      * The expected behavior is that the test timeline is added to the database.
      */
-
     @Test
     void testTimelineSave() throws Exception {
 
@@ -172,6 +171,4 @@ class ImdbPlusApplicationTests {
         deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
         deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
     }
-
-
 }
