@@ -12,6 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
+/**
+ Sample user item JSON:
+ {
+ "username": "tester",
+ "email": "tester@columbia.edu",
+ "accountSetting": {
+ "isPrivate": false,
+ "isAdult": true
+ }
+ }
+ */
 @DynamoDBTable(tableName = "user")
 public class User {
 
