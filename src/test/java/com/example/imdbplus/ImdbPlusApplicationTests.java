@@ -167,6 +167,10 @@ class ImdbPlusApplicationTests {
                 "}";
         String response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/timeline", accessToken);
         assert response2.contains("tt0000001");
+
+        // DELETE the added test user and timeline item to clean up
+        deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
+        deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
     }
 
 
