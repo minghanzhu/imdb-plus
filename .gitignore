@@ -8,3 +8,4 @@
 .idea/vcs.xml
 *.xml
 *.class
+src/main/java/com/example/imdbplus/config/DynamoDBConfig.java
