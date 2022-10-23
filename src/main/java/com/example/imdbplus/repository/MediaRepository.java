@@ -9,6 +9,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.example.imdbplus.entity.Media;
+import com.example.imdbplus.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +53,19 @@ public class MediaRepository {
     }
 
 
-    public String delete(String entityId, String accessToken) {
-        return null;
+    public String delete(String entityId) {
+        Media media = dbObjMapper.load(Media.class, entityId);
+        dbObjMapper.delete(media);
+        return "Media deleted successfully";
     }
 
     public String update(String entityId, Media item) {
-        return null;
+        dbObjMapper.save(item, new DynamoDBSaveExpression()
+                .withExpectedEntry("mediaId",
+                        new ExpectedAttributeValue(
+                                new AttributeValue().withS(entityId)
+                        )));
+        return entityId;
     }
 
     public boolean itemExists(Media item,  String attributeValue){

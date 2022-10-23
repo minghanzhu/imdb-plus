@@ -26,14 +26,14 @@ public class MediaController {
         return mediaRepository.saveMedia(item);
     }
 
-    @PostMapping("/api/v1/media/{id}")
+    @PutMapping("api/v1/media/{id}")
     public String updateMedia(@PathVariable(value = "id") String mediaId, Media item){
         return mediaRepository.update(mediaId, item);
     }
 
-    @DeleteMapping("/api/v1/media/{id}")
-    public String deleteMedia(@PathVariable("id") String mediaId, @RequestHeader("Authorization") String accessToken) {
-        return mediaRepository.delete(mediaId, accessToken);
+    @DeleteMapping("api/v1/media/{id}")
+    public String deleteMedia(@PathVariable("id") String mediaId) {
+        return mediaRepository.delete(mediaId);
     }
 
 }
