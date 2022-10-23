@@ -9,6 +9,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.example.imdbplus.entity.Media;
+import com.example.imdbplus.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class MediaRepository {
     }
 
     public Media getEntity(String entityId) {
-        return null;
+        return dbObjMapper.load(Media.class, entityId);
     }
 
     public List<Media> getAllEntity() {
