@@ -17,7 +17,7 @@ class ImdbPlusApplicationTests {
 
     static String dynamoDBEndpoint = "http://localhost:8083";
 
-    public static String postRequest(String jsonInputString, String urlString) throws IOException {
+    public static String postRequest(String jsonInputString, String urlString, String accessToken) throws IOException {
         URL url = new URL(urlString);
         java.net.HttpURLConnection con = (java.net.HttpURLConnection) url.openConnection();
         try {
@@ -26,6 +26,7 @@ class ImdbPlusApplicationTests {
             throw new RuntimeException(e);
         }
         con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Authorization", accessToken);
         con.setDoOutput(true);
         try (java.io.OutputStream os = con.getOutputStream()) {
             byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
@@ -85,7 +86,7 @@ class ImdbPlusApplicationTests {
                 "\"isPrivate\":true," +
                 "\"isAdult\":false}" +
                 "}";
-        String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user");
+        String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
 
         JSONObject jsonObject = new JSONObject(response);
         String username = jsonObject.getString("username");
@@ -114,12 +115,12 @@ class ImdbPlusApplicationTests {
                 "\"isPrivate\":true," +
                 "\"isAdult\":false}" +
                 "}";
-        String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user");
+        String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
 
         // Assert POST request to add a new user with the same username should return HTTP 400
         String response2 = null;
         try {
-            response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/user");
+            response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
         } catch (IOException e) {
             response2 = e.getMessage();
             assert response2.contains("400");
@@ -132,4 +133,42 @@ class ImdbPlusApplicationTests {
         deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
     }
 
+    /**
+     * Test the timeline save functionality with a single test user and a single test timeline.
+     * The expected behavior is that the test timeline is added to the database.
+     */
+    @Test
+    void testTimelineSave() throws Exception {
+
+        String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+
+        // POST request to add a new user
+        String jsonInputString = "{\"" +
+                "username\":\"" + testUsername + "\"," +
+                "\"email\":\"   \"," +
+                "\"accountSetting\":{" +
+                "\"isPrivate\":true," +
+                "\"isAdult\":false}" +
+                "}";
+        String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
+
+        // POST request to add a new timeline
+        JSONObject jsonObject = new JSONObject(response);
+        String userId = jsonObject.getString("userId");
+        String accessToken = jsonObject.getString("accessToken");
+        jsonInputString = "{\"" +
+                "timelineId\":\"" + userId + "-tt0000001\"," +
+                "\"userId\":\"" + userId + "\"," +
+                "\"mediaId\":\"tt0000001\"," +
+                "\"status\":\"DONE\"," +
+                "\"rating\":5," +
+                "\"comment\":\"This is a comment\"" +
+                "}";
+        String response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/timeline", accessToken);
+        assert response2.contains("tt0000001");
+
+        // DELETE the added test user and timeline item to clean up
+        deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
+        deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
+    }
 }

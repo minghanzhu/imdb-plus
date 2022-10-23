@@ -34,10 +34,4 @@ public class UserController {
     public String updateUser(@PathVariable("id") String userId, @RequestBody User user) {
         return userRepository.update(userId, user);
     }
-
-    // View user's profile
-    @GetMapping("/user/profile")
-    public User viewProfile(@RequestHeader("Authorization") String token) {
-        return userRepository.getUser(token);
-    }
 }
