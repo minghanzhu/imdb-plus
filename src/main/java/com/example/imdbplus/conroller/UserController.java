@@ -17,6 +17,11 @@ public class UserController {
         return userRepository.save(user);
     }
 
+    @GetMapping("/user")
+    public ResponseEntity getAllUsers(){
+        return userRepository.getAllUsers();
+    }
+
     // Get user by userId
     @GetMapping("/user/{id}")
     public User getUser(@PathVariable("id") String userId) {

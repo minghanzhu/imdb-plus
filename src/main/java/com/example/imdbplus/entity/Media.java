@@ -15,7 +15,7 @@ import java.util.List;
 @DynamoDBTable(tableName = "media")
 public class Media {
 
-    @DynamoDBHashKey
+    @DynamoDBHashKey(attributeName = "mediaId")
     private String mediaId; // tt0000001 (IMDB ID)
     @DynamoDBAttribute(attributeName = "title")
     private String title; // The Shawshank Redemption

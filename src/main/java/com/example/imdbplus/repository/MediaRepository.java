@@ -43,11 +43,12 @@ public class MediaRepository {
     }
 
     public Media getEntity(String entityId) {
-        return null;
+        return dbObjMapper.load(Media.class, entityId);
     }
 
-    public List<Media> getAllEntity() {
-        return null;
+    public ResponseEntity getAllEntities() {
+        List<Media> allMedia = dbObjMapper.scan(Media.class, new DynamoDBScanExpression());
+        return ResponseEntity.ok(allMedia);
     }
 
 
@@ -62,8 +63,6 @@ public class MediaRepository {
     public boolean itemExists(Media item,  String attributeValue){
         HashMap<String, AttributeValue> attrMap = new HashMap<>();
         attrMap.put(":val1", new AttributeValue().withS(item.getMediaId()));
-//        DynamoDBQueryExpression<Media> queryExpression = new DynamoDBQueryExpression<Media>()
-//                .withKeyConditionExpression("mediaId = :val1").withExpressionAttributeValues(attrMap);
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
                 .withFilterExpression("mediaId = :val1")
                 .withExpressionAttributeValues(attrMap);

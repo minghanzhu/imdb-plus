@@ -6,7 +6,10 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
+import com.example.imdbplus.entity.Timeline;
 import com.example.imdbplus.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ import java.util.List;
 
 @Repository
 public class UserRepository {
+    private static final Logger userLogger =  LoggerFactory.getLogger(TimelineRepository.class);
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
@@ -41,6 +45,11 @@ public class UserRepository {
 
     public User getUser(String userId) {
         return dynamoDBMapper.load(User.class, userId);
+    }
+
+    public ResponseEntity getAllUsers(){
+        List<User> userList = dynamoDBMapper.scan(User.class, new DynamoDBScanExpression());
+        return ResponseEntity.ok(userList);
     }
 
     public String delete(String userId, String accessToken) {

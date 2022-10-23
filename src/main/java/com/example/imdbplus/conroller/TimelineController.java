@@ -1,10 +1,13 @@
 package com.example.imdbplus.conroller;
 
+import com.example.imdbplus.entity.Media;
 import com.example.imdbplus.entity.Timeline;
 import com.example.imdbplus.repository.TimelineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class TimelineController {
@@ -23,4 +26,10 @@ public class TimelineController {
                                          @RequestHeader("Authorization") String accessToken) {
         return timelineRepository.delete(userId, mediaId, accessToken);
     }
+
+    @GetMapping("/api/v1/timeline/analysis/")
+    public Media getMostWatched(){
+        return timelineRepository.mostWatched();
+    }
+
 }
