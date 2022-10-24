@@ -23,4 +23,23 @@ public class TimelineController {
                                          @RequestHeader("Authorization") String accessToken) {
         return timelineRepository.delete(userId, mediaId, accessToken);
     }
+
+    // Get all timelines by userId
+    @GetMapping("/timeline/user/{userId}")
+    public ResponseEntity getTimeline(@PathVariable("userId") String userId) {
+        return timelineRepository.getTimelineByUserId(userId);
+    }
+
+    // Get all timelines by mediaId
+    @GetMapping("/timeline/media/{mediaId}")
+    public ResponseEntity getTimelineByMediaId(@PathVariable("mediaId") String mediaId) {
+        return timelineRepository.getTimelineByMediaId(mediaId);
+    }
+
+    // Get a timeline by userId and mediaId
+    @GetMapping("/timeline/{userId}/{mediaId}")
+    public ResponseEntity getTimelineByUserIdAndMediaId(@PathVariable("userId") String userId,
+                                                        @PathVariable("mediaId") String mediaId) {
+        return timelineRepository.getTimelineByUserIdAndMediaId(userId, mediaId);
+    }
 }
