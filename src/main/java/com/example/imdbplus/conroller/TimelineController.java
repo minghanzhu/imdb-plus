@@ -34,14 +34,36 @@ public class TimelineController {
         return timelineRepository.getAllTimeline();
     }
 
-    @GetMapping("/api/v1/timeline/analysis/popular")
+    @GetMapping("/api/v1/timeline/analysis/highest-rating")
+    public Media highestRating(){
+        return timelineRepository.getHighestRating();
+    }
+    @GetMapping("/api/v1/timeline/analysis/most-watched")
     public Media getMostWatched(){
-        return timelineRepository.mostWatched();
+        return timelineRepository.getMostWatched();
     }
 
-    @GetMapping("/api/v1/timeline/analysis/rating")
-    public Media highestRating(){
-        return timelineRepository.highestRating();
+    @GetMapping("/api/v1/timeline/most-wished")
+    public Media getMostWished(){
+        return timelineRepository.getMostWished();
+    }
+
+    @GetMapping("/api/v1/timeline/most-in-progress")
+    public Media getMostInProgress(){
+        return timelineRepository.getMostInProgress();
+    }
+
+    @GetMapping("/api/v1/timeline/top-ten-watched")
+    public ResponseEntity getTopTenWatched(){
+        return timelineRepository.getTopTenMostWatched();
+    }
+    @GetMapping("/api/v1/timeline/top-ten-wished")
+    public ResponseEntity getTopTenWished(){
+        return timelineRepository.getTopTenMostWished();
+    }
+    @GetMapping("/api/v1/timeline/top-ten-progress")
+    public ResponseEntity getTopTenMostProgress(){
+        return timelineRepository.getTopTenMostProgress();
     }
 
 }
