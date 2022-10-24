@@ -4,12 +4,12 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
+import com.amazonaws.services.dynamodbv2.model.*;
 import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.example.imdbplus.entity.Media;
 import com.example.imdbplus.entity.Timeline;
@@ -97,6 +97,39 @@ public class TimelineRepository {
         }
 
         return dynamoDBMapper.load(Media.class, mostWatchedMediaId);
+    }
+
+    public ResponseEntity getAllEntities() {
+        List<Timeline> allTimeline = dynamoDBMapper.scan(Timeline.class, new DynamoDBScanExpression());
+        return ResponseEntity.ok(allTimeline);
+    }
+
+    public ResponseEntity userPreference(String userId) {
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        List<Timeline> timelineList = dynamoDBMapper.scan(Timeline.class, scanExpression);
+        Map<String, Long> userPreference = new HashMap<>();
+        for(Timeline line: timelineList){
+            String lineUserId = line.getUserId();
+            if(lineUserId.equals(userId)) {
+                if(line.getStatus().equals("DONE") && line.getRating() < 3){
+                    continue;
+                }
+                else {
+                    String mediaId = line.getMediaId();
+                    try{
+                        Media media = dynamoDBMapper.load(Media.class, mediaId);
+                        String genre = media.getGenre();
+                        long count = userPreference.containsKey(genre) ? userPreference.get(genre) : 0;
+                        userPreference.put(genre, count + 1);
+                    }catch (DynamoDBMappingException e){
+                        timelineLogger.debug(e.toString());
+                        break;
+                    }
+                }
+            }
+        }
+
+        return ResponseEntity.ok(userPreference);
     }
 
 }

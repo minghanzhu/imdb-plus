@@ -27,9 +27,19 @@ public class TimelineController {
         return timelineRepository.delete(userId, mediaId, accessToken);
     }
 
+    @GetMapping("/api/v1/timeline")
+    public ResponseEntity getAllTimeline(){
+        return timelineRepository.getAllEntities();
+    }
+
     @GetMapping("/api/v1/timeline/analysis/")
     public Media getMostWatched(){
         return timelineRepository.mostWatched();
+    }
+
+    @GetMapping("/api/v1/timeline/analysis/userprofile/{id}")
+    public ResponseEntity getUserPreference(@PathVariable("id") String userId){
+        return timelineRepository.userPreference(userId);
     }
 
 }
