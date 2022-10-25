@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamoDBDocument
-public class AccountSetting {
+class AccountSetting {
 
-    @DynamoDBAttribute
-    private Boolean isPrivate;
-    @DynamoDBAttribute
-    private Boolean isAdult;
+  @DynamoDBAttribute
+  private Boolean isPrivate;
+  @DynamoDBAttribute
+  private Boolean isAdult;
 }

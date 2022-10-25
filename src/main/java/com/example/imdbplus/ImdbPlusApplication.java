@@ -7,11 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ImdbPlusApplication {
-    private static final Logger mainLogger = LoggerFactory.getLogger(ImdbPlusApplication.class);
-    public static void main(String[] args) {
-        mainLogger.info("Sever Up and Running");
 
-        SpringApplication.run(ImdbPlusApplication.class, args);
-    }
+  private static final Logger mainLogger = LoggerFactory.getLogger(ImdbPlusApplication.class);
+
+  public static void main(String[] args) {
+    ImdbPlusApplication.mainLogger.info("Sever Up and Running");
+
+    SpringApplication.run(ImdbPlusApplication.class, args);
+  }
 
 }
