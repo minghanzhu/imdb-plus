@@ -20,10 +20,13 @@ import com.example.imdbplus.entity.Timeline;
 import com.example.imdbplus.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+
 import org.xml.sax.EntityResolver;
 
 import java.util.*;
@@ -31,6 +34,13 @@ import java.util.*;
 @Repository
 public class TimelineRepository {
     private static final Logger timelineLogger =  LoggerFactory.getLogger(TimelineRepository.class);
+
+
+import java.util.HashMap;
+import java.util.List;
+
+@Repository
+public class TimelineRepository {
 
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
@@ -53,13 +63,23 @@ public class TimelineRepository {
         }catch (NullPointerException e){
             timelineLogger.debug("Error");
             return ResponseEntity.badRequest().body("User doesn't exist. Check userId and try again");
+
+        String creationTime = String.valueOf(System.currentTimeMillis());
+        timeline.setCreationTime(creationTime);
+        // Check if the user exists and the access token is valid
+        String userId = timeline.getUserId();
+        User user = dynamoDBMapper.load(User.class, userId);
+        if (user.getAccessToken().equals(accessToken)) {
+            dynamoDBMapper.save(timeline);
+            return ResponseEntity.ok(timeline);
+        } else {
+            return ResponseEntity.status(401).body("Invalid access token");
         }
     }
 
     public Timeline getTimeline(String userId, String mediaId) {
         return dynamoDBMapper.load(Timeline.class, userId + mediaId);
     }
-
 
     public PaginatedScanList<Timeline> getAllTimeline(){
         return dynamoDBMapper.scan(Timeline.class, new DynamoDBScanExpression());
@@ -249,6 +269,45 @@ public class TimelineRepository {
     }
     public ResponseEntity getTopTenMostProgress(){
         return getTopTenMost("IN_PROGRESS");
+    }
+
+    public ResponseEntity getTimelineByUserId(String userId) {
+        // scan the timeline table to get all timelines of the user
+        HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+        eav.put(":v1", new AttributeValue().withS(userId));
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("userId = :v1")
+                .withExpressionAttributeValues(eav);
+        List<Timeline> timelines = dynamoDBMapper.scan(Timeline.class, scanExpression);
+        if (timelines.size() > 0) {
+            return ResponseEntity.ok(timelines);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+        }
+    }
+
+    public ResponseEntity getTimelineByMediaId(String mediaId) {
+        // scan the timeline table to get all timelines of the media
+        HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+        eav.put(":v1", new AttributeValue().withS(mediaId));
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("mediaId = :v1")
+                .withExpressionAttributeValues(eav);
+        List<Timeline> timelines = dynamoDBMapper.scan(Timeline.class, scanExpression);
+        if (timelines.size() > 0) {
+            return ResponseEntity.ok(timelines);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+        }
+    }
+
+    public ResponseEntity getTimelineByUserIdAndMediaId(String userId, String mediaId) {
+        Timeline timeline = dynamoDBMapper.load(Timeline.class, userId + "-" + mediaId);
+        if (timeline != null) {
+            return ResponseEntity.ok(timeline);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+        }
     }
 
 }

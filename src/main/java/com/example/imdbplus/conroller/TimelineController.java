@@ -1,7 +1,9 @@
 package com.example.imdbplus.conroller;
 
+
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.example.imdbplus.entity.Media;
+
 import com.example.imdbplus.entity.Timeline;
 import com.example.imdbplus.repository.TimelineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,6 @@ public class TimelineController {
     }
 
     @GetMapping("/api/v1/timeline")
-
     public PaginatedScanList<Timeline> getTimeline(){
         return timelineRepository.getAllTimeline();
     }
@@ -73,4 +74,22 @@ public class TimelineController {
         return timelineRepository.userPreference(userId);
     }
 
+    // Get all timelines by userId
+    @GetMapping("/timeline/user/{userId}")
+    public ResponseEntity getTimeline(@PathVariable("userId") String userId) {
+        return timelineRepository.getTimelineByUserId(userId);
+    }
+
+    // Get all timelines by mediaId
+    @GetMapping("/timeline/media/{mediaId}")
+    public ResponseEntity getTimelineByMediaId(@PathVariable("mediaId") String mediaId) {
+        return timelineRepository.getTimelineByMediaId(mediaId);
+    }
+
+    // Get a timeline by userId and mediaId
+    @GetMapping("/timeline/{userId}/{mediaId}")
+    public ResponseEntity getTimelineByUserIdAndMediaId(@PathVariable("userId") String userId,
+                                                        @PathVariable("mediaId") String mediaId) {
+        return timelineRepository.getTimelineByUserIdAndMediaId(userId, mediaId);
+    }
 }

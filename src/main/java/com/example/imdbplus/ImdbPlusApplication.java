@@ -11,6 +11,7 @@ public class ImdbPlusApplication {
     public static void main(String[] args) {
         mainLogger.info("Sever Up and Running");
 
+    public static void main(String[] args) {
         SpringApplication.run(ImdbPlusApplication.class, args);
     }
 
