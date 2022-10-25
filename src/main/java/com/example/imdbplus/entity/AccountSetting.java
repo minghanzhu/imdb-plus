@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @DynamoDBDocument
 public class AccountSetting {
 
-    @DynamoDBAttribute
-    private Boolean isPrivate;
-    @DynamoDBAttribute
-    private Boolean isAdult;
+  @DynamoDBAttribute
+  private Boolean isPrivate;
+  @DynamoDBAttribute
+  private Boolean isAdult;
 }
