@@ -54,8 +54,15 @@ public class TimelineRepository {
   }
 
 
-  public PaginatedScanList<Timeline> getAllTimeline() {
-    return dynamoDBMapper.scan(Timeline.class, new DynamoDBScanExpression());
+  public ResponseEntity getAllTimeline() {
+    PaginatedScanList<Timeline> timelines = dynamoDBMapper.scan(Timeline.class,
+        new DynamoDBScanExpression());
+    try {
+      return ResponseEntity.ok(timelines);
+    } catch (DynamoDBMappingException e) {
+      return ResponseEntity.status(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED)
+          .body("Sorry, our servers are down at the moment.");
+    }
   }
 
   public ResponseEntity delete(String userId, String mediaId, String accessToken) {
@@ -75,7 +82,7 @@ public class TimelineRepository {
     dynamoDBMapper.save(timeline);
   }
 
-  public Media getHighestRating() {
+  public ResponseEntity getHighestRating() {
     Map<String, List<Long>> ratingMap = new HashMap<>();
     List<Timeline> allTimelines = dynamoDBMapper.scan(Timeline.class, new DynamoDBScanExpression());
 
@@ -112,10 +119,11 @@ public class TimelineRepository {
     try {
       TimelineRepository.timelineLogger.info(
           "Highest Rating Media: " + highestMediaId + " Rating: " + highestAvgRating);
-      return dynamoDBMapper.load(Media.class, highestMediaId);
+
+      return ResponseEntity.ok(dynamoDBMapper.load(Media.class, highestMediaId));
     } catch (DynamoDBMappingException e) {
       TimelineRepository.timelineLogger.debug(e.toString());
-      return new Media();
+      return ResponseEntity.status(500).body("Sorry our we're computing incorrectly.");
     }
   }
 
@@ -143,7 +151,7 @@ public class TimelineRepository {
   }
 
   // mediaId, status -> [DONE, IN_PROGRESS, WISHLIST]
-  private Media calculateMost(String category) {
+  public Media calculateMost(String category) {
     Map<String, Long> mediaCounter = countMedia(category);
     long curMostWatched = Long.MIN_VALUE;
     String mostWatchedMediaId = null;
