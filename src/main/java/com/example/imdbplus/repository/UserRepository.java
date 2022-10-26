@@ -3,6 +3,7 @@ package com.example.imdbplus.repository;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.example.imdbplus.entity.User;
@@ -32,13 +33,13 @@ public class UserRepository {
         .withExpressionAttributeValues(eav);
     // if the username does not exist, add the user to the database
     List<User> replies = dynamoDBMapper.scan(User.class, scanExpression);
-      // otherwise, return a 400 error
-      if (replies.size() == 0) {
-        dynamoDBMapper.save(user);
+    // otherwise, return a 400 error
+    if (replies.size() == 0) {
+      dynamoDBMapper.save(user);
       return ResponseEntity.ok(user);
     } else
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body("Sorry, username already exists");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("Sorry, username already exists");
   }
 
   public User getUser(String userId) {
@@ -46,21 +47,22 @@ public class UserRepository {
   }
 
   public ResponseEntity getAllUsers() {
-    List<User> userList = dynamoDBMapper.scan(User.class, new DynamoDBScanExpression());
+    PaginatedScanList<User> userList = dynamoDBMapper.scan(User.class,
+        new DynamoDBScanExpression());
     return ResponseEntity.ok(userList);
   }
 
   public String delete(String userId, String accessToken) {
     User user = dynamoDBMapper.load(User.class, userId);
     if (user.getAccessToken().equals(accessToken)) {
-        dynamoDBMapper.delete(user);
+      dynamoDBMapper.delete(user);
       return "User deleted successfully";
     } else
-        return "Invalid access token";
+      return "Invalid access token";
   }
 
   public String update(String userId, User user) {
-      dynamoDBMapper.save(user, new DynamoDBSaveExpression()
+    dynamoDBMapper.save(user, new DynamoDBSaveExpression()
         .withExpectedEntry("userId",
             new ExpectedAttributeValue(
                 new AttributeValue().withS(userId)

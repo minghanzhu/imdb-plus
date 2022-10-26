@@ -5,12 +5,10 @@ import com.example.imdbplus.repository.TimelineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,28 +29,5 @@ public class TimelineController {
       @RequestHeader("Authorization") String accessToken) {
     return timelineRepository.delete(userId, mediaId, accessToken);
   }
-
-  @GetMapping("/api/v1/timeline")
-  public ResponseEntity getTimeline() {
-    return timelineRepository.getAllTimeline();
-  }
-
-  @GetMapping("/api/v1/timeline/analysis/highest-rating")
-  public ResponseEntity highestRating() {
-    return timelineRepository.getHighestRating();
-  }
-
-  @GetMapping("api/v1/timeline/analysis/most")
-  public ResponseEntity getMostWatched(@RequestParam("status") String status) {
-    status = (status.toLowerCase().equals("progress")) ? "IN_PROGRESS" : status;
-    return timelineRepository.getMost(status.toUpperCase());
-  }
-
-  @GetMapping("api/v1/timeline/top-ten/")
-  public ResponseEntity getTopTenWatched(@RequestParam("status") String status) {
-    status = (status.toLowerCase().equals("progress")) ? "IN_PROGRESS" : status;
-    return timelineRepository.getTopTenMost(status.toUpperCase());
-  }
-
-
+  
 }
