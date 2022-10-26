@@ -1,9 +1,12 @@
 package com.example.imdbplus.repository;
 
-
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.example.imdbplus.entity.Timeline;
 import com.example.imdbplus.entity.User;
+import java.util.HashMap;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +62,41 @@ public class TimelineRepository {
 
   public void update(Timeline timeline) {
     dynamoDBMapper.save(timeline);
+  }
+
+  public ResponseEntity getTimelineByUserId(String userId) {
+    // scan the timeline table to get all timelines of the user
+    HashMap<String, AttributeValue> eav = new HashMap<>();
+    eav.put(":v1", new AttributeValue().withS(userId));
+    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+        .withFilterExpression("userId = :v1")
+        .withExpressionAttributeValues(eav);
+    List<Timeline> timelines = dynamoDBMapper.scan(Timeline.class, scanExpression);
+    if (timelines.size() > 0)
+      return ResponseEntity.ok(timelines);
+    else
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+  }
+
+  public ResponseEntity getTimelineByMediaId(String mediaId) {
+    // scan the timeline table to get all timelines of the media
+    HashMap<String, AttributeValue> eav = new HashMap<>();
+    eav.put(":v1", new AttributeValue().withS(mediaId));
+    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+        .withFilterExpression("mediaId = :v1")
+        .withExpressionAttributeValues(eav);
+    List<Timeline> timelines = dynamoDBMapper.scan(Timeline.class, scanExpression);
+    if (timelines.size() > 0)
+      return ResponseEntity.ok(timelines);
+    else
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+  }
+
+  public ResponseEntity getTimelineByUserIdAndMediaId(String userId, String mediaId) {
+    Timeline timeline = dynamoDBMapper.load(Timeline.class, userId + "-" + mediaId);
+    if (timeline != null)
+      return ResponseEntity.ok(timeline);
+    else
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
   }
 }

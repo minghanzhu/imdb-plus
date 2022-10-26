@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,8 +26,8 @@ public class UserController {
   }
 
   // Get user by userId
-  @GetMapping("/user")
-  public User getUser(@RequestParam("id") String userId) {
+  @GetMapping("/user/{id}")
+  public User getUser(@PathVariable("id") String userId) {
     return userRepository.getUser(userId);
   }
 

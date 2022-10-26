@@ -9,5 +9,8 @@
 *.xml
 *.class
 src/main/java/com/example/imdbplus/config/DynamoDBConfig.java
+<<<<<<< HEAD
 src/main/resources/config-dev.properties
 target
+=======
+>>>>>>> master

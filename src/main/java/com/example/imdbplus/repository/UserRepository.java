@@ -3,7 +3,6 @@ package com.example.imdbplus.repository;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.example.imdbplus.entity.User;
@@ -38,18 +37,11 @@ public class UserRepository {
       dynamoDBMapper.save(user);
       return ResponseEntity.ok(user);
     } else
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("Sorry, username already exists");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sorry, username already exists");
   }
 
   public User getUser(String userId) {
     return dynamoDBMapper.load(User.class, userId);
-  }
-
-  public ResponseEntity getAllUsers() {
-    PaginatedScanList<User> userList = dynamoDBMapper.scan(User.class,
-        new DynamoDBScanExpression());
-    return ResponseEntity.ok(userList);
   }
 
   public String delete(String userId, String accessToken) {
