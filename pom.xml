@@ -53,8 +53,8 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <description>Demo project for Spring Boot</description>
-  <groupId>com.example</groupId>
+  <description>Open Columbia Service Distribution: OpenCSD - ImdbPlus</description>
+  <groupId>org.opencsd</groupId>
   <modelVersion>4.0.0</modelVersion>
   <name>imdb-plus</name>
   <parent>
