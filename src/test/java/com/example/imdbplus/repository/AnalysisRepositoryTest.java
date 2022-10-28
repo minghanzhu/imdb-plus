@@ -1,6 +1,6 @@
 package com.example.imdbplus.repository;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import com.example.imdbplus.entity.Media;
@@ -25,9 +25,10 @@ class AnalysisRepositoryTest {
   @BeforeEach
   void setUp() {
     analysisRepository = Mockito.mock(AnalysisRepository.class);
-    popularMedia = new Media("tt0000001", "The Watcher", "2012-07-17", "Action");
-    highestAvgRating = new Media("tt1396484", "Compuational Heaven", "2032-07-17",
+    popularMedia = new Media("m1", "Movie 1", "2012-07-17", "Action");
+    highestAvgRating = new Media("m2", "Movie 2", "2032-07-17",
         "Drama");
+
     topTenListWatched = new ArrayList<>();
     topTenListWatched.add(popularMedia);
     topTenListWatched.add(highestAvgRating);
