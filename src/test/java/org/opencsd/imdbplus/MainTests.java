@@ -1,94 +1,16 @@
-package com.example.imdbplus;
+package org.opencsd.imdbplus;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ImdbPlusApplicationTests {
+class MainTests {
 
-  private static String dynamoDBEndpoint = "http://localhost:8083";
-
-  private static String postRequest(
-      String jsonInputString, String urlString, String accessToken)
-      throws IOException {
-    URL url = new URL(urlString);
-    java.net.HttpURLConnection con = (java.net.HttpURLConnection) url.openConnection();
-    try {
-      con.setRequestMethod("POST");
-    } catch (ProtocolException e) {
-      throw new RuntimeException(e);
-    }
-    con.setRequestProperty("Content-Type", "application/json");
-    con.setRequestProperty("Authorization", accessToken);
-    con.setDoOutput(true);
-    try (java.io.OutputStream os = con.getOutputStream()) {
-      byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-      os.write(input, 0, input.length);
-    }
-    try (BufferedReader br = new BufferedReader(
-        new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
-      StringBuilder response = new StringBuilder();
-      String responseLine = null;
-      while ((responseLine = br.readLine()) != null)
-        response.append(responseLine.trim());
-      return response.toString();
-    }
-  }
-
-  private static String getRequest(String urlString, String accessToken) throws IOException {
-    URL url = new URL(urlString);
-    java.net.HttpURLConnection con = (java.net.HttpURLConnection) url.openConnection();
-    try {
-      con.setRequestMethod("GET");
-    } catch (ProtocolException e) {
-      throw new RuntimeException(e);
-    }
-    con.setRequestProperty("Content-Type", "application/json");
-    con.setRequestProperty("Authorization", accessToken);
-    con.setDoOutput(true);
-    try (BufferedReader br = new BufferedReader(
-        new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
-      StringBuilder response = new StringBuilder();
-      String responseLine = null;
-      while ((responseLine = br.readLine()) != null)
-        response.append(responseLine.trim());
-      return response.toString();
-    }
-  }
-
-  private static String deleteRequest(String urlString, String accessToken) throws IOException {
-    URL url = new URL(urlString);
-    java.net.HttpURLConnection con = (java.net.HttpURLConnection) url.openConnection();
-    try {
-      con.setRequestMethod("DELETE");
-    } catch (ProtocolException e) {
-      throw new RuntimeException(e);
-    }
-    con.setRequestProperty("Content-Type", "application/json");
-    con.setRequestProperty("Authorization", accessToken);
-    con.setDoOutput(true);
-    try (BufferedReader br = new BufferedReader(
-        new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
-      StringBuilder response = new StringBuilder();
-      String responseLine = null;
-      while ((responseLine = br.readLine()) != null)
-        response.append(responseLine.trim());
-      return response.toString();
-    }
-  }
-
-  @Test
-  void contextLoads() {
-  }
-
+  private String dynamoDBEndpoint = "http://localhost:8083";
+  private TestHelpers testHelpers = new TestHelpers();
   /**
    * Test the user sign up functionality with a single test user. The expected result is that the
    * test user is added to the database.
@@ -106,7 +28,7 @@ class ImdbPlusApplicationTests {
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = ImdbPlusApplicationTests.postRequest(jsonInputString, ImdbPlusApplicationTests.dynamoDBEndpoint
+    String response = testHelpers.postRequest(jsonInputString, dynamoDBEndpoint
         + "/user", null);
 
     JSONObject jsonObject = new JSONObject(response);
@@ -116,7 +38,7 @@ class ImdbPlusApplicationTests {
     // DELETE the added test user to clean up
     String userId = jsonObject.getString("userId");
     String accessToken = jsonObject.getString("accessToken");
-    ImdbPlusApplicationTests.deleteRequest(ImdbPlusApplicationTests.dynamoDBEndpoint + "/user/" + userId, accessToken);
+    testHelpers.deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
   }
 
   /**
@@ -136,13 +58,13 @@ class ImdbPlusApplicationTests {
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = ImdbPlusApplicationTests.postRequest(jsonInputString, ImdbPlusApplicationTests.dynamoDBEndpoint
+    String response = testHelpers.postRequest(jsonInputString, dynamoDBEndpoint
         + "/user", null);
 
     // Assert POST request to add a new user with the same username should return HTTP 400
     String response2 = null;
     try {
-      response2 = ImdbPlusApplicationTests.postRequest(jsonInputString, ImdbPlusApplicationTests.dynamoDBEndpoint
+      response2 = testHelpers.postRequest(jsonInputString, dynamoDBEndpoint
           + "/user", null);
     } catch (IOException e) {
       response2 = e.getMessage();
@@ -153,7 +75,7 @@ class ImdbPlusApplicationTests {
     JSONObject jsonObject = new JSONObject(response);
     String userId = jsonObject.getString("userId");
     String accessToken = jsonObject.getString("accessToken");
-    ImdbPlusApplicationTests.deleteRequest(ImdbPlusApplicationTests.dynamoDBEndpoint + "/user/" + userId, accessToken);
+    testHelpers.deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
   }
 
   /**
@@ -173,7 +95,7 @@ class ImdbPlusApplicationTests {
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = ImdbPlusApplicationTests.postRequest(jsonInputString, ImdbPlusApplicationTests.dynamoDBEndpoint
+    String response = testHelpers.postRequest(jsonInputString, dynamoDBEndpoint
         + "/user", null);
 
     // POST request to add a new timeline
@@ -188,14 +110,14 @@ class ImdbPlusApplicationTests {
         "\"rating\":5," +
         "\"comment\":\"This is a comment\"" +
         "}";
-    String response2 = ImdbPlusApplicationTests.postRequest(jsonInputString,
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline", accessToken);
+    String response2 = testHelpers.postRequest(jsonInputString,
+        dynamoDBEndpoint + "/timeline", accessToken);
     assert response2.contains("tt0000001");
 
     // DELETE the added test user and timeline item to clean up
-    ImdbPlusApplicationTests.deleteRequest(
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
-    ImdbPlusApplicationTests.deleteRequest(ImdbPlusApplicationTests.dynamoDBEndpoint + "/user/" + userId, accessToken);
+    testHelpers.deleteRequest(
+        dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
+    testHelpers.deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
   }
 
   /**
@@ -215,7 +137,7 @@ class ImdbPlusApplicationTests {
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = ImdbPlusApplicationTests.postRequest(jsonInputString, ImdbPlusApplicationTests.dynamoDBEndpoint
+    String response = testHelpers.postRequest(jsonInputString, dynamoDBEndpoint
         + "/user", null);
 
     // POST request to add a new timeline
@@ -230,8 +152,8 @@ class ImdbPlusApplicationTests {
         "\"rating\":5," +
         "\"comment\":\"This is a comment\"" +
         "}";
-    String response2 = ImdbPlusApplicationTests.postRequest(jsonInputString,
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline", accessToken);
+    String response2 = testHelpers.postRequest(jsonInputString,
+        dynamoDBEndpoint + "/timeline", accessToken);
     assert response2.contains("tt0000001");
 
     // POST request to add another timeline
@@ -243,23 +165,22 @@ class ImdbPlusApplicationTests {
         "\"rating\":1," +
         "\"comment\":\"This is a comment\"" +
         "}";
-    String response3 = ImdbPlusApplicationTests.postRequest(jsonInputString,
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline", accessToken);
+    String response3 = testHelpers.postRequest(jsonInputString,
+        dynamoDBEndpoint + "/timeline", accessToken);
     assert response3.contains("tt0000002");
 
     // GET request to get all timelines by userId
-    String response4 = ImdbPlusApplicationTests.getRequest(
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline/user/" + userId, accessToken);
+    String response4 = testHelpers.getRequest(dynamoDBEndpoint + "/timeline/user/" + userId, accessToken);
     // Expected to return two timeline items with mediaId tt0000001 and tt0000002
     assert response4.contains("tt0000001");
     assert response4.contains("tt0000002");
 
     // DELETE the added test user and timeline item to clean up
-    ImdbPlusApplicationTests.deleteRequest(
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
-    ImdbPlusApplicationTests.deleteRequest(
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000002", accessToken);
-    ImdbPlusApplicationTests.deleteRequest(ImdbPlusApplicationTests.dynamoDBEndpoint + "/user/" + userId, accessToken);
+    testHelpers.deleteRequest(
+        dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
+    testHelpers.deleteRequest(
+        dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000002", accessToken);
+    testHelpers.deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
   }
 
   /**
@@ -282,7 +203,7 @@ class ImdbPlusApplicationTests {
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = ImdbPlusApplicationTests.postRequest(jsonInputString, ImdbPlusApplicationTests.dynamoDBEndpoint
+    String response = testHelpers.postRequest(jsonInputString, dynamoDBEndpoint
         + "/user", null);
 
     // POST request to add a new timeline for user1
@@ -297,8 +218,8 @@ class ImdbPlusApplicationTests {
         "\"rating\":5," +
         "\"comment\":\"This is a comment\"" +
         "}";
-    String response2 = ImdbPlusApplicationTests.postRequest(jsonInputString,
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline", accessToken1);
+    String response2 = testHelpers.postRequest(jsonInputString,
+        dynamoDBEndpoint + "/timeline", accessToken1);
     assert response2.contains("tt0000001");
 
     // POST request to add a new user
@@ -309,8 +230,8 @@ class ImdbPlusApplicationTests {
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response3 = ImdbPlusApplicationTests.postRequest(jsonInputString,
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/user", null);
+    String response3 = testHelpers.postRequest(jsonInputString,
+        dynamoDBEndpoint + "/user", null);
 
     // POST request to add a new timeline for user2
     JSONObject jsonObject2 = new JSONObject(response3);
@@ -324,23 +245,23 @@ class ImdbPlusApplicationTests {
         "\"rating\":1," +
         "\"comment\":\"This is a comment\"" +
         "}";
-    String response4 = ImdbPlusApplicationTests.postRequest(jsonInputString,
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline", accessToken2);
+    String response4 = testHelpers.postRequest(jsonInputString,
+        dynamoDBEndpoint + "/timeline", accessToken2);
 
-    String response5 = ImdbPlusApplicationTests.getRequest(
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline/media/" + "tt0000001", null);
-    String response6 = ImdbPlusApplicationTests.getRequest(
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline/media/" + "tt0000002", null);
+    String response5 = testHelpers.getRequest(
+        dynamoDBEndpoint + "/timeline/media/" + "tt0000001", null);
+    String response6 = testHelpers.getRequest(
+        dynamoDBEndpoint + "/timeline/media/" + "tt0000002", null);
     assert response5.contains("tt0000001") && response5.contains(userId1)
         && response6.contains("tt0000002") && response6.contains(userId2);
 
     // DELETE the added test user and timeline item to clean up
-    ImdbPlusApplicationTests.deleteRequest(
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline/" + userId1 + "/" + "tt0000001", accessToken1);
-    ImdbPlusApplicationTests.deleteRequest(
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline/" + userId2 + "/" + "tt0000002", accessToken2);
-    ImdbPlusApplicationTests.deleteRequest(ImdbPlusApplicationTests.dynamoDBEndpoint + "/user/" + userId1, accessToken1);
-    ImdbPlusApplicationTests.deleteRequest(ImdbPlusApplicationTests.dynamoDBEndpoint + "/user/" + userId2, accessToken2);
+    testHelpers.deleteRequest(
+        dynamoDBEndpoint + "/timeline/" + userId1 + "/" + "tt0000001", accessToken1);
+    testHelpers.deleteRequest(
+        dynamoDBEndpoint + "/timeline/" + userId2 + "/" + "tt0000002", accessToken2);
+    testHelpers.deleteRequest(dynamoDBEndpoint + "/user/" + userId1, accessToken1);
+    testHelpers.deleteRequest(dynamoDBEndpoint + "/user/" + userId2, accessToken2);
   }
 
   @Test
@@ -356,7 +277,7 @@ class ImdbPlusApplicationTests {
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = ImdbPlusApplicationTests.postRequest(jsonInputString, ImdbPlusApplicationTests.dynamoDBEndpoint
+    String response = testHelpers.postRequest(jsonInputString, dynamoDBEndpoint
         + "/user", null);
 
     // POST request to add a new timeline
@@ -371,18 +292,16 @@ class ImdbPlusApplicationTests {
         "\"rating\":5," +
         "\"comment\":\"This is a comment\"" +
         "}";
-    String response2 = ImdbPlusApplicationTests.postRequest(jsonInputString,
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline", accessToken);
+    String response2 = testHelpers.postRequest(jsonInputString,
+    dynamoDBEndpoint + "/timeline", accessToken);
 
     // GET request to retrieve the added timeline by userId and mediaId
-    String response3 = ImdbPlusApplicationTests.getRequest(
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001",
-        accessToken);
+    String response3 = testHelpers.getRequest(
+        dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
     assert response3.contains("tt0000001");
 
     // DELETE the added test user and timeline item to clean up
-    ImdbPlusApplicationTests.deleteRequest(
-        ImdbPlusApplicationTests.dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
-    ImdbPlusApplicationTests.deleteRequest(ImdbPlusApplicationTests.dynamoDBEndpoint + "/user/" + userId, accessToken);
+    testHelpers.deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
+    testHelpers.deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
   }
 }

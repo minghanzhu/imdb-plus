@@ -1,6 +1,6 @@
-package com.example.imdbplus.conroller;
+package org.opencsd.imdbplus.conroller;
 
-import com.example.imdbplus.repository.AnalysisRepository;
+import org.opencsd.imdbplus.repository.AnalysisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

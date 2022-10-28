@@ -1,12 +1,12 @@
-package com.example.imdbplus.repository;
+package org.opencsd.imdbplus.repository;
 
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
-import com.example.imdbplus.entity.Media;
-import com.example.imdbplus.entity.Timeline;
+import org.opencsd.imdbplus.entity.Media;
+import org.opencsd.imdbplus.entity.Timeline;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

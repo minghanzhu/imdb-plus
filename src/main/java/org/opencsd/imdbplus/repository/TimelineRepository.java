@@ -1,10 +1,10 @@
-package com.example.imdbplus.repository;
+package org.opencsd.imdbplus.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.example.imdbplus.entity.Timeline;
-import com.example.imdbplus.entity.User;
+import org.opencsd.imdbplus.entity.Timeline;
+import org.opencsd.imdbplus.entity.User;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

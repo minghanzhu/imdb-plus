@@ -1,4 +1,4 @@
-package com.example.imdbplus.config;
+package org.opencsd.imdbplus.config;
 
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

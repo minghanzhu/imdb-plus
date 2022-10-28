@@ -1,4 +1,4 @@
-package com.example.imdbplus;
+package org.opencsd.imdbplus;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,12 +6,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ImdbPlusApplication {
+public class Main {
 
-  private static final Logger mainLogger = LoggerFactory.getLogger(ImdbPlusApplication.class);
+  private static final Logger mainLogger = LoggerFactory.getLogger(Main.class);
 
   public static void main(String[] args) {
-    SpringApplication.run(ImdbPlusApplication.class, args);
+    SpringApplication.run(Main.class, args);
   }
 
 }

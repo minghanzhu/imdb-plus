@@ -1,7 +1,7 @@
-package com.example.imdbplus.conroller;
+package org.opencsd.imdbplus.conroller;
 
-import com.example.imdbplus.entity.User;
-import com.example.imdbplus.repository.UserRepository;
+import org.opencsd.imdbplus.entity.User;
+import org.opencsd.imdbplus.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

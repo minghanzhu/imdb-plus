@@ -1,4 +1,4 @@
-package com.example.imdbplus.conroller;
+package org.opencsd.imdbplus.conroller;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -6,8 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.imdbplus.entity.Media;
-import com.example.imdbplus.repository.AnalysisRepository;
+import org.opencsd.imdbplus.entity.Media;
+import org.opencsd.imdbplus.repository.AnalysisRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;

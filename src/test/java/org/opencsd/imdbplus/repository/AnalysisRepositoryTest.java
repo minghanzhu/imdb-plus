@@ -1,9 +1,9 @@
-package com.example.imdbplus.repository;
+package org.opencsd.imdbplus.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import com.example.imdbplus.entity.Media;
+import org.opencsd.imdbplus.entity.Media;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;

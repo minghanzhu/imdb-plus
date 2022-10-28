@@ -1,4 +1,4 @@
-package com.example.imdbplus.repository;
+package org.opencsd.imdbplus.repository;
 
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -7,7 +7,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import com.example.imdbplus.entity.Media;
+import org.opencsd.imdbplus.entity.Media;
 import java.util.HashMap;
 import java.util.List;
 import org.slf4j.Logger;
