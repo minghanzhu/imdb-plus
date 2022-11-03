@@ -161,6 +161,33 @@ public class AnalysisRepository {
 
   }
 
+  public ResponseEntity userPreference(String userId) {
+    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+    List<Timeline> timelineList = dynamoDBMapper.scan(Timeline.class, scanExpression);
+    Map<String, Long> userPreference = new HashMap<>();
+    for(Timeline line: timelineList){
+      String lineUserId = line.getUserId();
+      if(lineUserId.equals(userId)) {
+        if(line.getStatus().equals("DONE") && line.getRating() < 3){
+          continue;
+        }
+        else {
+          String mediaId = line.getMediaId();
+          try{
+            Media media = dynamoDBMapper.load(Media.class, mediaId);
+            String genre = media.getGenre();
+            long count = userPreference.containsKey(genre) ? userPreference.get(genre) : 0;
+            userPreference.put(genre, count + 1);
+          }catch (DynamoDBMappingException e){
+            return ResponseEntity.badRequest().body("Sorry, something went wrong.");
+          }
+        }
+      }
+    }
+
+    return ResponseEntity.ok(userPreference);
+  }
+
   private class MediaWrapper implements Comparable<MediaWrapper> {
 
     String mediaId;
@@ -177,6 +204,7 @@ public class AnalysisRepository {
       return count - other.count;
     }
   }
+
 
 
 }
