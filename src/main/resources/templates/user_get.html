@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>Demo Application</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3" >
+    </div>
+    <div class ="col-md-6" >
+        <button onclick="window.location.href='https://w3docs.com';">
+            Click Here
+        </button>
+    </div>
+    <div class ="col-md-3" >
+    </div>
+</div>
+
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3" >
+    </div>
+    <div class ="col-md-2">
+        <span>User ID: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="demo_id" id="demo_id"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-2">
+        <span>User Name: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="demo_name" id="demo_name"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-6">
+        <input type="button" name="getData" id="getData" value="GET DATA" onclick="getDataFromAPI();"/>
+        <input type="button" name="postData" id="postData" value="POST DATA" onclick="postDataFromAPI();"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-6">
+        <div id="list" style = "padding-top: 50px"></div>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+
+<script>
+	function getDataFromAPI() {
+
+	    $("#list").empty();//Clear old data before ajax
+	    $.ajax({
+	        url: "/user/" + $("#demo_id").val(),
+	        type: "GET",
+	        success: function (data) {
+	            console.log(data);
+	        	console.log("GET DATA API RESPONSE - USER ID:" + data.userId);
+	        	console.log("GET DATA API RESPONSE - USER NAME:" + data.username);
+	        	console.log("GET DATA API RESPONSE - USER EMAIL:" + data.email);
+
+	        	var table = $("#list");
+                table.append("<b>USER ID: </b><p>" + data.userId + "</p>");
+                table.append("<b>USER NAME: </b><p>" + data.username + "</p>");
+                table.append("<b>USER EMAIL: </b><p>" + data.email + "</p>");
+	        },
+	        error: function (jqXHR, textStatus, errorThrown) {
+	        }
+		});
+	}
+
+	function postDataFromAPI() {
+
+	    var modelObj = {
+            "username": "newUser2",
+            "email": "newUser2@gmail.com",
+            "accountSetting": {
+                "isPrivate": false,
+                "isAdult": true
+            }
+        };
+
+		console.log("post data:"+modelObj);
+
+		 $.ajax({
+	            type: "POST",
+	            url: "/user",
+	            headers: {
+	                "Content-Type": "application/json"
+	            },
+	            data: JSON.stringify(modelObj),
+	            success: function (data) {
+	            	console.log(data);
+                    console.log("GET DATA API RESPONSE - USER ID:" + data.userId);
+                    console.log("GET DATA API RESPONSE - USER NAME:" + data.username);
+                    console.log("GET DATA API RESPONSE - USER EMAIL:" + data.email);
+
+                    var table = $("#list");
+                    table.append("<b>USER ID: </b><p>" + data.userId + "</p>");
+                    table.append("<b>USER NAME: </b><p>" + data.username + "</p>");
+                    table.append("<b>USER EMAIL: </b><p>" + data.email + "</p>");
+	            },
+	            error: function (jqXHR, textStatus, errorThrown) {
+	            }
+	        });
+	}
+	</script>
+</body>
+</html>
