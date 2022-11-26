@@ -6,15 +6,16 @@ on:
 
 #Manually trigger workflow runs
 
-workflow_dispatch:
+  workflow_dispatch:
 
 #Trigger the workflow on push from the main branch
 
-  push:
+    push:
 
-  branches:
+    branches:
 
-    - main
+      - main
+      - sahitya-branch
 
 jobs:
 
