@@ -11,9 +11,9 @@ on:
 ##Trigger the workflow on push from the main branch
     push:
 #
-      branches:
+    branches:
 #
-      - sahitya-branch
+    - sahitya-branch
 
 jobs:
 
