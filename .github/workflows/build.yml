@@ -2,11 +2,12 @@
 
 name: CI/CD Pipeline
 
-on: [push]
-#  workflow_dispatch:
-#    push:
-#      - main
-#      - sahitya-branch
+on:
+  workflow_dispatch:
+    push:
+      branches:
+        - main
+        - sahitya-branch
 
 ##Manually trigger workflow runs
 
