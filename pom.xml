@@ -85,7 +85,7 @@
   </parent>
   <properties>
     <java.version>11</java.version>
-    <sonar.projectKey>imdb-plus</sonar.projectKey>
+    <sonar.projectKey>minghanzhu_imdb-plus</sonar.projectKey>
     <sonar.organization>minghanzhu</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
