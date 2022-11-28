@@ -67,6 +67,11 @@
     <java.version>11</java.version>
   </properties>
   <version>0.1.0</version>
+  <properties>
+    <sonar.projectKey>minghanzhu_imdb-plus</sonar.projectKey>
+    <sonar.organization>minghanzhu</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+  <properties/>
 
   <reporting>
     <plugins>
