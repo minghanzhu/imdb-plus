@@ -148,6 +148,7 @@ on:
   push:
     branches:
       - master
+      - sahitya-branch
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
