@@ -71,7 +71,7 @@ jobs:
 
 #Depends on test's job
 
-#  needs: tests
+    needs: tests
 
     name: SonarCloud analysis
 
