@@ -2,12 +2,10 @@ package com.example.imdbplus.entity;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @DynamoDBDocument
 public class AccountSetting {
@@ -17,8 +15,8 @@ public class AccountSetting {
   @DynamoDBAttribute
   private Boolean isAdult;
 
-  public AccountSetting(String accountSetting) {
-    this.isPrivate = accountSetting.equals("private");
-    this.isAdult = accountSetting.equals("adult");
+  public AccountSetting(Boolean isPrivate, Boolean isAdult) {
+    this.isPrivate = isPrivate;
+    this.isAdult = isAdult;
   }
 }
