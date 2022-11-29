@@ -38,11 +38,7 @@ class AnalysisRepositoryTest {
 
   private Timeline highestRating4;
 
-  private Map<String, Long> topTenDone;
-
-  private Map<String, Long> topTenWishList;
-
-  private Map<String, Long> topTenInProgress;
+  private Map<String, Long> topTen;
 
   @Autowired
   private AnalysisRepository analysisRepository;
@@ -65,19 +61,20 @@ class AnalysisRepositoryTest {
     highestRated.add(highestRating3);
     highestRated.add(highestRating4);
 
-    topTenDone = new HashMap<>();
-    topTenDone.put("m1", 5L);
-    topTenDone.put("m2", 4L);
-    topTenDone.put("m3", 4L);
-    topTenDone.put("m4", 6L);
-    topTenDone.put("m5", 5L);
-    topTenDone.put("m6", 7L);
-    topTenDone.put("m7", 8L);
-    topTenDone.put("m8", 9L);
-    topTenDone.put("m9", 10L);
-    topTenDone.put("m10", 11L);
-    topTenDone.put("m11", 12L);
-    topTenDone.put("m12", 12L);
+    topTen = new HashMap<>();
+    topTen.put("m1", 5L);
+    topTen.put("m2", 4L);
+    topTen.put("m3", 4L);
+    topTen.put("m4", 6L);
+    topTen.put("m5", 5L);
+    topTen.put("m6", 7L);
+    topTen.put("m7", 8L);
+    topTen.put("m8", 9L);
+    topTen.put("m9", 10L);
+    topTen.put("m10", 11L);
+    topTen.put("m11", 12L);
+    topTen.put("m12", 12L);
+
 
 
     topTenListWatched = new ArrayList<>();
@@ -124,16 +121,19 @@ class AnalysisRepositoryTest {
 
   @Test
   void getTopTenMost() {
-//    PriorityQueue<MediaWrapper> topTenQueue = analysisRepository.getTopTenListHelper(topTenDone);
-//    PriorityQueue<MediaWrapper> topTenQueueResult = new PriorityQueue<MediaWrapper>(10);
-//
-//    assertEquals(topTenQueueResult, topTenQueue);
-//    when(analysisRepository.getTopTenList("WISHLIST")).thenReturn(topTenListWished);
-//    result = analysisRepository.getTopTenList("WISHLIST");
-//    assertEquals(result, topTenListWished);
-//    when(analysisRepository.getTopTenList("PROGRESS")).thenReturn(new ArrayList<>());
-//    result = analysisRepository.getTopTenList("PROGRESS");
-//    assertEquals(result, new ArrayList<>());
+    List<String> topTenList = analysisRepository.getTopTenListHelper(topTen);
+    List<String> topTenListResult = new ArrayList<>();
+    topTenListResult.add("m1");
+    topTenListResult.add("m5");
+    topTenListResult.add("m4");
+    topTenListResult.add("m6");
+    topTenListResult.add("m7");
+    topTenListResult.add("m8");
+    topTenListResult.add("m9");
+    topTenListResult.add("m10");
+    topTenListResult.add("m12");
+    topTenListResult.add("m11");
+    assertEquals(topTenListResult, topTenList);
   }
 }
 

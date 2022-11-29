@@ -33,7 +33,7 @@ public class AnalysisController {
   @GetMapping("api/v1/analysis/most")
   public ResponseEntity<Media> getMostWatched(
       @RequestParam(name = "status", defaultValue = "DONE") String status) {
-    status = (status.toLowerCase().equals("progress")) ? "IN_PROGRESS" : status.toUpperCase();
+    status = (status.equalsIgnoreCase("progress")) ? "IN_PROGRESS" : status.toUpperCase();
     return analysisRepository.getMostMediaWith(status.toUpperCase());
 
   }
@@ -41,7 +41,7 @@ public class AnalysisController {
   @GetMapping("api/v1/analysis/top-ten")
   public ResponseEntity<Media> getTopTen(
       @RequestParam(name = "status", defaultValue = "DONE") String status) {
-    status = (status.toLowerCase().equals("progress")) ? "IN_PROGRESS" : status.toUpperCase();
+    status = (status.equalsIgnoreCase("progress")) ? "IN_PROGRESS" : status.toUpperCase();
     return analysisRepository.getTopTen(status);
 
   }

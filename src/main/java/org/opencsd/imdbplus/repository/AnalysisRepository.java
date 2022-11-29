@@ -152,19 +152,19 @@ public class AnalysisRepository {
     Map<String, Long> validMedia = countMedia(category);
 
     //Build check the top ten contenders
-    PriorityQueue<MediaWrapper> topTenQueue = getTopTenListHelper(validMedia);
+    List<String> topTenListId = getTopTenListHelper(validMedia);
 
     // Pop off the queue and return a list
     List<Media> topTenList = new ArrayList<>(10);
-    while (!topTenQueue.isEmpty()) {
-      Media top = dynamoDBMapper.load(Media.class, topTenQueue.poll().mediaId);
+    for (String mediaId: topTenListId) {
+      Media top = dynamoDBMapper.load(Media.class, mediaId);
       topTenList.add(top);
     }
     return topTenList;
 
   }
 
-  PriorityQueue<MediaWrapper> getTopTenListHelper(Map<String, Long> validMedia){
+  List<String> getTopTenListHelper(Map<String, Long> validMedia){
     PriorityQueue<MediaWrapper> topTenQueue = new PriorityQueue<>(10);
     for (String id : validMedia.keySet())
       if (topTenQueue.size() < 10) {
@@ -175,7 +175,13 @@ public class AnalysisRepository {
         MediaWrapper media = new MediaWrapper(id, validMedia.get(id).intValue());
         topTenQueue.offer(media);
       }
-    return topTenQueue;
+    List<String> topTenList = new ArrayList<>(10);
+    while (!topTenQueue.isEmpty()) {
+      String mediaId = topTenQueue.poll().mediaId;
+      topTenList.add(mediaId);
+    }
+
+    return topTenList;
   }
 
   public ResponseEntity userPreference(String userId) {
