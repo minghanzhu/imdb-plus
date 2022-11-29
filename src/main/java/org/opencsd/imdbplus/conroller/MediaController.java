@@ -24,7 +24,7 @@ public class MediaController {
   }
 
   @GetMapping("/api/v1/media")
-  public ResponseEntity getAllMedia() {
+  public ResponseEntity<Media> getAllMedia() {
     return mediaRepository.getAllEntities();
   }
 

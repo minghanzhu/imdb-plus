@@ -1,5 +1,7 @@
 package org.opencsd.imdbplus.conroller;
 
+import org.opencsd.imdbplus.entity.Media;
+import org.opencsd.imdbplus.entity.Timeline;
 import org.opencsd.imdbplus.repository.AnalysisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,7 @@ public class AnalysisController {
   private AnalysisRepository analysisRepository;
 
   @GetMapping("api/v1/analysis/timelines")
-  public ResponseEntity<?> getTimeline() {
+  public ResponseEntity<Timeline> getTimeline() {
     return analysisRepository.getAllTimeline();
   }
 
@@ -29,7 +31,7 @@ public class AnalysisController {
   }
 
   @GetMapping("api/v1/analysis/most")
-  public ResponseEntity getMostWatched(
+  public ResponseEntity<Media> getMostWatched(
       @RequestParam(name = "status", defaultValue = "DONE") String status) {
     status = (status.toLowerCase().equals("progress")) ? "IN_PROGRESS" : status.toUpperCase();
     return analysisRepository.getMostMediaWith(status.toUpperCase());
@@ -37,7 +39,7 @@ public class AnalysisController {
   }
 
   @GetMapping("api/v1/analysis/top-ten")
-  public ResponseEntity getTopTen(
+  public ResponseEntity<Media> getTopTen(
       @RequestParam(name = "status", defaultValue = "DONE") String status) {
     status = (status.toLowerCase().equals("progress")) ? "IN_PROGRESS" : status.toUpperCase();
     return analysisRepository.getTopTen(status);
