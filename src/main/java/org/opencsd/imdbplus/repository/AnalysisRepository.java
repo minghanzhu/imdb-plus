@@ -43,6 +43,7 @@ public class AnalysisRepository {
   public String getHighestRatingHelper(List<Timeline> allTimelines) {
     Map<String, List<Long>> ratingMap = new HashMap<>();
 
+    // Walk down the timeline {id : [count, total]}
     for (Timeline curLine : allTimelines) {
       String id = curLine.getMediaId();
       if (curLine.getRating() != null && curLine.getStatus().equals("DONE")
@@ -85,36 +86,6 @@ public class AnalysisRepository {
 
     String highestMediaId = getHighestRatingHelper(allTimelines);
     AnalysisRepository.analysisLogger.info("Highest Rated Media: " + highestMediaId);
-
-    // Walk down the timeline {id : [count, total]}
-//    for (Timeline curLine : allTimelines) {
-//      String id = curLine.getMediaId();
-//      if (curLine.getRating() != null && curLine.getStatus().equals("DONE")
-//          && curLine.getMediaId() != null)
-//        if (ratingMap.containsKey(id)) {
-//          List<Long> avgRating = ratingMap.get(id);
-//          avgRating.set(0, avgRating.get(0) + 1);
-//          long total = avgRating.get(1);
-//          avgRating.set(1, total += curLine.getRating());
-//          ratingMap.put(id, avgRating);
-//        } else {
-//          List<Long> avg = new ArrayList<>();
-//          avg.add(1L);
-//          avg.add((long) curLine.getRating());
-//          ratingMap.put(id, avg);
-//        }
-//    }
-//
-//    Double highestAvgRating = Double.MIN_VALUE;
-//    String highestMediaId = null;
-//    //Find Avg
-//    for (String key : ratingMap.keySet()) {
-//      double avg = (double) ratingMap.get(key).get(1) / ratingMap.get(key).get(0);
-//      if (highestAvgRating < avg) {
-//        highestAvgRating = avg;
-//        highestMediaId = key;
-//      }
-//    }
 
     try {
 //      AnalysisRepository.analysisLogger.info(
@@ -178,10 +149,23 @@ public class AnalysisRepository {
   }
 
   List<Media> getTopTenList(String category) {
-    PriorityQueue<MediaWrapper> topTenQueue = new PriorityQueue<>(10);
     Map<String, Long> validMedia = countMedia(category);
 
     //Build check the top ten contenders
+    PriorityQueue<MediaWrapper> topTenQueue = getTopTenListHelper(validMedia);
+
+    // Pop off the queue and return a list
+    List<Media> topTenList = new ArrayList<>(10);
+    while (!topTenQueue.isEmpty()) {
+      Media top = dynamoDBMapper.load(Media.class, topTenQueue.poll().mediaId);
+      topTenList.add(top);
+    }
+    return topTenList;
+
+  }
+
+  PriorityQueue<MediaWrapper> getTopTenListHelper(Map<String, Long> validMedia){
+    PriorityQueue<MediaWrapper> topTenQueue = new PriorityQueue<>(10);
     for (String id : validMedia.keySet())
       if (topTenQueue.size() < 10) {
         MediaWrapper media = new MediaWrapper(id, validMedia.get(id).intValue());
@@ -191,14 +175,7 @@ public class AnalysisRepository {
         MediaWrapper media = new MediaWrapper(id, validMedia.get(id).intValue());
         topTenQueue.offer(media);
       }
-    // Pop off the queue and return a list
-    List<Media> topTenList = new ArrayList<>(10);
-    while (!topTenQueue.isEmpty()) {
-      Media top = dynamoDBMapper.load(Media.class, topTenQueue.poll().mediaId);
-      topTenList.add(top);
-    }
-    return topTenList;
-
+    return topTenQueue;
   }
 
   public ResponseEntity userPreference(String userId) {
