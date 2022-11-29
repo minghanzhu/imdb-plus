@@ -16,4 +16,9 @@ public class AccountSetting {
   private Boolean isPrivate;
   @DynamoDBAttribute
   private Boolean isAdult;
+
+  public AccountSetting(String accountSetting) {
+    this.isPrivate = accountSetting.equals("private");
+    this.isAdult = accountSetting.equals("adult");
+  }
 }
