@@ -2,7 +2,7 @@ name: SonarCloud
 on:
   push:
     branches:
-      - mzhu-add-unit-tests-v2
+      - mzhu-add-tests-v2
   pull_request:
     types: [ opened, synchronize, reopened ]
 jobs:
