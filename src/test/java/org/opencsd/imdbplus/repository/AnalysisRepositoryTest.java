@@ -65,6 +65,7 @@ class AnalysisRepositoryTest {
     highestRated.add(highestRating3);
     highestRated.add(highestRating4);
 
+    topTenDone = new HashMap<>();
     topTenDone.put("m1", 5L);
     topTenDone.put("m2", 4L);
     topTenDone.put("m3", 4L);
