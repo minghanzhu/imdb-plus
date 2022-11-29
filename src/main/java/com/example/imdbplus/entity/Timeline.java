@@ -41,4 +41,14 @@ public class Timeline {
   private Integer rating; // 1-5 (optional, only for DONE)
   @DynamoDBAttribute
   private String comment; // (optional, only for DONE)
+
+  public Timeline(String timelineId, String userId, String mediaId, String status,
+      int rating, String comment) {
+    this.timelineId = timelineId;
+    this.userId = userId;
+    this.mediaId = mediaId;
+    this.status = status;
+    this.rating = rating;
+    this.comment = comment;
+  }
 }
