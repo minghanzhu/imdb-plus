@@ -40,22 +40,19 @@ public class AnalysisRepository {
 
   }
 
-
-  public ResponseEntity getHighestRating() {
+  public String getHighestRatingHelper(List<Timeline> allTimelines) {
     Map<String, List<Long>> ratingMap = new HashMap<>();
-    List<Timeline> allTimelines = dynamoDBMapper.scan(Timeline.class,
-        new DynamoDBScanExpression());
 
-    // Walk down the timeline {id : [count, total]}
     for (Timeline curLine : allTimelines) {
       String id = curLine.getMediaId();
       if (curLine.getRating() != null && curLine.getStatus().equals("DONE")
-          && curLine.getMediaId() != null)
+              && curLine.getMediaId() != null)
         if (ratingMap.containsKey(id)) {
           List<Long> avgRating = ratingMap.get(id);
           avgRating.set(0, avgRating.get(0) + 1);
           long total = avgRating.get(1);
-          avgRating.set(1, total += curLine.getRating());
+          total += curLine.getRating();
+          avgRating.set(1, total);
           ratingMap.put(id, avgRating);
         } else {
           List<Long> avg = new ArrayList<>();
@@ -64,21 +61,64 @@ public class AnalysisRepository {
           ratingMap.put(id, avg);
         }
     }
-
+    AnalysisRepository.analysisLogger.info("Rating map: " + ratingMap);
     Double highestAvgRating = Double.MIN_VALUE;
     String highestMediaId = null;
     //Find Avg
     for (String key : ratingMap.keySet()) {
+      AnalysisRepository.analysisLogger.info("key:" + key + "value: " + ratingMap.get(key));
       double avg = (double) ratingMap.get(key).get(1) / ratingMap.get(key).get(0);
       if (highestAvgRating < avg) {
         highestAvgRating = avg;
         highestMediaId = key;
       }
     }
+    AnalysisRepository.analysisLogger.info("Highest Rated Media: " + highestMediaId);
+    return highestMediaId;
+  }
+
+
+  public ResponseEntity getHighestRating() {
+    Map<String, List<Long>> ratingMap = new HashMap<>();
+    List<Timeline> allTimelines = dynamoDBMapper.scan(Timeline.class,
+        new DynamoDBScanExpression());
+
+    String highestMediaId = getHighestRatingHelper(allTimelines);
+    AnalysisRepository.analysisLogger.info("Highest Rated Media: " + highestMediaId);
+
+    // Walk down the timeline {id : [count, total]}
+//    for (Timeline curLine : allTimelines) {
+//      String id = curLine.getMediaId();
+//      if (curLine.getRating() != null && curLine.getStatus().equals("DONE")
+//          && curLine.getMediaId() != null)
+//        if (ratingMap.containsKey(id)) {
+//          List<Long> avgRating = ratingMap.get(id);
+//          avgRating.set(0, avgRating.get(0) + 1);
+//          long total = avgRating.get(1);
+//          avgRating.set(1, total += curLine.getRating());
+//          ratingMap.put(id, avgRating);
+//        } else {
+//          List<Long> avg = new ArrayList<>();
+//          avg.add(1L);
+//          avg.add((long) curLine.getRating());
+//          ratingMap.put(id, avg);
+//        }
+//    }
+//
+//    Double highestAvgRating = Double.MIN_VALUE;
+//    String highestMediaId = null;
+//    //Find Avg
+//    for (String key : ratingMap.keySet()) {
+//      double avg = (double) ratingMap.get(key).get(1) / ratingMap.get(key).get(0);
+//      if (highestAvgRating < avg) {
+//        highestAvgRating = avg;
+//        highestMediaId = key;
+//      }
+//    }
 
     try {
-      AnalysisRepository.analysisLogger.info(
-          "Highest Rated Media: " + highestMediaId + " Rating: " + highestAvgRating);
+//      AnalysisRepository.analysisLogger.info(
+//          "Highest Rated Media: " + highestMediaId + " Rating: " + highestAvgRating);
       return ResponseEntity.ok(dynamoDBMapper.load(Media.class, highestMediaId));
     } catch (DynamoDBMappingException e) {
       AnalysisRepository.analysisLogger.debug(e.toString());
