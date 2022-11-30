@@ -33,7 +33,14 @@ public class TimelineController {
   public ResponseEntity deleteTimeline(@PathVariable("userId") String userId,
       @PathVariable("mediaId") String mediaId,
       @RequestHeader("Authorization") String accessToken) {
-    return timelineRepository.delete(userId, mediaId, accessToken);
+    String response =  timelineRepository.delete(userId, mediaId, accessToken);
+    if (response.equals("Invalid access token")) {
+      return ResponseEntity.status(401).body("Invalid access token");
+    } else if (response.equals("Timeline not found")) {
+      return ResponseEntity.status(404).body("Timeline not found");
+    } else {
+      return ResponseEntity.ok(response);
+    }
   }
 
   // Get all timelines by userId
