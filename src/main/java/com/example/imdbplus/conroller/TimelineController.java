@@ -21,7 +21,12 @@ public class TimelineController {
   @PostMapping("/timeline")
   public ResponseEntity saveTimeline(@RequestBody() Timeline timeline,
       @RequestHeader("Authorization") String accessToken) {
-    return timelineRepository.save(timeline, accessToken);
+    Timeline response = timelineRepository.save(timeline, accessToken);
+    if (response == null) {
+      return ResponseEntity.status(401).body("Unauthorized");
+    } else {
+      return ResponseEntity.ok(response);
+    }
   }
 
   @DeleteMapping("/timeline/{userId}/{mediaId}")
