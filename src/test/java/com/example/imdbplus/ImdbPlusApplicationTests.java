@@ -50,7 +50,7 @@ class ImdbPlusApplicationTests {
    */
   @Test
   @Order(2)
-  void testUserSave() throws Exception {
+  void testUserSave() {
     testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
     testAccountSetting = new AccountSetting(false, true);
     // Create a test user
@@ -71,7 +71,7 @@ class ImdbPlusApplicationTests {
    */
   @Test
   @Order(3)
-  void testUserSaveDuplicatedUsername() throws Exception {
+  void testUserSaveDuplicatedUsername() {
     // Try to save the second test user to the database and expect an ConditionalCheckFailedException exception to be thrown
     try {
       userRepository.save(testUser);
@@ -86,15 +86,15 @@ class ImdbPlusApplicationTests {
    */
   @Test
   @Order(4)
-  void testGetUser() throws Exception {
-    User retrievedUser = dynamoDBMapper.load(User.class, testUserId);
+  void testGetUser() {
+    User retrievedUser = userRepository.getUser(testUserId);
     System.out.println();
     assert retrievedUser.equals(testUser);
   }
 
   @Test
   @Order(5)
-  void testGetUserNotFound() throws Exception {
+  void testGetUserNotFound() {
     User retrievedUser = userRepository.getUser("non-existing-user-id");
     assert retrievedUser == null;
   }
@@ -105,7 +105,7 @@ class ImdbPlusApplicationTests {
    */
   @Test
   @Order(6)
-  void testTimelineSave() throws Exception {
+  void testTimelineSave() {
       String testMediaId = "tt0000001";
       String testTimelineId = testUserId + "-" + testMediaId;
       String testStatus = "DONE";
@@ -123,7 +123,7 @@ class ImdbPlusApplicationTests {
 
   @Test
   @Order(7)
-  void testDeleteUser() throws Exception {
+  void testDeleteUser(){
     String deleteResult = userRepository.delete(testUserId, testAccessToken);
     assert deleteResult.equals("User deleted successfully");
   }
