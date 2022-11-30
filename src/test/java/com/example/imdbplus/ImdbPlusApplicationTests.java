@@ -1,6 +1,9 @@
 package com.example.imdbplus;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.example.imdbplus.entity.AccountSetting;
 import com.example.imdbplus.entity.Timeline;
 import com.example.imdbplus.entity.User;
@@ -8,12 +11,17 @@ import com.example.imdbplus.repository.TimelineRepository;
 import com.example.imdbplus.repository.UserRepository;
 import java.util.Objects;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest
+@TestMethodOrder(OrderAnnotation.class)
 class ImdbPlusApplicationTests {
 
   @Autowired
@@ -25,7 +33,14 @@ class ImdbPlusApplicationTests {
   @Autowired
   private TimelineRepository timelineRepository;
 
+  public static User testUser;
+  public static String testUsername;
+  public static AccountSetting testAccountSetting;
+  public static String testUserId;
+  public static String testAccessToken;
+
   @Test
+  @Order(1)
   void contextLoads() {
   }
 
@@ -34,26 +49,19 @@ class ImdbPlusApplicationTests {
    * test user is added to the database.
    */
   @Test
+  @Order(2)
   void testUserSave() throws Exception {
-    String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
-    AccountSetting testAccountSetting = new AccountSetting(false, true);
+    testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+    testAccountSetting = new AccountSetting(false, true);
     // Create a test user
-    User testUser = new User(testUsername, "testEmail", testAccountSetting);
-    userRepository.save(testUser);
+    testUser = new User(testUsername, "testEmail", testAccountSetting);
+    testUser = userRepository.save(testUser);
     // Record the userId and accessToken of the test user
-    String testUserId = testUser.getUserId();
-    String testAccessToken = testUser.getAccessToken();
-    // Sleep for 1 second to wait for the database to update
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException ie) {
-      // Retrieve the test user from the database
-      User retrievedUser = dynamoDBMapper.load(User.class, testUserId);
-      // Check if the retrieved user is the same as the test user
-      assert retrievedUser.equals(testUser);
-      // Delete the test user from the database
-      userRepository.delete(testUserId, testAccessToken);
-    }
+    testUserId = testUser.getUserId();
+    testAccessToken = testUser.getAccessToken();
+    // Check testUserId and testAccessToken are not null
+    assert !Objects.isNull(testUserId);
+    assert !Objects.isNull(testAccessToken);
   }
 
   /**
@@ -62,36 +70,33 @@ class ImdbPlusApplicationTests {
    * ConditionalCheckFailedException should be thrown.
    */
   @Test
+  @Order(3)
   void testUserSaveDuplicatedUsername() throws Exception {
-    String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
-    AccountSetting testAccountSetting = new AccountSetting(false, true);
-    // Create a test user
-    User testUser = new User(testUsername, "testEmail", testAccountSetting);
-    // Save the test user to the database
-    userRepository.save(testUser);
-    // Record the userId and accessToken of the test user
-    String testUserId = testUser.getUserId();
-    String testAccessToken = testUser.getAccessToken();
-    // Create another test user with the same username
-    User testUser2 = new User(testUsername, "testEmail2", testAccountSetting);
-
+    // Try to save the second test user to the database and expect an ConditionalCheckFailedException exception to be thrown
     try {
-      Thread.sleep(1000);
-    } catch (InterruptedException ie) {
-      // Save the second test user to the database
-      userRepository.save(testUser2);
-      // Sleep for 1 second to wait for the database to update
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-        // Retrieve the test user from the database
-        User retrievedUser = dynamoDBMapper.load(User.class, testUserId);
-        // Check if the retrieved user is the same as the test user
-        assert retrievedUser.equals(testUser);
-        // Delete the test user from the database
-        userRepository.delete(testUserId, testAccessToken);
-      }
+      userRepository.save(testUser);
+    } catch (Exception e) {
+      assert e.getClass().equals(com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException.class);
+      assert e.getMessage().equals("Conditional check failed");
     }
+  }
+
+  /**
+   * Test the user retrieval functionality with a single test user. The expected result is that the test user is retrieved from the database.
+   */
+  @Test
+  @Order(4)
+  void testGetUser() throws Exception {
+    User retrievedUser = dynamoDBMapper.load(User.class, testUserId);
+    System.out.println();
+    assert retrievedUser.equals(testUser);
+  }
+
+  @Test
+  @Order(5)
+  void testGetUserNotFound() throws Exception {
+    User retrievedUser = userRepository.getUser("non-existing-user-id");
+    assert retrievedUser == null;
   }
 
   /**
@@ -99,20 +104,8 @@ class ImdbPlusApplicationTests {
    * expected behavior is that the test timeline is added to the database.
    */
   @Test
+  @Order(6)
   void testTimelineSave() throws Exception {
-    String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
-    AccountSetting testAccountSetting = new AccountSetting(false, true);
-    // Create a test user
-    User testUser = new User(testUsername, "testEmail", testAccountSetting);
-    userRepository.save(testUser);
-    // Record the userId and accessToken of the test user
-    String testUserId = testUser.getUserId();
-    String testAccessToken = testUser.getAccessToken();
-
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException ie) {
-      // Create a test timeline
       String testMediaId = "tt0000001";
       String testTimelineId = testUserId + "-" + testMediaId;
       String testStatus = "DONE";
@@ -120,12 +113,18 @@ class ImdbPlusApplicationTests {
       String testComment = "This is a test comment";
       Timeline testTimeline = new Timeline(testTimelineId, testUserId, testMediaId, testStatus,
           testRating, testComment);
-      ResponseEntity response = timelineRepository.save(testTimeline, testAccessToken);
-      assert response.getStatusCodeValue() == 200;
-      String body = (String) response.getBody();
-      assert Objects.requireNonNull(body).contains("Timeline saved successfully");
+      Timeline response = timelineRepository.save(testTimeline, testAccessToken);
+      System.out.println(response);
+      System.out.println(testTimeline);
+      assert response.equals(testTimeline);
+      // Clean up the test timeline
       timelineRepository.delete(testUserId, testMediaId, testAccessToken);
-      userRepository.delete(testUserId, testAccessToken);
-    }
+  }
+
+  @Test
+  @Order(7)
+  void testDeleteUser() throws Exception {
+    String deleteResult = userRepository.delete(testUserId, testAccessToken);
+    assert deleteResult.equals("User deleted successfully");
   }
 }
