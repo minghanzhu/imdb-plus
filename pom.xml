@@ -72,7 +72,14 @@
     <dependency>
       <artifactId>aws-java-sdk-dynamodb</artifactId>
       <groupId>com.amazonaws</groupId>
-      <version>1.12.324</version>
+      <version>1.12.347</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/junit/junit -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -85,11 +92,11 @@
       <groupId>org.springframework.boot</groupId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <artifactId>DynamoDBLocal</artifactId>
-      <groupId>com.amazonaws</groupId>
-      <version>[1.12,2.0)</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <artifactId>DynamoDBLocal</artifactId>-->
+<!--      <groupId>com.amazonaws</groupId>-->
+<!--      <version>[1.12,2.0)</version>-->
+<!--    </dependency>-->
   </dependencies>
   <!--Custom repository:-->
   <description>Demo project for Spring Boot</description>
@@ -106,13 +113,16 @@
     <java.version>11</java.version>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>imdb-plus</sonar.organization>
+    <sonar.exclusions>
+      DynamoDBConfig.java,
+    </sonar.exclusions>
   </properties>
   <repositories>
-    <repository>
-      <id>dynamodb-local-oregon</id>
-      <name>DynamoDB Local Release Repository</name>
-      <url>https://s3-us-west-2.amazonaws.com/dynamodb-local/release</url>
-    </repository>
+<!--    <repository>-->
+<!--      <id>dynamodb-local-oregon</id>-->
+<!--      <name>DynamoDB Local Release Repository</name>-->
+<!--      <url>https://s3-us-west-2.amazonaws.com/dynamodb-local/release</url>-->
+<!--    </repository>-->
   </repositories>
 
   <version>0.0.1-SNAPSHOT</version>
