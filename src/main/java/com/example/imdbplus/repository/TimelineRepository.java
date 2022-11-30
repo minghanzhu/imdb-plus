@@ -37,19 +37,19 @@ public class TimelineRepository {
     return dynamoDBMapper.load(Timeline.class, userId + mediaId);
   }
 
-  public ResponseEntity delete(String userId, String mediaId, String accessToken) {
+  public String delete(String userId, String mediaId, String accessToken) {
     // Check if the user exists and the access token is valid
     User user = dynamoDBMapper.load(User.class, userId);
     if (!user.getAccessToken().equals(accessToken)) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid access token");
+      return "Invalid access token";
     }
     // Check if the timeline exists
     Timeline timeline = dynamoDBMapper.load(Timeline.class, userId + "-" + mediaId);
     if (timeline == null) {
-      return ResponseEntity.status(404).body("Timeline not found");
+      return "Timeline does not exist";
     }
     dynamoDBMapper.delete(timeline);
-    return ResponseEntity.ok().body("Timeline deleted successfully");
+    return "Timeline deleted successfully";
   }
 
   public void update(Timeline timeline) {
