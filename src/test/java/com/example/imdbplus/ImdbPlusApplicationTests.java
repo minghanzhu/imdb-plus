@@ -8,6 +8,7 @@ import com.example.imdbplus.entity.Timeline;
 import com.example.imdbplus.entity.User;
 import com.example.imdbplus.repository.TimelineRepository;
 import com.example.imdbplus.repository.UserRepository;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -153,6 +154,24 @@ class ImdbPlusApplicationTests {
 
   @Test
   @Order(8)
+  void testTimelineGetTimelineByUserId() {
+    try {
+      // Sleep for 1 second to wait for the timeline to be saved to the database
+      Thread.sleep(1000);
+    } catch (Exception e) {
+      List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
+      assert response.size() == 1;
+      assert response.get(0).getUserId().equals(testUserId);
+      assert response.get(0).getMediaId().equals("tt0000001");
+      assert response.get(0).getStatus().equals("DONE");
+      assert response.get(0).getRating() == 5;
+      assert response.get(0).getComment().equals("This is a test comment");
+    }
+  }
+
+
+  @Test
+  @Order(9)
   void testTimelineDelete() {
     try {
       // Sleep for 1 second to wait for the timeline to be saved to the database
@@ -164,7 +183,7 @@ class ImdbPlusApplicationTests {
   }
 
   @Test
-  @Order(8)
+  @Order(10)
   void testDeleteUser() {
     try {
       // Sleep for 1 second to wait for the user to be saved to the database
