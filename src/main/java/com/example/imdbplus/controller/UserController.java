@@ -1,4 +1,4 @@
-package com.example.imdbplus.conroller;
+package com.example.imdbplus.controller;
 
 import com.example.imdbplus.entity.User;
 import com.example.imdbplus.repository.UserRepository;
