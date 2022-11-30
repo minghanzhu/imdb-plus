@@ -134,6 +134,37 @@ class ImdbPlusApplicationTests {
 
   @Test
   @Order(7)
+  void testTimelineSaveInvalidAccessToken() {
+    String testMediaId = "tt0000001";
+    String testTimelineId = testUserId + "-" + testMediaId;
+    String testStatus = "DONE";
+    int testRating = 5;
+    String testComment = "This is a test comment";
+    Timeline testTimeline = new Timeline(testTimelineId, testUserId, testMediaId, testStatus,
+        testRating, testComment);
+    try {
+      // Sleep for 1 second to wait for the timeline to be saved to the database
+      Thread.sleep(1000);
+    } catch (Exception e) {
+      Timeline response = timelineRepository.save(testTimeline, "testAccessToken");
+      assert response == null;
+    }
+  }
+
+  @Test
+  @Order(8)
+  void testTimelineDelete() {
+    try {
+      // Sleep for 1 second to wait for the timeline to be saved to the database
+      Thread.sleep(1000);
+    } catch (Exception e) {
+      String response = timelineRepository.delete(testUserId, "tt0000001", testAccessToken);
+      assert response.equals("Timeline deleted successfully");
+    }
+  }
+
+  @Test
+  @Order(8)
   void testDeleteUser() {
     try {
       // Sleep for 1 second to wait for the user to be saved to the database
