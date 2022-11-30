@@ -152,6 +152,10 @@ class ImdbPlusApplicationTests {
     }
   }
 
+  /**
+   * Test the timeline retrieval functionality with a single test user and a single test timeline.
+   * The expected behavior is that the test timeline is retrieved from the database.
+   */
   @Test
   @Order(8)
   void testTimelineGetTimelineByUserId() {
@@ -169,7 +173,10 @@ class ImdbPlusApplicationTests {
     }
   }
 
-
+  /**
+   * Test the timeline delete functionality with a single test user and a single test timeline.
+   * The expected behavior is that the test timeline is deleted from the database.
+   */
   @Test
   @Order(9)
   void testTimelineDelete() {
@@ -182,8 +189,28 @@ class ImdbPlusApplicationTests {
     }
   }
 
+  /**
+   * Test the timeline retrieval functionality with a single test user with no associated timelines.
+   * The expected behavior is that no timelines are retrieved from the database.
+   */
   @Test
   @Order(10)
+  void testTimelineGetTimelineByUserIdNotFound() {
+    try {
+      // Sleep for 1 second to wait for the timeline to be saved to the database
+      Thread.sleep(1000);
+    } catch (Exception e) {
+      List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
+      assert response == null;
+    }
+  }
+
+  /**
+   * Test the user delete functionality with a single test user.
+   * The expected behavior is that the test user is deleted from the database.
+   */
+  @Test
+  @Order(11)
   void testDeleteUser() {
     try {
       // Sleep for 1 second to wait for the user to be saved to the database
