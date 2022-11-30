@@ -38,6 +38,7 @@ class ImdbPlusApplicationTests {
   public static AccountSetting testAccountSetting = new AccountSetting();
   public static String testUserId = "";
   public static String testAccessToken = "";
+  public static User retrievedUser = new User();
 
   @Test
   @Order(1)
@@ -91,7 +92,7 @@ class ImdbPlusApplicationTests {
       // Sleep for 1 second to wait for the user to be saved to the database
       Thread.sleep(1000);
     } catch (Exception e) {
-      User retrievedUser = userRepository.getUser(testUserId);
+      retrievedUser = userRepository.getUser(testUserId);
       assert retrievedUser.equals(testUser);
     }
   }
@@ -103,7 +104,7 @@ class ImdbPlusApplicationTests {
       // Sleep for 1 second to wait for the user to be saved to the database
       Thread.sleep(1000);
     } catch (Exception e) {
-      User retrievedUser = userRepository.getUser("testUserId");
+      retrievedUser = userRepository.getUser("testUserId");
       assert retrievedUser == null;
     }
   }
