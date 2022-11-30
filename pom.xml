@@ -114,7 +114,8 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>imdb-plus</sonar.organization>
     <sonar.exclusions>
-      DynamoDBConfig.java,
+      **/controller/**,
+      **/config/**,
     </sonar.exclusions>
   </properties>
   <repositories>
