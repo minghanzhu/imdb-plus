@@ -18,7 +18,7 @@ public class TimelineRepository {
   @Autowired
   private DynamoDBMapper dynamoDBMapper;
 
-  public ResponseEntity save(Timeline timeline, String accessToken) {
+  public Timeline save(Timeline timeline, String accessToken) {
     // Update creation time
     String creationTime = String.valueOf(System.currentTimeMillis());
     timeline.setCreationTime(creationTime);
@@ -27,9 +27,9 @@ public class TimelineRepository {
     User user = dynamoDBMapper.load(User.class, userId);
     if (user.getAccessToken().equals(accessToken)) {
       dynamoDBMapper.save(timeline);
-      return ResponseEntity.ok(timeline);
+      return timeline;
     } else {
-      return ResponseEntity.status(401).body("Invalid access token");
+      return null;
     }
   }
 
