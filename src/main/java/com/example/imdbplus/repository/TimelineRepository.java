@@ -56,7 +56,7 @@ public class TimelineRepository {
     dynamoDBMapper.save(timeline);
   }
 
-  public ResponseEntity getTimelineByUserId(String userId) {
+  public List<Timeline> getTimelineByUserId(String userId) {
     // scan the timeline table to get all timelines of the user
     HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
     eav.put(":v1", new AttributeValue().withS(userId));
@@ -65,9 +65,9 @@ public class TimelineRepository {
         .withExpressionAttributeValues(eav);
     List<Timeline> timelines = dynamoDBMapper.scan(Timeline.class, scanExpression);
     if (timelines.size() > 0) {
-      return ResponseEntity.ok(timelines);
+      return timelines;
     } else {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+      return null;
     }
   }
 
