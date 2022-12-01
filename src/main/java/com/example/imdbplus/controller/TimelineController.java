@@ -59,13 +59,23 @@ public class TimelineController {
   // Get all timelines by mediaId
   @GetMapping("/timeline/media/{mediaId}")
   public ResponseEntity getTimelineByMediaId(@PathVariable("mediaId") String mediaId) {
-    return timelineRepository.getTimelineByMediaId(mediaId);
+    List<Timeline> response =  timelineRepository.getTimelineByMediaId(mediaId);
+    if (response.size() > 0) {
+      return ResponseEntity.ok(response);
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+    }
   }
 
   // Get a timeline by userId and mediaId
   @GetMapping("/timeline/{userId}/{mediaId}")
   public ResponseEntity getTimelineByUserIdAndMediaId(@PathVariable("userId") String userId,
       @PathVariable("mediaId") String mediaId) {
-    return timelineRepository.getTimelineByUserIdAndMediaId(userId, mediaId);
+    Timeline response = timelineRepository.getTimelineByUserIdAndMediaId(userId, mediaId);
+    if (response == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+    } else {
+      return ResponseEntity.ok(response);
+    }
   }
 }
