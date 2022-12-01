@@ -88,13 +88,16 @@ class ImdbPlusApplicationTests {
   @Test
   @Order(4)
   void testGetUser() {
-    try {
-      // Sleep for 1 second to wait for the user to be saved to the database
-      Thread.sleep(1000);
-    } catch (Exception e) {
-      retrievedUser = userRepository.getUser(testUserId);
-      assert retrievedUser.equals(testUser);
-    }
+    testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+    testAccountSetting = new AccountSetting(false, true);
+    // Create a test user
+    testUser = new User(testUsername, "testEmail", testAccountSetting);
+    testUser = userRepository.save(testUser);
+    // Record the userId and accessToken of the test user
+    testUserId = testUser.getUserId();
+    testAccessToken = testUser.getAccessToken();
+    retrievedUser = userRepository.getUser(testUserId);
+    assert retrievedUser.equals(testUser);
   }
 
   @Test
