@@ -115,7 +115,6 @@
     <sonar.organization>imdb-plus</sonar.organization>
     <sonar.exclusions>
       **/controller/**,
-      **/config/**,
     </sonar.exclusions>
   </properties>
   <repositories>
