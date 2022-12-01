@@ -20,7 +20,7 @@ public class UserRepository {
   private DynamoDBMapper dynamoDBMapper;
 
   // Add new user to the database if the username does not exist
-  public ResponseEntity save(User user) {
+  public User save(User user) {
     // scan the table to see if the username exists
     HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
     eav.put(":v1", new AttributeValue().withS(user.getUsername()));
@@ -31,10 +31,9 @@ public class UserRepository {
     List<User> replies = dynamoDBMapper.scan(User.class, scanExpression);
     if (replies.size() == 0) {
       dynamoDBMapper.save(user);
-      return ResponseEntity.ok(user);
+      return user;
     } else {
-      // otherwise, return a 400 error
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sorry, username already exists");
+      return null;
     }
   }
 

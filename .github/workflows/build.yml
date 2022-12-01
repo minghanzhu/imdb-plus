@@ -220,7 +220,7 @@ on:
     branches:
       - master
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 jobs:
   build:
     name: Build and analyze
@@ -249,5 +249,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+<<<<<<< HEAD
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=minghanzhu_imdb-plus
 >>>>>>> master
+=======
+          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=minghanzhu_imdb-plus
+>>>>>>> 4b9b7e37e6f739a0422db874f5a88f3d4f5b1df6

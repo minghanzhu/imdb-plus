@@ -7,18 +7,24 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+
 
 @Configuration
 public class DynamoDBConfig {
 
+  @Autowired
+  private Environment env;
+
   @Bean
-  public static DynamoDBMapper dynamoDBMapper() {
-    return new DynamoDBMapper(DynamoDBConfig.amazonDynamoDB());
+  public DynamoDBMapper dynamoDBMapper() {
+    return new DynamoDBMapper(amazonDynamoDB());
   }
 
-  private static AmazonDynamoDB amazonDynamoDB() {
+  private AmazonDynamoDB amazonDynamoDB() {
     return AmazonDynamoDBClientBuilder
         .standard()
         .withEndpointConfiguration(
@@ -30,8 +36,8 @@ public class DynamoDBConfig {
         .withCredentials(
             new AWSStaticCredentialsProvider(
                 new BasicAWSCredentials(
-                    "",
-                    ""
+                    String.valueOf(env.getProperty("DYNAMO_ACCESS")),
+                    String.valueOf(env.getProperty("DYNAMO_SECRET"))
                 )
             )
         )
