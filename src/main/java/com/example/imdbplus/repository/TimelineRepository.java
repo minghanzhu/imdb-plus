@@ -78,7 +78,11 @@ public class TimelineRepository {
         .withFilterExpression("mediaId = :v1")
         .withExpressionAttributeValues(eav);
     List<Timeline> timelines = dynamoDBMapper.scan(Timeline.class, scanExpression);
-    return timelines;
+    if (timelines.size() > 0) {
+      return timelines;
+    } else {
+      return null;
+    }
   }
 
   public Timeline getTimelineByUserIdAndMediaId(String userId, String mediaId) {
