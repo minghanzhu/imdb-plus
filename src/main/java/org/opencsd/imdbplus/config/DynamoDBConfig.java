@@ -36,8 +36,8 @@ public class DynamoDBConfig {
         .withCredentials(
             new AWSStaticCredentialsProvider(
                 new BasicAWSCredentials(
-                    String.valueOf(env.getProperty("DYNAMO_ACCESS")),
-                    String.valueOf(env.getProperty("DYNAMO_SECRET"))
+                    String.valueOf(env.getProperty("ACCESS_KEY")),
+                    String.valueOf(env.getProperty("SECRET_KEY"))
                 )
             )
         )
