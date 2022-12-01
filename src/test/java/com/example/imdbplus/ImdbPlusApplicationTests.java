@@ -2,7 +2,6 @@ package com.example.imdbplus;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.example.imdbplus.entity.AccountSetting;
 import com.example.imdbplus.entity.Timeline;
 import com.example.imdbplus.entity.User;
@@ -23,9 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
 class ImdbPlusApplicationTests {
-
-  @Autowired
-  private DynamoDBMapper dynamoDBMapper;
 
   @Autowired
   private UserRepository userRepository;
@@ -88,16 +84,13 @@ class ImdbPlusApplicationTests {
   @Test
   @Order(4)
   void testGetUser() {
-    testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
-    testAccountSetting = new AccountSetting(false, true);
-    // Create a test user
-    testUser = new User(testUsername, "testEmail", testAccountSetting);
-    testUser = userRepository.save(testUser);
-    // Record the userId and accessToken of the test user
-    testUserId = testUser.getUserId();
-    testAccessToken = testUser.getAccessToken();
-    retrievedUser = userRepository.getUser(testUserId);
-    assert retrievedUser.equals(testUser);
+    // Sleep for 1 second to wait for the user to be saved to the database
+    try {
+      TimeUnit.SECONDS.sleep(1);
+    } catch (InterruptedException e) {
+      retrievedUser = userRepository.getUser(testUserId);
+      assert retrievedUser.equals(testUser);
+    }
   }
 
   @Test
