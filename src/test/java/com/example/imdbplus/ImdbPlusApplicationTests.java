@@ -1,7 +1,4 @@
 package com.example.imdbplus;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.example.imdbplus.entity.AccountSetting;
 import com.example.imdbplus.entity.Timeline;
 import com.example.imdbplus.entity.User;
@@ -10,12 +7,10 @@ import com.example.imdbplus.repository.UserRepository;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -171,6 +166,13 @@ class ImdbPlusApplicationTests {
    */
   @Test
   @Order(11)
+  void testDeleteUserInvalidAccessToken() {
+    String deleteResult = userRepository.delete(testUserId, "testAccessToken");
+    assert deleteResult.equals("Invalid access token");
+  }
+
+  @Test
+  @Order(12)
   void testDeleteUser() {
     String deleteResult = userRepository.delete(testUserId, testAccessToken);
     assert deleteResult.equals("User deleted successfully");
