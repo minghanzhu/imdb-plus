@@ -1,4 +1,4 @@
-package com.example.imdbplus.conroller;
+package com.example.imdbplus.controller;
 
 import com.example.imdbplus.entity.User;
 import com.example.imdbplus.repository.UserRepository;
@@ -22,13 +22,23 @@ public class UserController {
   // Add new user to the database
   @PostMapping("/user")
   public ResponseEntity saveUser(@RequestBody User user) {
-    return userRepository.save(user);
+    User response = userRepository.save(user);
+    if (response == null) {
+      return ResponseEntity.status(400).body("User already exists");
+    } else {
+      return ResponseEntity.ok(response);
+    }
   }
 
   // Get user by userId
   @GetMapping("/user/{id}")
-  public User getUser(@PathVariable("id") String userId) {
-    return userRepository.getUser(userId);
+  public ResponseEntity getUser(@PathVariable("id") String userId) {
+    User response = userRepository.getUser(userId);
+    if (response == null) {
+      return ResponseEntity.status(404).body("User not found");
+    } else {
+      return ResponseEntity.ok(response);
+    }
   }
 
   // Delete user by userId
