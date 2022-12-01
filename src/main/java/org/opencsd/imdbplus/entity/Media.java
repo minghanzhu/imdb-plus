@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 
 @DynamoDBTable(tableName = "media")
 public class Media {
-
+  
+  @DynamoDBHashKey
   @DynamoDBAttribute
   private String mediaId; // tt0000001 (IMDB ID)
   @DynamoDBAttribute
