@@ -84,25 +84,15 @@ class ImdbPlusApplicationTests {
   @Test
   @Order(4)
   void testGetUser() {
-    // Sleep for 1 second to wait for the user to be saved to the database
-    try {
-      TimeUnit.SECONDS.sleep(1);
-    } catch (InterruptedException e) {
-      retrievedUser = userRepository.getUser(testUserId);
-      assert retrievedUser.equals(testUser);
-    }
+    retrievedUser = userRepository.getUser(testUserId);
+    assert retrievedUser.equals(testUser);
   }
 
   @Test
   @Order(5)
   void testGetUserNotFound() {
-    try {
-      // Sleep for 1 second to wait for the user to be saved to the database
-      Thread.sleep(1000);
-    } catch (Exception e) {
-      retrievedUser = userRepository.getUser("testUserId");
-      assert retrievedUser == null;
-    }
+    retrievedUser = userRepository.getUser("testUserId");
+    assert retrievedUser == null;
   }
 
   /**
@@ -119,15 +109,8 @@ class ImdbPlusApplicationTests {
       String testComment = "This is a test comment";
       Timeline testTimeline = new Timeline(testTimelineId, testUserId, testMediaId, testStatus,
           testRating, testComment);
-      try {
-        // Sleep for 1 second to wait for the timeline to be saved to the database
-        Thread.sleep(1000);
-      } catch (Exception e) {
-        Timeline response = timelineRepository.save(testTimeline, testAccessToken);
-        assert response.equals(testTimeline);
-        // Clean up the test timeline
-        timelineRepository.delete(testUserId, testMediaId, testAccessToken);
-      }
+    Timeline response = timelineRepository.save(testTimeline, testAccessToken);
+    assert response.equals(testTimeline);
   }
 
   @Test
@@ -140,13 +123,8 @@ class ImdbPlusApplicationTests {
     String testComment = "This is a test comment";
     Timeline testTimeline = new Timeline(testTimelineId, testUserId, testMediaId, testStatus,
         testRating, testComment);
-    try {
-      // Sleep for 1 second to wait for the timeline to be saved to the database
-      Thread.sleep(1000);
-    } catch (Exception e) {
-      Timeline response = timelineRepository.save(testTimeline, "testAccessToken");
-      assert response == null;
-    }
+    Timeline response = timelineRepository.save(testTimeline, "testAccessToken");
+    assert response == null;
   }
 
   /**
@@ -156,18 +134,13 @@ class ImdbPlusApplicationTests {
   @Test
   @Order(8)
   void testTimelineGetTimelineByUserId() {
-    try {
-      // Sleep for 1 second to wait for the timeline to be saved to the database
-      Thread.sleep(1000);
-    } catch (Exception e) {
-      List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
-      assert response.size() == 1;
-      assert response.get(0).getUserId().equals(testUserId);
-      assert response.get(0).getMediaId().equals("tt0000001");
-      assert response.get(0).getStatus().equals("DONE");
-      assert response.get(0).getRating() == 5;
-      assert response.get(0).getComment().equals("This is a test comment");
-    }
+    List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
+    assert response.size() == 1;
+    assert response.get(0).getUserId().equals(testUserId);
+    assert response.get(0).getMediaId().equals("tt0000001");
+    assert response.get(0).getStatus().equals("DONE");
+    assert response.get(0).getRating() == 5;
+    assert response.get(0).getComment().equals("This is a test comment");
   }
 
   /**
@@ -177,13 +150,8 @@ class ImdbPlusApplicationTests {
   @Test
   @Order(9)
   void testTimelineDelete() {
-    try {
-      // Sleep for 1 second to wait for the timeline to be saved to the database
-      Thread.sleep(1000);
-    } catch (Exception e) {
-      String response = timelineRepository.delete(testUserId, "tt0000001", testAccessToken);
-      assert response.equals("Timeline deleted successfully");
-    }
+    String response = timelineRepository.delete(testUserId, "tt0000001", testAccessToken);
+    assert response.equals("Timeline deleted successfully");
   }
 
   /**
@@ -193,13 +161,8 @@ class ImdbPlusApplicationTests {
   @Test
   @Order(10)
   void testTimelineGetTimelineByUserIdNotFound() {
-    try {
-      // Sleep for 1 second to wait for the timeline to be saved to the database
-      Thread.sleep(1000);
-    } catch (Exception e) {
-      List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
-      assert response == null;
-    }
+    List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
+    assert response == null;
   }
 
   /**
@@ -209,12 +172,7 @@ class ImdbPlusApplicationTests {
   @Test
   @Order(11)
   void testDeleteUser() {
-    try {
-      // Sleep for 1 second to wait for the user to be saved to the database
-      Thread.sleep(1000);
-    } catch (Exception e) {
-      String deleteResult = userRepository.delete(testUserId, testAccessToken);
-      assert deleteResult.equals("User deleted successfully");
-    }
+    String deleteResult = userRepository.delete(testUserId, testAccessToken);
+    assert deleteResult.equals("User deleted successfully");
   }
 }
