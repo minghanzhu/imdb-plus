@@ -153,4 +153,27 @@ class TimelineTest {
 
   }
 
+  @Test
+  void testHashcode(){
+    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", postTimes[0], "DONE", 5, "It was great");
+    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", postTimes[1], "DONE", 1, "It was terrible");
+    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", postTimes[2], "PROGRESS", 3, "Still in progress.");
+    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", postTimes[3], "WISHLIST", 5, "I head this was great.");
+    Timeline t5 = new Timeline("t5-u3-m4", "u1", "m5", postTimes[4], "DONE", 5, "It was great");
+    Timeline[] timelinesInstances = {t1, t2, t3, t4, t5};
+
+    for(int i = 0; i< timelinesInstances.length; i++){
+      int curHash = timelinesInstances[i].hashCode();
+      int existingHash = timelines[i].hashCode();
+      assertTrue(curHash == existingHash);
+    }
+  }
+
+  @Test
+  void testToString(){
+    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", postTimes[0], "DONE", 5, "It was great");
+    assertEquals(t1.toString(), timelines[0].toString());
+  }
+
+
 }
