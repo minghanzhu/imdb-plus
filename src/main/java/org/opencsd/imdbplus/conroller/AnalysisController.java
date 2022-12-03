@@ -16,11 +16,6 @@ public class AnalysisController {
   @Autowired
   private AnalysisRepository analysisRepository;
 
-  @GetMapping("api/v1/analysis/timelines")
-  public ResponseEntity<Timeline> getTimeline() {
-    return analysisRepository.getAllTimeline();
-  }
-
   @GetMapping("api/v1/analysis/highest-rated")
   public ResponseEntity highestRating() {
     try {
