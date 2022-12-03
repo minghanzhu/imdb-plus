@@ -57,7 +57,7 @@ public class TimelineRepository {
 
   public List<Timeline> getTimelineByUserId(String userId) {
     // scan the timeline table to get all timelines of the user
-    HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+    HashMap<String, AttributeValue> eav = new HashMap<>();
     eav.put(":v1", new AttributeValue().withS(userId));
     DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
         .withFilterExpression("userId = :v1")
