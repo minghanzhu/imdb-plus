@@ -157,7 +157,7 @@ class ImdbPlusApplicationTests {
   @Order(10)
   void testTimelineGetTimelineByUserIdNotFound() {
     List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
-    assert response == null;
+    assert response.isEmpty();
   }
 
   /**
