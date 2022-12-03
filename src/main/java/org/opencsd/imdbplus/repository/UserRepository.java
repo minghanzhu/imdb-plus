@@ -23,14 +23,14 @@ public class UserRepository {
   // Add new user to the database if the username does not exist
   public User save(User user) {
     // scan the table to see if the username exists
-    HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+    HashMap<String, AttributeValue> eav = new HashMap<>();
     eav.put(":v1", new AttributeValue().withS(user.getUsername()));
     DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
         .withFilterExpression("username = :v1")
         .withExpressionAttributeValues(eav);
     // if the username does not exist, add the user to the database
     List<User> replies = dynamoDBMapper.scan(User.class, scanExpression);
-    if (replies.size() == 0) {
+    if (replies.isEmpty()) {
       dynamoDBMapper.save(user);
       return user;
     } else {
@@ -45,7 +45,7 @@ public class UserRepository {
         .withFilterExpression("userId = :v1")
         .withExpressionAttributeValues(eav);
     List<User> replies = dynamoDBMapper.scan(User.class, scanExpression);
-    if (replies.size() == 0) {
+    if (replies.isEmpty()) {
       return null;
     } else {
       return replies.get(0);
