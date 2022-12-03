@@ -27,18 +27,6 @@ public class AnalysisRepository {
   @Autowired
   private DynamoDBMapper dynamoDBMapper;
 
-  public ResponseEntity getAllTimeline() {
-    PaginatedScanList<Timeline> timelines = dynamoDBMapper.scan(Timeline.class,
-        new DynamoDBScanExpression());
-
-    try {
-      return ResponseEntity.ok(timelines);
-    } catch (DynamoDBMappingException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
-          .body("Sorry, our servers are down at the moment.");
-    }
-
-  }
 
   public String getHighestRatingHelper(List<Timeline> allTimelines) {
     Map<String, List<Long>> ratingMap = new HashMap<>();

@@ -1,6 +1,8 @@
 package org.opencsd.imdbplus.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import java.util.List;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
@@ -11,6 +13,8 @@ import org.opencsd.imdbplus.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,6 +41,7 @@ public class TimelineService {
     if (user.getAccessToken().equals(accessToken) && media != null) {
       String id = userId+mediaId;
       timelineRepository.save(timeline);
+      serviceLogger.info(userId + " Created " + timeline);
       return timeline;
     } else {
       return null;
@@ -48,7 +53,9 @@ public class TimelineService {
    */
   public Timeline getTimeline(String timelineId) {
     try {
-      return timelineRepository.getTimeline(timelineId);
+      Timeline timeline = timelineRepository.getTimeline(timelineId);
+      serviceLogger.info(timelineId + " retrieved " + timeline);
+      return timeline;
     }catch (DynamoDBMappingException e){
       serviceLogger.warn(e.toString());
       return null;
@@ -66,6 +73,7 @@ public class TimelineService {
       if (!user.getAccessToken().equals(accessToken)) {
         return "Invalid access token";
       }
+      serviceLogger.info(timelineId + " deleted by " + user.getUsername());
       timelineRepository.delete(timelineId);
       return "Timeline deleted successfully";
     }
@@ -78,11 +86,12 @@ public class TimelineService {
   public Timeline update(Timeline timeline) {
     Timeline oldTimeline = timelineRepository.getTimeline(timeline.getTimelineId());
 
-
     if(oldTimeline != null){
       if(oldTimeline.getUserId().equals(timeline.getUserId()) && oldTimeline.getMediaId().equals(timeline.getMediaId()))
-        if(timeline.getRating() >= 0 && timeline.getRating() <= 5)
+        if(timeline.getRating() >= 0 && timeline.getRating() <= 5) {
           timelineRepository.save(timeline);
+          serviceLogger.info(timeline.getTimelineId() + " updated by  " + timeline.getUserId());
+        }
     }
     return timeline;
 
@@ -96,6 +105,7 @@ public class TimelineService {
     // scan the timeline table to get all timelines of the user
     User curUser = userRepository.getUser(userId);
     if(curUser != null){
+      serviceLogger.info(userId + " timelines retrieved");
       return  timelineRepository.getTimelineByUserId(curUser.getUserId());
     }else{
       return null;
@@ -109,6 +119,7 @@ public class TimelineService {
     // scan the timeline table to get all timelines of the media
     Media curMedia = mediaRepository.getEntity(mediaId);
     if(curMedia != null){
+      serviceLogger.info(mediaId + " timelines retrieved");
       return  timelineRepository.getTimelineByMediaId(mediaId);
     }else{
       return null;
@@ -119,8 +130,21 @@ public class TimelineService {
    *  Given a valid media id and user id that also exists in the repository, returns a list of timelines.
    */
   public Timeline getTimelineByUserIdAndMediaId(String userId, String mediaId) {
+    serviceLogger.info(mediaId + " timelines retrieved by " + userId);
     Timeline timeline = timelineRepository.getTimelineByUserIdAndMediaId(userId, mediaId);
     return  timeline;
   }
+
+//  public ResponseEntity getAllTimeline(String accessToken) {
+//    PaginatedScanList<Timeline> timelines = dynamoDBMapper.scan(Timeline.class,
+//        new DynamoDBScanExpression());
+//
+//    try {
+//      return ResponseEntity.ok(timelines);
+//    } catch (DynamoDBMappingException e) {
+//      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//          .body("Sorry, our servers are down at the moment.");
+//    }
+//  }
 
 }
