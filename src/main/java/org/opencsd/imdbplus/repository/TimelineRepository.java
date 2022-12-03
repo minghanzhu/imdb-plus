@@ -3,6 +3,8 @@ package org.opencsd.imdbplus.repository;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import java.util.Date;
+import org.joda.time.DateTime;
 import org.opencsd.imdbplus.entity.Timeline;
 import org.opencsd.imdbplus.entity.User;
 import java.util.HashMap;
@@ -19,9 +21,6 @@ public class TimelineRepository {
   private DynamoDBMapper dynamoDBMapper;
 
   public Timeline save(Timeline timeline, String accessToken) {
-    // Update creation time
-    String creationTime = String.valueOf(System.currentTimeMillis());
-    timeline.setCreationTime(creationTime);
     // Check if the user exists and the access token is valid
     String userId = timeline.getUserId();
     User user = dynamoDBMapper.load(User.class, userId);
