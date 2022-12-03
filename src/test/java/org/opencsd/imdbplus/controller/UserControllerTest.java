@@ -1,8 +1,8 @@
-package com.example.imdbplus.controller;
+package org.opencsd.imdbplus.controller;
 
-import com.example.imdbplus.entity.AccountSetting;
-import com.example.imdbplus.entity.User;
-import com.example.imdbplus.repository.UserRepository;
+import org.opencsd.imdbplus.entity.AccountSetting;
+import org.opencsd.imdbplus.entity.User;
+import org.opencsd.imdbplus.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
