@@ -26,18 +26,17 @@ public class MediaRepository {
   private DynamoDBMapper dbObjMapper;
 
 
-  public ResponseEntity saveMedia(Media item) {
+  public Media saveMedia(Media item) {
     MediaRepository.mediaLogger.debug("Trying to save entry");
     try {
       if (!itemExists(item, item.getMediaId())) {
         dbObjMapper.save(item);
         MediaRepository.mediaLogger.info("Added new media: " + item.getTitle() + " Id: " + item.getMediaId());
-        return ResponseEntity.ok(item);
+        return item;
       } else
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sorry, media already exists");
+          return null;
     } catch (ResourceNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-          .body("Sorry, we're working to fix it.");
+      return null;
     }
   }
 

@@ -1,7 +1,9 @@
 package org.opencsd.imdbplus.conroller;
 
 import org.opencsd.imdbplus.entity.Media;
+import org.opencsd.imdbplus.entity.User;
 import org.opencsd.imdbplus.repository.MediaRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,8 +21,13 @@ public class MediaController {
   private MediaRepository mediaRepository;
 
   @GetMapping("/api/v1/media/{id}")
-  public Media getMedia(@PathVariable(value = "id") String mediaId) {
-    return mediaRepository.getEntity(mediaId);
+  public ResponseEntity getMedia(@PathVariable(value = "id") String mediaId) {
+    Media response = mediaRepository.getEntity(mediaId);
+    if (response == null) {
+      return ResponseEntity.status(404).body("Media not found");
+    } else {
+      return ResponseEntity.ok(response);
+    }
   }
 
   @GetMapping("/api/v1/media")
@@ -29,8 +36,13 @@ public class MediaController {
   }
 
   @PostMapping("/api/v1/media")
-  public ResponseEntity saveUser(@RequestBody Media item) {
-    return mediaRepository.saveMedia(item);
+  public ResponseEntity saveMedia(@RequestBody Media item) {
+    Media response = mediaRepository.saveMedia(item);
+    if (response == null) {
+      return ResponseEntity.status(400).body("Media already exists");
+    } else {
+      return ResponseEntity.ok(response);
+    }
   }
 
   @PutMapping("api/v1/media/{id}")
