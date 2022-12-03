@@ -1,0 +1,19 @@
+Index: src/main/java/com/example/imdbplus/config/DynamoDBConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/imdbplus/config/DynamoDBConfig.java b/src/main/java/com/example/imdbplus/config/DynamoDBConfig.java
+--- a/src/main/java/com/example/imdbplus/config/DynamoDBConfig.java	
++++ b/src/main/java/com/example/imdbplus/config/DynamoDBConfig.java	
+@@ -30,8 +30,8 @@
+                 .withCredentials(
+                         new AWSStaticCredentialsProvider(
+                                 new BasicAWSCredentials(
+-                                        "",
+-                                        ""
++                                        "AKIA2WDXEDKBCH4CCBWU",
++                                        "mdOHVPr2qGUVkm40PzzJNb+Ev6zQLp8q9+Q5EmQu"
+                                 )
+                         )
+                 )

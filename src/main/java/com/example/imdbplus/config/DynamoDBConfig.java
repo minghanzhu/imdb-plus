@@ -16,31 +16,31 @@ import org.springframework.core.env.Environment;
 @Configuration
 public class DynamoDBConfig {
 
-  @Autowired
-  private Environment env;
+    @Autowired
+    private Environment env;
 
-  @Bean
-  public DynamoDBMapper dynamoDBMapper() {
-    return new DynamoDBMapper(amazonDynamoDB());
-  }
+    @Bean
+    public DynamoDBMapper dynamoDBMapper() {
+        return new DynamoDBMapper(amazonDynamoDB());
+    }
 
-  private AmazonDynamoDB amazonDynamoDB() {
-    return AmazonDynamoDBClientBuilder
-        .standard()
-        .withEndpointConfiguration(
-            new AwsClientBuilder.EndpointConfiguration(
-                "dynamodb.us-east-1.amazonaws.com",
-                "us-east-1"
-            )
-        )
-        .withCredentials(
-            new AWSStaticCredentialsProvider(
-                new BasicAWSCredentials(
-                    String.valueOf(env.getProperty("ACCESS_KEY")),
-                    String.valueOf(env.getProperty("SECRET_KEY"))
+    private AmazonDynamoDB amazonDynamoDB() {
+        return AmazonDynamoDBClientBuilder
+                .standard()
+                .withEndpointConfiguration(
+                        new AwsClientBuilder.EndpointConfiguration(
+                                "dynamodb.us-east-1.amazonaws.com",
+                                "us-east-1"
+                        )
                 )
-            )
-        )
-        .build();
-  }
+                .withCredentials(
+                        new AWSStaticCredentialsProvider(
+                                new BasicAWSCredentials(
+                                        String.valueOf(env.getProperty("ACCESS_KEY")),
+                                        String.valueOf(env.getProperty("SECRET_KEY"))
+                                )
+                        )
+                )
+                .build();
+    }
 }
