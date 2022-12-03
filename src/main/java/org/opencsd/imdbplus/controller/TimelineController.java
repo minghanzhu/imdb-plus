@@ -1,4 +1,4 @@
-package org.opencsd.imdbplus.conroller;
+package org.opencsd.imdbplus.controller;
 
 import java.util.List;
 import org.opencsd.imdbplus.entity.Timeline;
