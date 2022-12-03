@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:src/main/java/com/example/imdbplus/controller/UserController.java
-package com.example.imdbplus.controller;
-========
 package org.opencsd.imdbplus.controller;
->>>>>>>> master:src/main/java/org/opencsd/imdbplus/controller/UserController.java
 
 import org.opencsd.imdbplus.entity.User;
 import org.opencsd.imdbplus.repository.UserRepository;
