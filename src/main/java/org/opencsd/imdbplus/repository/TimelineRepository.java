@@ -20,35 +20,18 @@ public class TimelineRepository {
   @Autowired
   private DynamoDBMapper dynamoDBMapper;
 
-  public Timeline save(Timeline timeline, String accessToken) {
+  public void save(Timeline timeline) {
     // Check if the user exists and the access token is valid
-    String userId = timeline.getUserId();
-    User user = dynamoDBMapper.load(User.class, userId);
-    if (user.getAccessToken().equals(accessToken)) {
-      dynamoDBMapper.save(timeline);
-      return timeline;
-    } else {
-      return null;
-    }
+    dynamoDBMapper.save(timeline);
   }
 
-  public Timeline getTimeline(String userId, String mediaId) {
-    return dynamoDBMapper.load(Timeline.class, userId + mediaId);
+  public Timeline getTimeline(String timelineId) {
+    return dynamoDBMapper.load(Timeline.class, timelineId);
   }
 
-  public String delete(String userId, String mediaId, String accessToken) {
+  public void delete(String timelineId) {
     // Check if the user exists and the access token is valid
-    User user = dynamoDBMapper.load(User.class, userId);
-    if (!user.getAccessToken().equals(accessToken)) {
-      return "Invalid access token";
-    }
-    // Check if the timeline exists
-    Timeline timeline = dynamoDBMapper.load(Timeline.class, userId + "-" + mediaId);
-    if (timeline == null) {
-      return "Timeline does not exist";
-    }
-    dynamoDBMapper.delete(timeline);
-    return "Timeline deleted successfully";
+    dynamoDBMapper.delete(timelineId);
   }
 
   public void update(Timeline timeline) {
@@ -70,7 +53,7 @@ public class TimelineRepository {
     }
   }
 
-  public ResponseEntity getTimelineByMediaId(String mediaId) {
+  public List<Timeline> getTimelineByMediaId(String mediaId) {
     // scan the timeline table to get all timelines of the media
     HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
     eav.put(":v1", new AttributeValue().withS(mediaId));
@@ -79,18 +62,18 @@ public class TimelineRepository {
         .withExpressionAttributeValues(eav);
     List<Timeline> timelines = dynamoDBMapper.scan(Timeline.class, scanExpression);
     if (timelines.size() > 0) {
-      return ResponseEntity.ok(timelines);
+      return timelines;
     } else {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+      return null;
     }
   }
 
-  public ResponseEntity getTimelineByUserIdAndMediaId(String userId, String mediaId) {
+  public Timeline getTimelineByUserIdAndMediaId(String userId, String mediaId) {
     Timeline timeline = dynamoDBMapper.load(Timeline.class, userId + "-" + mediaId);
     if (timeline != null) {
-      return ResponseEntity.ok(timeline);
+      return timeline;
     } else {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+      return null;
     }
   }
 }

@@ -1,6 +1,7 @@
 package org.opencsd.imdbplus.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -8,6 +9,8 @@ import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import org.opencsd.imdbplus.entity.User;
 import java.util.HashMap;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository {
+  Logger userLogger = LoggerFactory.getLogger(UserRepository.class);
 
   @Autowired
   private DynamoDBMapper dynamoDBMapper;
@@ -38,7 +42,12 @@ public class UserRepository {
   }
 
   public User getUser(String userId) {
-    return dynamoDBMapper.load(User.class, userId);
+    try{
+      return dynamoDBMapper.load(User.class, userId);
+    } catch (DynamoDBMappingException e){
+      userLogger.warn(e.toString());
+      return null;
+    }
   }
 
   public String delete(String userId, String accessToken) {
