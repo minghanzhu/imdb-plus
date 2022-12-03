@@ -1,7 +1,11 @@
+<<<<<<<< HEAD:src/main/java/com/example/imdbplus/controller/UserController.java
 package com.example.imdbplus.controller;
+========
+package org.opencsd.imdbplus.controller;
+>>>>>>>> master:src/main/java/org/opencsd/imdbplus/controller/UserController.java
 
-import com.example.imdbplus.entity.User;
-import com.example.imdbplus.repository.UserRepository;
+import org.opencsd.imdbplus.entity.User;
+import org.opencsd.imdbplus.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

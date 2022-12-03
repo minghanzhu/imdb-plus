@@ -1,8 +1,7 @@
-package com.example.imdbplus.entity;
+package org.opencsd.imdbplus.entity;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +13,7 @@ public class AccountSetting {
   @DynamoDBAttribute
   private Boolean isPrivate;
   @DynamoDBAttribute
-  public Boolean isAdult;
+  private Boolean isAdult;
 
   public AccountSetting(Boolean isPrivate, Boolean isAdult) {
     this.isPrivate = isPrivate;

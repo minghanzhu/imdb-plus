@@ -1,8 +1,16 @@
+<<<<<<<< HEAD:src/main/java/com/example/imdbplus/controller/TimelineController.java
 package com.example.imdbplus.controller;
 
 import com.example.imdbplus.entity.Timeline;
 import com.example.imdbplus.repository.TimelineRepository;
 import java.util.List;
+========
+package org.opencsd.imdbplus.controller;
+
+import java.util.List;
+import org.opencsd.imdbplus.entity.Timeline;
+import org.opencsd.imdbplus.repository.TimelineRepository;
+>>>>>>>> master:src/main/java/org/opencsd/imdbplus/controller/TimelineController.java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
