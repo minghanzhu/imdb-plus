@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - mzhu-add-tests-v2
   pull_request:
     types: [ opened, synchronize, reopened ]
 jobs:
