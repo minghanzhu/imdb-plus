@@ -8,8 +8,6 @@ import org.opencsd.imdbplus.entity.User;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -62,12 +60,7 @@ public class TimelineRepository {
     DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
         .withFilterExpression("userId = :v1")
         .withExpressionAttributeValues(eav);
-    List<Timeline> timelines = dynamoDBMapper.scan(Timeline.class, scanExpression);
-    if (timelines.size() > 0) {
-      return timelines;
-    } else {
-      return null;
-    }
+    return dynamoDBMapper.scan(Timeline.class, scanExpression);
   }
 
   public List<Timeline> getTimelineByMediaId(String mediaId) {
@@ -77,12 +70,7 @@ public class TimelineRepository {
     DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
         .withFilterExpression("mediaId = :v1")
         .withExpressionAttributeValues(eav);
-    List<Timeline> timelines = dynamoDBMapper.scan(Timeline.class, scanExpression);
-    if (timelines.size() > 0) {
-      return timelines;
-    } else {
-      return null;
-    }
+    return dynamoDBMapper.scan(Timeline.class, scanExpression);
   }
 
   public Timeline getTimelineByUserIdAndMediaId(String userId, String mediaId) {
@@ -93,7 +81,7 @@ public class TimelineRepository {
         .withFilterExpression("timelineId = :v1")
         .withExpressionAttributeValues(eav);
     List<Timeline> replies = dynamoDBMapper.scan(Timeline.class, scanExpression);
-    if (replies.size() == 0) {
+    if (replies.isEmpty()) {
       return null;
     } else {
       return replies.get(0);
