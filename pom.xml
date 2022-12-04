@@ -127,6 +127,7 @@
     <sonar.organization>imdb-plus</sonar.organization>
     <sonar.exclusions>
       **/controller/**,
+      **/entity/**,
     </sonar.exclusions>
   </properties>
   <repositories>
