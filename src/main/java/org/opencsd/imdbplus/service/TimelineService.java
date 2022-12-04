@@ -44,9 +44,10 @@ public class TimelineService {
     Media media = mediaRepository.getEntity(mediaId);
 
     if (user.getAccessToken().equals(accessToken) && media != null) {
-      String id = userId+mediaId;
+      String id = userId+"-"+mediaId;
+      timeline.setTimelineId(id);
       Timeline saveTimeline = timelineRepository.save(timeline);
-      serviceLogger.info(userId + " Created " + timeline);
+      serviceLogger.info("{} created {}",userId, timeline.getTimelineId() );
       return saveTimeline;
     } else {
       return null;
@@ -59,9 +60,9 @@ public class TimelineService {
   public Timeline getTimeline(String timelineId) {
     try {
       Timeline timeline = timelineRepository.getTimeline(timelineId);
-      serviceLogger.info(timelineId + " retrieved " + timeline);
+      serviceLogger.info("{} retrieved {}", timeline.getUserId(), timeline.getTimelineId());
       return timeline;
-    }catch (DynamoDBMappingException e){
+    }catch (Exception e){
       serviceLogger.warn(e.toString());
       return null;
     }
@@ -78,7 +79,7 @@ public class TimelineService {
       if (!user.getAccessToken().equals(accessToken)) {
         return "Invalid access token";
       }
-      serviceLogger.info(timelineId + " deleted by " + user.getUsername());
+      serviceLogger.info("{} deleted by {}", timelineId, user.getUsername());
       timelineRepository.delete(timelineId);
       return "Timeline deleted successfully";
     }
@@ -118,7 +119,7 @@ public class TimelineService {
     // scan the timeline table to get all timelines of the user
     User curUser = userRepository.getUser(userId);
     if(curUser != null){
-      serviceLogger.info(userId + " timelines retrieved");
+      serviceLogger.info("{}'s timelines retrieved", userId);
       return  timelineRepository.getTimelineByUserId(curUser.getUserId());
     }else{
       return null;
@@ -132,7 +133,7 @@ public class TimelineService {
     // scan the timeline table to get all timelines of the media
     Media curMedia = mediaRepository.getEntity(mediaId);
     if(curMedia != null){
-      serviceLogger.info(mediaId + " timelines retrieved");
+      serviceLogger.info("{}'s timelines retrieved", mediaId);
       return  timelineRepository.getTimelineByMediaId(mediaId);
     }else{
       return null;
@@ -143,8 +144,8 @@ public class TimelineService {
    *  Given a valid media id and user id that also exists in the repository, returns a list of timelines.
    */
   public Timeline getTimelineByUserIdAndMediaId(String userId, String mediaId) {
-    serviceLogger.info(mediaId + " timelines retrieved by " + userId);
     Timeline timeline = timelineRepository.getTimelineByUserIdAndMediaId(userId, mediaId);
+    serviceLogger.info("timeline retrieved by {} & {}", userId, mediaId);
     return  timeline;
   }
 
