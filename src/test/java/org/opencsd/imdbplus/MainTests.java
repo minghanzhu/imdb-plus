@@ -30,6 +30,7 @@ class ImdbPlusApplicationTests {
   public static String testUserId = "";
   public static String testAccessToken = "";
   public static User retrievedUser = new User();
+  public static String testMediaId = UUID.randomUUID().toString().replace("-", "") + "-testMediaId";
 
   @Test
   @Order(1)
@@ -97,7 +98,7 @@ class ImdbPlusApplicationTests {
   @Test
   @Order(6)
   void testTimelineSave() {
-    String testMediaId = "tt0000001";
+    testMediaId = UUID.randomUUID().toString().replace("-", "");
     String testTimelineId = testUserId + "-" + testMediaId;
     String testStatus = "DONE";
     int testRating = 5;
@@ -111,7 +112,6 @@ class ImdbPlusApplicationTests {
   @Test
   @Order(7)
   void testTimelineSaveInvalidAccessToken() {
-    String testMediaId = "tt0000001";
     String testTimelineId = testUserId + "-" + testMediaId;
     String testStatus = "DONE";
     int testRating = 5;
@@ -132,7 +132,19 @@ class ImdbPlusApplicationTests {
     List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
     assert response.size() == 1;
     assert response.get(0).getUserId().equals(testUserId);
-    assert response.get(0).getMediaId().equals("tt0000001");
+    assert response.get(0).getMediaId().equals(testMediaId);
+    assert response.get(0).getStatus().equals("DONE");
+    assert response.get(0).getRating() == 5;
+    assert response.get(0).getComment().equals("This is a test comment");
+  }
+
+  @Test
+  @Order(8)
+  void testTimelineGetTimelineByMediaId() {
+    List<Timeline> response = timelineRepository.getTimelineByMediaId(testMediaId);
+    assert response.size() == 1;
+    assert response.get(0).getUserId().equals(testUserId);
+    assert response.get(0).getMediaId().equals(testMediaId);
     assert response.get(0).getStatus().equals("DONE");
     assert response.get(0).getRating() == 5;
     assert response.get(0).getComment().equals("This is a test comment");
@@ -145,7 +157,7 @@ class ImdbPlusApplicationTests {
   @Test
   @Order(9)
   void testTimelineDelete() {
-    String response = timelineRepository.delete(testUserId, "tt0000001", testAccessToken);
+    String response = timelineRepository.delete(testUserId, testMediaId, testAccessToken);
     assert response.equals("Timeline deleted successfully");
   }
 
