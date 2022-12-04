@@ -89,8 +89,7 @@ class UserControllerTest {
 
     mockMvc.perform(requestBuilder2)
         .andDo(print())
-        .andExpect(status().isNotFound())
-        .andExpect(content().string("User not found"));
+        .andExpect(status().isNotFound());
   }
 
   @Order(2)
@@ -124,8 +123,7 @@ class UserControllerTest {
 
     mockMvc.perform(requestBuilder4)
         .andDo(print())
-        .andExpect(status().isBadRequest())
-        .andExpect(content().string("User already exists"));
+        .andExpect(status().isBadRequest());
   }
 
   @Order(3)
