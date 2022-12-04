@@ -142,8 +142,7 @@ class ImdbPlusApplicationIntegrationTests {
   @Order(8)
   void testTimelineGetTimelineByUserId() {
     List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
-    assertThat(response).isNotNull();
-    assertThat(response).hasSize(1);
+    assertThat(response).isNotNull().hasSize(1);
     assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
     assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
     assertThat(response.get(0).getMediaId()).isEqualTo(testMediaId);
@@ -156,8 +155,7 @@ class ImdbPlusApplicationIntegrationTests {
   @Order(9)
   void testTimelineGetTimelineByMediaId() {
     List<Timeline> response = timelineRepository.getTimelineByMediaId(testMediaId);
-    assertThat(response).isNotNull();
-    assertThat(response).hasSize(1);
+    assertThat(response).isNotNull().hasSize(1);
     assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
     assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
     assertThat(response.get(0).getMediaId()).isEqualTo(testMediaId);
