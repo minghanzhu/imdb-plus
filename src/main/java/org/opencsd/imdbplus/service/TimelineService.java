@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TimelineService {
-  Logger serviceLogger = LoggerFactory.getLogger(Timeline.class);
+  Logger serviceLogger = LoggerFactory.getLogger(TimelineService.class);
 
   @Autowired
   TimelineRepository timelineRepository;
@@ -96,8 +96,8 @@ public class TimelineService {
       User curUser = userRepository.getUser(timeline.getUserId());
       if(curUser.getAccessToken().equals(accessToken)) {
         if (oldTimeline.getUserId().equals(timeline.getUserId()) &&
-            oldTimeline.getMediaId().equals(timeline.getMediaId()))
-          if (timeline.getRating() >= 0 && timeline.getRating() <= 5) {
+            oldTimeline.getMediaId().equals(timeline.getMediaId())){
+          if (timeline.getRating() >= 0 && timeline.getRating() <= 5)
             timelineRepository.save(timeline);
             serviceLogger.info(timeline.getTimelineId() + " updated by  " + timeline.getUserId());
           }
