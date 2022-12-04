@@ -46,7 +46,7 @@ public class MediaController {
   }
 
   @PutMapping("api/v1/media/{id}")
-  public String updateMedia(@PathVariable(value = "id") String mediaId, Media item) {
+  public String updateMedia(@PathVariable(value = "id") String mediaId, @RequestBody Media item) {
     return mediaRepository.update(mediaId, item);
   }
 

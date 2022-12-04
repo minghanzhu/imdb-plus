@@ -36,6 +36,8 @@ public class MediaControllerTest {
     private MediaRepository mockMediaRepository;
     private Media mediaTest1;
     private Media mediaReturn1;
+
+    private Media mediaTest3;
     private Media mediaTest4;
     private Media mediaTest5;
 
@@ -46,9 +48,11 @@ public class MediaControllerTest {
 
         mediaReturn1 = new Media("tt0000001", "The Shawshank redemption", "1994-09-23", "Drama");
 
+        mediaTest3 = new Media("tt0000002", "The Shawshank redemption", "1994-09-23", "Drama");
+
         mediaTest4 = new Media("tt0000001", "The Shawshank redemption", "1994-09-23", "Drama");
 
-        mediaTest5 = new Media("tt0000003", "The Shawshank redemption", "1994-09-23", "Drama");
+        mediaTest5 = new Media("tt0000003", "The Shawshank redemption1", "1994-09-23", "Drama");
 
     }
 
@@ -111,6 +115,21 @@ public class MediaControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Media deleted successfully"));
 
+    }
+
+    @Test
+    void updateMedia() throws Exception {
+        when(mockMediaRepository.update("tt0000002", mediaTest5))
+                .thenReturn("tt0000002");
+
+        RequestBuilder requestBuilder1 = put("/api/v1/media/{id}", "tt0000002")
+                .content(asJsonString(mediaTest5))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder1)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("tt0000002"));
     }
 
     public static String asJsonString(final Object obj) {
