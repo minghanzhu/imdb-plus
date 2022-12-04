@@ -41,11 +41,11 @@ public class TimelineRepository {
       return "Invalid access token";
     }
     // Check if the timeline exists
-    Timeline timeline = getTimelineByUserIdAndMediaId(userId, mediaId);
+    Timeline timeline = getTimelineByTimelineId(userId, mediaId);
     if (timeline == null) {
       return "Timeline does not exist";
     }
-    dynamoDBMapper.batchDelete(timeline);
+    dynamoDBMapper.delete(timeline);
     return "Timeline deleted successfully";
   }
 
@@ -73,18 +73,8 @@ public class TimelineRepository {
     return dynamoDBMapper.scan(Timeline.class, scanExpression);
   }
 
-  public Timeline getTimelineByUserIdAndMediaId(String userId, String mediaId) {
+  public Timeline getTimelineByTimelineId(String userId, String mediaId) {
     String timelineId = userId + "-" + mediaId;
-    HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-    eav.put(":v1", new AttributeValue().withS(timelineId));
-    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-        .withFilterExpression("timelineId = :v1")
-        .withExpressionAttributeValues(eav);
-    List<Timeline> replies = dynamoDBMapper.scan(Timeline.class, scanExpression);
-    if (replies.isEmpty()) {
-      return null;
-    } else {
-      return replies.get(0);
-    }
+    return dynamoDBMapper.load(Timeline.class, timelineId);
   }
 }
