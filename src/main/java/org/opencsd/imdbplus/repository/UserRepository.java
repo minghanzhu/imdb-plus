@@ -1,6 +1,7 @@
 package org.opencsd.imdbplus.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -38,13 +39,23 @@ public class UserRepository {
   }
 
   public User getUser(String userId) {
-    return dynamoDBMapper.load(User.class, userId);
+    HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+    eav.put(":v1", new AttributeValue().withS(userId));
+    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+        .withFilterExpression("userId = :v1")
+        .withExpressionAttributeValues(eav);
+    List<User> replies = dynamoDBMapper.scan(User.class, scanExpression);
+    if (replies.size() == 0) {
+      return null;
+    } else {
+      return replies.get(0);
+    }
   }
 
   public String delete(String userId, String accessToken) {
-    User user = dynamoDBMapper.load(User.class, userId);
+    User user = getUser(userId);
     if (user.getAccessToken().equals(accessToken)) {
-      dynamoDBMapper.delete(user);
+      dynamoDBMapper.batchDelete(user);
       return "User deleted successfully";
     } else {
       return "Invalid access token";

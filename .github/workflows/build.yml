@@ -4,6 +4,8 @@ on:
     branches:
       - master
       - sahitya-tests
+      - mzhu-add-tests-v2
+
   pull_request:
     types: [ opened, synchronize, reopened ]
 jobs:

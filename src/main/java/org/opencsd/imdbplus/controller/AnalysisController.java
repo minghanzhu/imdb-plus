@@ -1,4 +1,4 @@
-package org.opencsd.imdbplus.conroller;
+package org.opencsd.imdbplus.controller;
 
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
