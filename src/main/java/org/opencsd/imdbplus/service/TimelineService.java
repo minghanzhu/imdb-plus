@@ -23,6 +23,15 @@ public class TimelineService {
   UserRepository userRepository;
   @Autowired
   MediaRepository mediaRepository;
+  public void setTimelineRepository(TimelineRepository timelineRepository){
+    this.timelineRepository = timelineRepository;
+  }
+  public void setUserRepository(UserRepository userRepository){
+    this.userRepository = userRepository;
+  }
+  public void setMediaRepository(MediaRepository mediaRepository){
+    this.mediaRepository = mediaRepository;
+  }
 
   /**
    *  Checks if user has auth token to post a timeline, then create a timeline object with a timestamp.
@@ -36,9 +45,9 @@ public class TimelineService {
 
     if (user.getAccessToken().equals(accessToken) && media != null) {
       String id = userId+mediaId;
-      timelineRepository.save(timeline);
+      Timeline saveTimeline = timelineRepository.save(timeline);
       serviceLogger.info(userId + " Created " + timeline);
-      return timeline;
+      return saveTimeline;
     } else {
       return null;
     }
@@ -79,15 +88,23 @@ public class TimelineService {
   /**
    *  Given a valid timeline object that also exists in the repository, updates the comment, status, or rating
    */
-  public Timeline update(Timeline timeline) {
+  public Timeline update(Timeline timeline, String accessToken) {
     Timeline oldTimeline = timelineRepository.getTimeline(timeline.getTimelineId());
 
     if(oldTimeline != null){
-      if(oldTimeline.getUserId().equals(timeline.getUserId()) && oldTimeline.getMediaId().equals(timeline.getMediaId()))
-        if(timeline.getRating() >= 0 && timeline.getRating() <= 5) {
-          timelineRepository.save(timeline);
-          serviceLogger.info(timeline.getTimelineId() + " updated by  " + timeline.getUserId());
-        }
+      User curUser = userRepository.getUser(timeline.getUserId());
+      if(curUser.getAccessToken().equals(accessToken)) {
+        if (oldTimeline.getUserId().equals(timeline.getUserId()) &&
+            oldTimeline.getMediaId().equals(timeline.getMediaId()))
+          if (timeline.getRating() >= 0 && timeline.getRating() <= 5) {
+            timelineRepository.save(timeline);
+            serviceLogger.info(timeline.getTimelineId() + " updated by  " + timeline.getUserId());
+          }
+        }else{
+          serviceLogger.warn("Wrong Access Token");
+          return null;
+      }
+
     }
     return timeline;
 
@@ -130,17 +147,5 @@ public class TimelineService {
     Timeline timeline = timelineRepository.getTimelineByUserIdAndMediaId(userId, mediaId);
     return  timeline;
   }
-
-//  public ResponseEntity getAllTimeline(String accessToken) {
-//    PaginatedScanList<Timeline> timelines = dynamoDBMapper.scan(Timeline.class,
-//        new DynamoDBScanExpression());
-//
-//    try {
-//      return ResponseEntity.ok(timelines);
-//    } catch (DynamoDBMappingException e) {
-//      return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//          .body("Sorry, our servers are down at the moment.");
-//    }
-//  }
 
 }

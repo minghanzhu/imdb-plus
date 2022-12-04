@@ -1,6 +1,7 @@
 package org.opencsd.imdbplus.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import java.util.Date;
@@ -20,9 +21,14 @@ public class TimelineRepository {
   @Autowired
   private DynamoDBMapper dynamoDBMapper;
 
-  public void save(Timeline timeline) {
+  public Timeline save(Timeline timeline) {
     // Check if the user exists and the access token is valid
-    dynamoDBMapper.save(timeline);
+    try {
+      dynamoDBMapper.save(timeline);
+      return timeline;
+    }catch (DynamoDBMappingException e){
+      return null;
+    }
   }
 
   public Timeline getTimeline(String timelineId) {
