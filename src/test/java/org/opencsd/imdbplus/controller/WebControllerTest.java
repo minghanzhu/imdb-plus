@@ -15,14 +15,6 @@ class WebControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Before
-    public void setup() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
-
     @Test
     void homePage() throws Exception {
         mockMvc.perform(get("/home"))
