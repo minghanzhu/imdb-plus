@@ -45,17 +45,17 @@ public class WebController {
         return "timeline_get_user";
     }
 
-    @RequestMapping(value = "/timeline-get-by-media-id")
+    @GetMapping(value = "/timeline-get-by-media-id")
     public String timelineGETByMediaIdPage() {
         return "timeline_get_media";
     }
 
-    @RequestMapping(value = "/timeline-get-by-user-media-id")
+    @GetMapping(value = "/timeline-get-by-user-media-id")
     public String timelineGETByUserMediaIdPage() {
         return "timeline_get_search";
     }
 
-    @RequestMapping(value = "/timeline-delete")
+    @GetMapping(value = "/timeline-delete")
     public String timelineDeletePage() {
         return "timeline_delete";
     }
