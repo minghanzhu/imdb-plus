@@ -257,8 +257,7 @@ class ImdbPlusApplicationSystemTests {
     // GET request to get all timelines by userId
     String response4 = getRequest(dynamoDBEndpoint + "/timeline/user/" + userId, accessToken);
     // Expected to return two timeline items with mediaId tt0000001 and tt0000002
-    assertThat(response4).contains("tt0000001");
-    assertThat(response4).contains("tt0000002");
+    assertThat(response4).contains("tt0000001").contains("tt0000002");
 
     // DELETE the added test user and timeline item to clean up
     deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
@@ -330,10 +329,8 @@ class ImdbPlusApplicationSystemTests {
 
     String response5 = getRequest(dynamoDBEndpoint + "/timeline/media/" + "tt0000001", null);
     String response6 = getRequest(dynamoDBEndpoint + "/timeline/media/" + "tt0000002", null);
-    assertThat(response5).contains("tt0000001");
-    assertThat(response5).contains(userId1);
-    assertThat(response6).contains("tt0000002");
-    assertThat(response6).contains(userId2);
+    assertThat(response5).contains("tt0000001").contains(userId1);
+    assertThat(response6).contains("tt0000002").contains(userId2);
 
     // DELETE the added test user and timeline item to clean up
     deleteRequest(dynamoDBEndpoint + "/timeline/" + userId1 + "/" + "tt0000001", accessToken1);
