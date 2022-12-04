@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - sahitya-tests
   pull_request:
     types: [ opened, synchronize, reopened ]
 jobs:
