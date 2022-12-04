@@ -71,7 +71,7 @@ public class TimelineController {
   @GetMapping("/timeline/{userId}/{mediaId}")
   public ResponseEntity getTimelineByUserIdAndMediaId(@PathVariable("userId") String userId,
       @PathVariable("mediaId") String mediaId) {
-    Timeline response = timelineRepository.getTimelineByUserIdAndMediaId(userId, mediaId);
+    Timeline response = timelineRepository.getTimelineByTimelineId(userId, mediaId);
     if (response == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
     } else {

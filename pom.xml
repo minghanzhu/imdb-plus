@@ -126,7 +126,9 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>imdb-plus</sonar.organization>
     <sonar.exclusions>
+      **/Main.java,
       **/entity/**,
+      **/controller/**
     </sonar.exclusions>
   </properties>
   <repositories>
