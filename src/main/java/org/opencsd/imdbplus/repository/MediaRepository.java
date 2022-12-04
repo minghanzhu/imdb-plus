@@ -44,11 +44,6 @@ public class MediaRepository {
     return dbObjMapper.load(Media.class, entityId);
   }
 
-  public ResponseEntity getAllEntities() {
-    List<Media> allMedia = dbObjMapper.scan(Media.class, new DynamoDBScanExpression());
-    return ResponseEntity.ok(allMedia);
-  }
-
 
   public String delete(String entityId) {
     Media media = dbObjMapper.load(Media.class, entityId);

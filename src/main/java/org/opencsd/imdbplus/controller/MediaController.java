@@ -30,10 +30,6 @@ public class MediaController {
     }
   }
 
-  @GetMapping("/api/v1/media")
-  public ResponseEntity<Media> getAllMedia() {
-    return mediaRepository.getAllEntities();
-  }
 
   @PostMapping("/api/v1/media")
   public ResponseEntity saveMedia(@RequestBody Media item) {
