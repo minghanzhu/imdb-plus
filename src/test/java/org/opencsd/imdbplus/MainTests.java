@@ -194,8 +194,22 @@ class ImdbPlusApplicationTests {
     assert response.equals(testMedia);
   }
 
+    @Test
+    @Order(14)
+    void testMediaSaveDuplicate() {
+        // Create a test media
+      Media testMedia = new Media("tt0000012", "testTitle", "2017-09-09", "Drama");
+      try {
+        mediaRepository.saveMedia(testMedia);
+      } catch (Exception e) {
+        assert e.getClass().equals(com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException.class);
+        assert e.getMessage().equals("Conditional check failed");
+      }
+
+    }
+
   @Test
-  @Order(14)
+  @Order(15)
   void getMedia() {
     Media response = mediaRepository.getEntity("tt0000012");
     assert response.getMediaId().equals("tt0000012");
@@ -205,7 +219,7 @@ class ImdbPlusApplicationTests {
   }
 
   @Test
-  @Order(15)
+  @Order(16)
   void testUpdateMedia() {
     Media testMedia = new Media("tt0000012", "testTitleEdited", "2017-09-09", "Drama");
     String updateResult = mediaRepository.update("tt0000012", testMedia);
@@ -215,7 +229,7 @@ class ImdbPlusApplicationTests {
   }
 
   @Test
-  @Order(16)
+  @Order(17)
   void testDeleteMedia() {
     String deleteResult = mediaRepository.delete("tt0000012");
     assert deleteResult.equals("Media deleted successfully");
