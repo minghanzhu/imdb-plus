@@ -1,6 +1,5 @@
 package org.opencsd.imdbplus.service;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException;
 import java.util.List;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
