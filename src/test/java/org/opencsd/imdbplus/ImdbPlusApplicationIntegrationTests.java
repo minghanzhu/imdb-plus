@@ -1,12 +1,13 @@
 package org.opencsd.imdbplus;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.opencsd.imdbplus.entity.AccountSetting;
 import org.opencsd.imdbplus.entity.Timeline;
 import org.opencsd.imdbplus.entity.User;
 import org.opencsd.imdbplus.repository.TimelineRepository;
 import org.opencsd.imdbplus.repository.UserRepository;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -57,8 +58,8 @@ class ImdbPlusApplicationIntegrationTests {
     testUserId = testUser.getUserId();
     testAccessToken = testUser.getAccessToken();
     // Check testUserId and testAccessToken are not null
-    assert !Objects.isNull(testUserId);
-    assert !Objects.isNull(testAccessToken);
+    assertThat(testUserId).isNotNull();
+    assertThat(testAccessToken).isNotNull();
   }
 
   /**
@@ -75,7 +76,7 @@ class ImdbPlusApplicationIntegrationTests {
     } catch (Exception e) {
       assert e.getClass()
           .equals(com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException.class);
-      assert e.getMessage().equals("Conditional check failed");
+      assertThat(e.getMessage()).contains("ConditionalCheckFailedException");
     }
   }
 
@@ -87,14 +88,14 @@ class ImdbPlusApplicationIntegrationTests {
   @Order(4)
   void testGetUser() {
     retrievedUser = userRepository.getUser(testUserId);
-    assert retrievedUser.equals(testUser);
+    assertThat(retrievedUser.getUserId()).isEqualTo(testUserId);
   }
 
   @Test
   @Order(5)
   void testGetUserNotFound() {
     retrievedUser = userRepository.getUser("testUserId");
-    assert retrievedUser == null;
+    assertThat(retrievedUser).isNull();
   }
 
   @Test
@@ -104,7 +105,7 @@ class ImdbPlusApplicationIntegrationTests {
     testUser.setUserId(testUserId);
     testUser.setAccessToken(testAccessToken);
     String userId = userRepository.update(testUserId, testUser);
-    assert userId.equals(testUserId);
+    assertThat(userId).isEqualTo(testUserId);
   }
 
   /**
@@ -122,7 +123,7 @@ class ImdbPlusApplicationIntegrationTests {
     Timeline testTimeline = new Timeline(testTimelineId, testUserId, testMediaId, testStatus,
         testRating, testComment);
     Timeline response = timelineRepository.save(testTimeline, testAccessToken);
-    assert response.equals(testTimeline);
+    assertThat(response).isNotNull();
   }
 
   @Test
@@ -135,7 +136,7 @@ class ImdbPlusApplicationIntegrationTests {
     Timeline testTimeline = new Timeline(testTimelineId, testUserId, testMediaId, testStatus,
         testRating, testComment);
     Timeline response = timelineRepository.save(testTimeline, "testAccessToken");
-    assert response == null;
+    assertThat(response).isNull();
   }
 
   /**
@@ -146,24 +147,28 @@ class ImdbPlusApplicationIntegrationTests {
   @Order(8)
   void testTimelineGetTimelineByUserId() {
     List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
-    assert response.size() == 1;
-    assert response.get(0).getUserId().equals(testUserId);
-    assert response.get(0).getMediaId().equals(testMediaId);
-    assert response.get(0).getStatus().equals("DONE");
-    assert response.get(0).getRating() == 5;
-    assert response.get(0).getComment().equals("This is a test comment");
+    assertThat(response).isNotNull();
+    assertThat(response.size()).isEqualTo(1);
+    assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
+    assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
+    assertThat(response.get(0).getMediaId()).isEqualTo(testMediaId);
+    assertThat(response.get(0).getStatus()).isEqualTo("DONE");
+    assertThat(response.get(0).getRating()).isEqualTo(5);
+    assertThat(response.get(0).getComment()).isEqualTo("This is a test comment");
   }
 
   @Test
   @Order(8)
   void testTimelineGetTimelineByMediaId() {
     List<Timeline> response = timelineRepository.getTimelineByMediaId(testMediaId);
-    assert response.size() == 1;
-    assert response.get(0).getUserId().equals(testUserId);
-    assert response.get(0).getMediaId().equals(testMediaId);
-    assert response.get(0).getStatus().equals("DONE");
-    assert response.get(0).getRating() == 5;
-    assert response.get(0).getComment().equals("This is a test comment");
+    assertThat(response).isNotNull();
+    assertThat(response.size()).isEqualTo(1);
+    assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
+    assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
+    assertThat(response.get(0).getMediaId()).isEqualTo(testMediaId);
+    assertThat(response.get(0).getStatus()).isEqualTo("DONE");
+    assertThat(response.get(0).getRating()).isEqualTo(5);
+    assertThat(response.get(0).getComment()).isEqualTo("This is a test comment");
   }
 
   /**
@@ -174,7 +179,7 @@ class ImdbPlusApplicationIntegrationTests {
   @Order(9)
   void testTimelineDelete() {
     String response = timelineRepository.delete(testUserId, testMediaId, testAccessToken);
-    assert response.equals("Timeline deleted successfully");
+    assertThat(response).isEqualTo("Timeline deleted successfully");
   }
 
   /**
@@ -185,7 +190,7 @@ class ImdbPlusApplicationIntegrationTests {
   @Order(10)
   void testTimelineGetTimelineByUserIdNotFound() {
     List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
-    assert response.isEmpty();
+    assertThat(response).isEmpty();
   }
 
   /**
@@ -196,13 +201,13 @@ class ImdbPlusApplicationIntegrationTests {
   @Order(11)
   void testDeleteUserInvalidAccessToken() {
     String deleteResult = userRepository.delete(testUserId, "testAccessToken");
-    assert deleteResult.equals("Invalid access token");
+    assertThat(deleteResult).isEqualTo("Invalid access token");
   }
 
   @Test
   @Order(12)
   void testDeleteUser() {
     String deleteResult = userRepository.delete(testUserId, testAccessToken);
-    assert deleteResult.equals("User deleted successfully");
+    assertThat(deleteResult).isEqualTo("User deleted successfully");
   }
 }
