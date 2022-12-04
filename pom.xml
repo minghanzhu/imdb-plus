@@ -72,13 +72,13 @@
     <dependency>
       <artifactId>aws-java-sdk-dynamodb</artifactId>
       <groupId>com.amazonaws</groupId>
-      <version>1.12.347</version>
+      <version>1.12.351</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/junit/junit -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -92,10 +92,27 @@
       <groupId>org.springframework.boot</groupId>
       <scope>test</scope>
     </dependency>
+<!--    <dependency>-->
+<!--      <artifactId>DynamoDBLocal</artifactId>-->
+<!--      <groupId>com.amazonaws</groupId>-->
+<!--      <version>[1.12,2.0)</version>-->
+<!--    </dependency>-->
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <version>3.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility-proxy</artifactId>
+      <version>3.0.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <!--Custom repository:-->
-  <description>Simple API project</description>
-  <groupId>org.opencsd</groupId>
+  <description>Demo project for Spring Boot</description>
+  <groupId>com.example</groupId>
   <modelVersion>4.0.0</modelVersion>
   <name>imdb-plus</name>
   <parent>
@@ -110,17 +127,16 @@
     <sonar.organization>imdb-plus</sonar.organization>
     <sonar.exclusions>
       **/controller/**,
-      **/config/**,
     </sonar.exclusions>
   </properties>
   <repositories>
-    <!--    <repository>-->
-    <!--      <id>dynamodb-local-oregon</id>-->
-    <!--      <name>DynamoDB Local Release Repository</name>-->
-    <!--      <url>https://s3-us-west-2.amazonaws.com/dynamodb-local/release</url>-->
-    <!--    </repository>-->
+<!--    <repository>-->
+<!--      <id>dynamodb-local-oregon</id>-->
+<!--      <name>DynamoDB Local Release Repository</name>-->
+<!--      <url>https://s3-us-west-2.amazonaws.com/dynamodb-local/release</url>-->
+<!--    </repository>-->
   </repositories>
 
-  <version>0.1.0</version>
+  <version>0.0.1-SNAPSHOT</version>
 
 </project>

@@ -1,4 +1,4 @@
-package org.opencsd.imdbplus.conroller;
+package org.opencsd.imdbplus.controller;
 
 import org.opencsd.imdbplus.entity.User;
 import org.opencsd.imdbplus.repository.UserRepository;

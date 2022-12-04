@@ -1,9 +1,8 @@
-package org.opencsd.imdbplus.conroller;
+package org.opencsd.imdbplus.controller;
 
-import java.util.List;
 import org.opencsd.imdbplus.entity.Timeline;
-import org.opencsd.imdbplus.repository.TimelineRepository;
 import org.opencsd.imdbplus.service.TimelineService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,12 +57,12 @@ public class TimelineController {
 
   // Get all timelines by mediaId
   @GetMapping("/timeline/media/{mediaId}")
-  public ResponseEntity<List<Timeline>> getTimelineByMediaId(@PathVariable("mediaId") String mediaId) {
-    List<Timeline> timelines = timelineService.getTimelineByMediaId(mediaId);
-    if(timelines != null){
-      return ResponseEntity.ok(timelines);
-    }else{
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+  public ResponseEntity getTimelineByMediaId(@PathVariable("mediaId") String mediaId) {
+    List<Timeline> response =  timelineService.getTimelineByMediaId(mediaId);
+    if (response == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+    } else {
+      return ResponseEntity.ok(response);
     }
   }
 
@@ -71,12 +70,12 @@ public class TimelineController {
   @GetMapping("/timeline/{userId}/{mediaId}")
   public ResponseEntity getTimelineByUserIdAndMediaId(@PathVariable("userId") String userId,
       @PathVariable("mediaId") String mediaId) {
-
     Timeline timeline = timelineService.getTimelineByUserIdAndMediaId(userId, mediaId);
     if (timeline != null) {
       return ResponseEntity.ok(timeline);
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+
     }
   }
 }
