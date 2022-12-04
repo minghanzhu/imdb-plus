@@ -21,25 +21,25 @@ public class TimelineController {
   private TimelineRepository timelineRepository;
 
   @PostMapping("/timeline")
-  public ResponseEntity saveTimeline(@RequestBody() Timeline timeline,
+  public ResponseEntity<Timeline> saveTimeline(@RequestBody() Timeline timeline,
       @RequestHeader("Authorization") String accessToken) {
     Timeline response = timelineRepository.save(timeline, accessToken);
     if (response == null) {
-      return ResponseEntity.status(401).body("Unauthorized");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     } else {
       return ResponseEntity.ok(response);
     }
   }
 
   @DeleteMapping("/timeline/{userId}/{mediaId}")
-  public ResponseEntity deleteTimeline(@PathVariable("userId") String userId,
+  public ResponseEntity<String> deleteTimeline(@PathVariable("userId") String userId,
       @PathVariable("mediaId") String mediaId,
       @RequestHeader("Authorization") String accessToken) {
-    String response =  timelineRepository.delete(userId, mediaId, accessToken);
+    String response = timelineRepository.delete(userId, mediaId, accessToken);
     if (response.equals("Invalid access token")) {
-      return ResponseEntity.status(401).body("Invalid access token");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     } else if (response.equals("Timeline not found")) {
-      return ResponseEntity.status(404).body("Timeline not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     } else {
       return ResponseEntity.ok(response);
     }
@@ -47,21 +47,22 @@ public class TimelineController {
 
   // Get all timelines by userId
   @GetMapping("/timeline/user/{userId}")
-  public ResponseEntity getTimeline(@PathVariable("userId") String userId) {
+  public ResponseEntity<List<Timeline>> getTimeline(@PathVariable("userId") String userId) {
     List<Timeline> response = timelineRepository.getTimelineByUserId(userId);
     if (response.size() > 0) {
       return ResponseEntity.ok(response);
     } else {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+      return ResponseEntity.notFound().build();
     }
   }
 
   // Get all timelines by mediaId
   @GetMapping("/timeline/media/{mediaId}")
-  public ResponseEntity getTimelineByMediaId(@PathVariable("mediaId") String mediaId) {
-    List<Timeline> response =  timelineRepository.getTimelineByMediaId(mediaId);
+  public ResponseEntity<List<Timeline>> getTimelineByMediaId(
+      @PathVariable("mediaId") String mediaId) {
+    List<Timeline> response = timelineRepository.getTimelineByMediaId(mediaId);
     if (response == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     } else {
       return ResponseEntity.ok(response);
     }
@@ -69,11 +70,11 @@ public class TimelineController {
 
   // Get a timeline by userId and mediaId
   @GetMapping("/timeline/{userId}/{mediaId}")
-  public ResponseEntity getTimelineByUserIdAndMediaId(@PathVariable("userId") String userId,
+  public ResponseEntity<Timeline> getTimelineByTimelineId(@PathVariable("userId") String userId,
       @PathVariable("mediaId") String mediaId) {
     Timeline response = timelineRepository.getTimelineByTimelineId(userId, mediaId);
     if (response == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     } else {
       return ResponseEntity.ok(response);
     }
