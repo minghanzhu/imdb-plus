@@ -170,11 +170,7 @@ class ImdbPlusApplicationIntegrationTests {
   @Test
   @Order(9)
   void testTimelineDelete() {
-    System.out.println(testUserId);
-    System.out.println(testAccessToken);
-    System.out.println("===================================");
     String response = timelineRepository.delete(testUserId, testMediaId, testAccessToken);
-    System.out.println(response);
     assert response.equals("Timeline deleted successfully");
   }
 
