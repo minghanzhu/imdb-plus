@@ -7,6 +7,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -98,7 +99,8 @@ class TimelineRepositoryTest {
     when(mockDynamo.scan(Timeline.class, scanExpression)).thenReturn(userTimelines);
 
     List<Timeline> result = timelineRepository.getTimelineByUserId("u2");
-    assertEquals(userTimelines, result);
+    assert result.isEmpty();
+    assertEquals(new ArrayList<>(), result);
   }
 
   @Test
@@ -112,7 +114,8 @@ class TimelineRepositoryTest {
     when(mockDynamo.scan(Timeline.class, scanExpression)).thenReturn(mediaTimelines);
 
     List<Timeline> result = timelineRepository.getTimelineByMediaId("m1");
-    assertEquals(null, result);
+    assert result.isEmpty();
+    assertEquals(new ArrayList<>(), result);
   }
 
   @Test

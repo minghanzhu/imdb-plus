@@ -113,7 +113,7 @@ class TimelineControllerTest {
     mockMvc.perform(requestBuilderFail)
         .andDo(print())
         .andExpect(status().is(401))
-        .andExpect(content().string("Unauthorized"));
+        .andExpect(content().string(""));
 
   }
 
@@ -311,7 +311,7 @@ class TimelineControllerTest {
     mockMvc.perform(getRequest)
         .andDo(print())
         .andExpect(status().isNotFound())
-        .andExpect(content().string("Timeline not found"));
+        .andExpect(content().string(""));
   }
 
 }

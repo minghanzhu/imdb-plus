@@ -1,9 +1,7 @@
 package org.opencsd.imdbplus.service;
 
-import java.time.Instant;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import org.joda.time.LocalTime;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
 import org.opencsd.imdbplus.entity.User;
@@ -111,11 +109,8 @@ public class TimelineService {
           serviceLogger.warn("Wrong Access Token");
           return null;
       }
-
     }
     return timeline;
-
-
   }
 
   /**
@@ -128,7 +123,7 @@ public class TimelineService {
       serviceLogger.info("{}'s timelines retrieved", userId);
       return  timelineRepository.getTimelineByUserId(curUser.getUserId());
     }else{
-      return null;
+      return new ArrayList<>();
     }
   }
 
@@ -142,7 +137,7 @@ public class TimelineService {
       serviceLogger.info("{}'s timelines retrieved", mediaId);
       return  timelineRepository.getTimelineByMediaId(mediaId);
     }else{
-      return null;
+      return new ArrayList<>();
     }
   }
 

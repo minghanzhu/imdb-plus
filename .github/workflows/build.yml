@@ -3,9 +3,10 @@ on:
   push:
     branches:
       - master
-      - bgutu-tests
       - sahitya-tests
       - mzhu-add-tests-v2
+      - bgutu-tests
+
   pull_request:
     types: [ opened, synchronize, reopened ]
 jobs:
@@ -39,5 +40,3 @@ jobs:
           ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=minghanzhu_imdb-plus
-
-

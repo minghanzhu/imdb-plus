@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import java.util.ArrayList;
 import org.opencsd.imdbplus.entity.Timeline;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +63,7 @@ public class TimelineRepository {
     if (timelines != null && !timelines.isEmpty()) {
       return timelines;
     } else {
-      return null;
+      return new ArrayList<>();
     }
   }
 
@@ -77,7 +78,7 @@ public class TimelineRepository {
     if (timelines != null && !timelines.isEmpty()) {
       return timelines;
     } else {
-      return null;
+      return new ArrayList<>();
     }
   }
 
