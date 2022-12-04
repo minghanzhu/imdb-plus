@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedList;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
@@ -22,6 +23,7 @@ import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.MockitoPostProcessor;
 
 class TimelineRepositoryTest {
 
@@ -35,8 +37,9 @@ class TimelineRepositoryTest {
   private TimelineRepository scanMocks;
 
   private Timeline testLine;
-  private List<Timeline> mediaTimelines;
-  private List<Timeline> userTimelines;
+  private PaginatedScanList<Timeline> mediaTimelines;
+
+  private PaginatedScanList<Timeline> userTimelines;
 
 
   @BeforeEach
@@ -52,10 +55,6 @@ class TimelineRepositoryTest {
     Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", new Date(), "PROGRESS", 3, "Still in progress.");
     Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", new Date(), "WISHLIST", 5, "I head this was great.");
     Timeline t5 = new Timeline("t5-u1-m4", "u1", "m5", new Date(), "WISHLIST", 0, "I REALLY WANT TO SEE IT.");
-
-    scanMocks = mock(TimelineRepository.class);
-    userTimelines =  Arrays.asList(t1, t5);
-    mediaTimelines = Arrays.asList(t1, t4);
 
   }
 
@@ -100,14 +99,14 @@ class TimelineRepositoryTest {
   @Test
   void getTimelineByUserId() {
     HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-    eav.put(":v1", new AttributeValue().withS("u1"));
+    eav.put(":v1", new AttributeValue().withS("u2"));
     DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
         .withFilterExpression("userId = :v1")
         .withExpressionAttributeValues(eav);
 
-    when(scanMocks.scanDynamo(scanExpression)).thenReturn(userTimelines);
+    when(mockDynamo.scan(Timeline.class, scanExpression)).thenReturn(userTimelines);
 
-    List<Timeline> result = scanMocks.scanDynamo(scanExpression);
+    List<Timeline> result = timelineRepository.getTimelineByUserId("u2");
     assertEquals(userTimelines, result);
   }
 
@@ -119,10 +118,10 @@ class TimelineRepositoryTest {
         .withFilterExpression("mediaId = :v1")
         .withExpressionAttributeValues(eav);
 
-    when(scanMocks.scanDynamo(scanExpression)).thenReturn(mediaTimelines);
+    when(mockDynamo.scan(Timeline.class, scanExpression)).thenReturn(mediaTimelines);
 
-    List<Timeline> result = scanMocks.scanDynamo(scanExpression);
-    assertEquals(mediaTimelines, result);
+    List<Timeline> result = timelineRepository.scanDynamo(scanExpression);
+    assertEquals(null, result);
   }
 
   @Test
