@@ -1,9 +1,11 @@
 package org.opencsd.imdbplus;
 import org.opencsd.imdbplus.entity.AccountSetting;
+import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
 import org.opencsd.imdbplus.entity.User;
 import org.opencsd.imdbplus.repository.TimelineRepository;
 import org.opencsd.imdbplus.repository.UserRepository;
+import org.opencsd.imdbplus.repository.MediaRepository;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -24,12 +26,16 @@ class ImdbPlusApplicationTests {
   @Autowired
   private TimelineRepository timelineRepository;
 
+  @Autowired
+  private MediaRepository mediaRepository;
+
   public static User testUser = new User();
   public static String testUsername = "testUser";
   public static AccountSetting testAccountSetting = new AccountSetting();
   public static String testUserId = "";
   public static String testAccessToken = "";
   public static User retrievedUser = new User();
+
 
   @Test
   @Order(1)
@@ -177,4 +183,42 @@ class ImdbPlusApplicationTests {
     String deleteResult = userRepository.delete(testUserId, testAccessToken);
     assert deleteResult.equals("User deleted successfully");
   }
+
+  @Test
+  @Order(13)
+  void testMediaSave() {
+    // Create a test media
+    Media testMedia = new Media("tt0000012", "testTitle", "2017-09-09", "Drama");
+    Media response = mediaRepository.saveMedia(testMedia);
+
+    assert response.equals(testMedia);
+  }
+
+  @Test
+  @Order(14)
+  void getMedia() {
+    Media response = mediaRepository.getEntity("tt0000012");
+    assert response.getMediaId().equals("tt0000012");
+    assert response.getGenre().equals("Drama");
+    assert response.getTitle().equals("testTitle");
+    assert response.getRelease_date().equals("2017-09-09");
+  }
+
+  @Test
+  @Order(15)
+  void testUpdateMedia() {
+    Media testMedia = new Media("tt0000012", "testTitleEdited", "2017-09-09", "Drama");
+    String updateResult = mediaRepository.update("tt0000012", testMedia);
+    assert updateResult.equals("tt0000012");
+    Media response = mediaRepository.getEntity("tt0000012");
+    assert response.getTitle().equals("testTitleEdited");
+  }
+
+  @Test
+  @Order(16)
+  void testDeleteMedia() {
+    String deleteResult = mediaRepository.delete("tt0000012");
+    assert deleteResult.equals("Media deleted successfully");
+  }
+
 }
