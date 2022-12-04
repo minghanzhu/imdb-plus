@@ -2,8 +2,10 @@ name: SonarCloud
 on:
   push:
     branches:
-      - bgutu-tests
       - master
+      - bgutu-tests
+      - sahitya-tests
+      - mzhu-add-tests-v2
   pull_request:
     types: [ opened, synchronize, reopened ]
 jobs:

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,7 +37,7 @@ public class TimelineController {
 
     if (response == null) {
       timelineControllerLogger.warn("{} wrong", response);
-      return ResponseEntity.status(401).body("Unauthorized");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     } else {
       return ResponseEntity.ok(response);
     }
@@ -49,9 +48,9 @@ public class TimelineController {
       @RequestHeader("Authorization") String accessToken) {
     String response =  timelineService.delete(timelineId, accessToken);
     if (response.equals("Invalid access token")) {
-      return ResponseEntity.status(401).body("Invalid access token");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     } else if (response.equals("Timeline not found")) {
-      return ResponseEntity.status(404).body("Timeline not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     } else {
       return ResponseEntity.ok(response);
     }
@@ -64,7 +63,7 @@ public class TimelineController {
     if (response != null) {
       return ResponseEntity.ok(response);
     } else {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+      return ResponseEntity.notFound().build();
     }
   }
 
@@ -73,7 +72,7 @@ public class TimelineController {
   public ResponseEntity getTimelineByMediaId(@PathVariable("mediaId") String mediaId) {
     List<Timeline> response =  timelineService.getTimelineByMediaId(mediaId);
     if (response == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Timeline not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     } else {
       return ResponseEntity.ok(response);
     }

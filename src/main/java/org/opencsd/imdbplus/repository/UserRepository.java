@@ -1,7 +1,6 @@
 package org.opencsd.imdbplus.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -24,14 +23,14 @@ public class UserRepository {
   // Add new user to the database if the username does not exist
   public User save(User user) {
     // scan the table to see if the username exists
-    HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+    HashMap<String, AttributeValue> eav = new HashMap<>();
     eav.put(":v1", new AttributeValue().withS(user.getUsername()));
     DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
         .withFilterExpression("username = :v1")
         .withExpressionAttributeValues(eav);
     // if the username does not exist, add the user to the database
     List<User> replies = dynamoDBMapper.scan(User.class, scanExpression);
-    if (replies.size() == 0) {
+    if (replies.isEmpty()) {
       dynamoDBMapper.save(user);
       return user;
     } else {
@@ -40,23 +39,13 @@ public class UserRepository {
   }
 
   public User getUser(String userId) {
-    HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-    eav.put(":v1", new AttributeValue().withS(userId));
-    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-        .withFilterExpression("userId = :v1")
-        .withExpressionAttributeValues(eav);
-    List<User> replies = dynamoDBMapper.scan(User.class, scanExpression);
-    if (replies.size() == 0) {
-      return null;
-    } else {
-      return replies.get(0);
-    }
+    return dynamoDBMapper.load(User.class, userId);
   }
 
   public String delete(String userId, String accessToken) {
     User user = getUser(userId);
     if (user.getAccessToken().equals(accessToken)) {
-      dynamoDBMapper.batchDelete(user);
+      dynamoDBMapper.delete(user);
       return "User deleted successfully";
     } else {
       return "Invalid access token";

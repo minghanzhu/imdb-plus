@@ -217,7 +217,7 @@ class TimelineControllerTest {
     mockMvc.perform(getRequest)
         .andDo(print())
         .andExpect(status().isNotFound())
-        .andExpect(content().string("Timeline not found"));
+        .andExpect(content().string(""));
   }
 
   @Test
@@ -268,7 +268,7 @@ class TimelineControllerTest {
     mockMvc.perform(getRequest)
         .andDo(print())
         .andExpect(status().isNotFound())
-        .andExpect(content().string("Timeline not found"));
+        .andExpect(content().string(""));
   }
 
   @Test
