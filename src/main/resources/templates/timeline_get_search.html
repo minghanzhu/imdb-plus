@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>Demo Application</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3" >
+    </div>
+    <div class ="col-md-2">
+        <span>User ID: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="user_id" id="user_id"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3" >
+    </div>
+    <div class ="col-md-2">
+        <span>Media ID: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="media_id" id="media_id"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-4">
+    </div>
+    <div class ="col-md-4">
+        <input type="button" name="getData" id="getData" value="GET DATA" onclick="getDataFromAPI();"/>
+    </div>
+    <div class ="col-md-4">
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-4">
+    </div>
+    <div class ="col-md-4">
+        <button onclick="window.location.href='http://localhost:8083/home';">
+            Go Home
+        </button>
+    </div>
+    <div class ="col-md-4">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-6">
+        <div id="list" style = "padding-top: 50px"></div>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+
+<script>
+	function getDataFromAPI() {
+
+	    $("#list").empty();//Clear old data before ajax
+
+	    $.ajax({
+	        url: "/timeline/" + $("#user_id").val() + "/" +  $("#media_id").val(),
+	        type: "GET",
+	        success: function (data) {
+	            console.log(data);
+	        	console.log("GET DATA API RESPONSE - USER ID:" + data.userId);
+	        	console.log("GET DATA API RESPONSE - Timeline ID:" + data.timelineId);
+	        	console.log("GET DATA API RESPONSE - Media ID:" + data.mediaId);
+	        	console.log("GET DATA API RESPONSE - Creation Time:" + data.creationTime);
+	        	console.log("GET DATA API RESPONSE - Status:" + data.status);
+	        	console.log("GET DATA API RESPONSE - Rating:" + data.rating);
+	        	console.log("GET DATA API RESPONSE - Comment:" + data.comment);
+
+	        	var table = $("#list");
+                table.append("<b>USER ID: </b><p>" + data.userId + "</p>");
+                table.append("<b>Timeline ID: </b><p>" + data.timelineId + "</p>");
+                table.append("<b>Media ID: </b><p>" + data.mediaId + "</p>");
+                table.append("<b>Creation Time: </b><p>" + data.creationTime + "</p>");
+                table.append("<b>Status: </b><p>" + data.status + "</p>");
+                table.append("<b>Rating: </b><p>" + data.rating + "</p>");
+                table.append("<b>Comment: </b><p>" + data.comment + "</p>");
+	        },
+	        error: function (jqXHR, textStatus, errorThrown) {
+	        }
+		});
+	}
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>Demo Application</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-2">
+        <span>Timeline ID: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="timeline_id" id="timeline_id"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-2">
+        <span>User ID: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="user_id" id="user_id"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-2">
+        <span>Media ID: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="media_id" id="media_id"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-2">
+        <span>Status: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="status" id="status"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-2">
+        <span>Rating: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="rating" id="rating"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-2">
+        <span>Comment: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="comment" id="comment"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-2">
+        <span>Access Token: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="access_token" id="access_token"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-4">
+    </div>
+    <div class ="col-md-4">
+        <input type="button" name="postData" id="postData" value="POST DATA" onclick="postDataFromAPI();"/>
+    </div>
+    <div class ="col-md-4">
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-4">
+    </div>
+    <div class ="col-md-4">
+        <button onclick="window.location.href='http://localhost:8083/home';">
+            Go Home
+        </button>
+    </div>
+    <div class ="col-md-4">
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-6">
+        <div id="list" style = "padding-top: 50px"></div>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+
+<script>
+	function postDataFromAPI() {
+
+	    var modelObj = {
+	        "timelineId": $("#timeline_id").val(),
+	        "userId": $("#user_id").val(),
+	        "mediaId": $("#media_id").val(),
+	        "status": $("#status").val(),
+            "rating": parseInt($("#rating").val()),
+            "comment": $("#comment").val()
+        };
+
+		console.log("post data:"+modelObj);
+
+		 $.ajax({
+	            type: "POST",
+	            beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", $("#access_token").val());
+                 },
+	            url: "/timeline",
+	            headers: {
+	                "Content-Type": "application/json"
+	            },
+	            data: JSON.stringify(modelObj),
+	            success: function (data) {
+	            	console.log(data);
+                    console.log("POST DATA API RESPONSE - TIMELINE ID:" + data.timelineId);
+                    console.log("POST DATA API RESPONSE - MEDIA ID:" + data.mediaId);
+                    console.log("POST DATA API RESPONSE - CREATION TIME:" + data.creationTime);
+                    console.log("POST DATA API RESPONSE - STATUS:" + data.status);
+                    console.log("POST DATA API RESPONSE - RATING:" + data.rating);
+                    console.log("POST DATA API RESPONSE - COMMENT:" + data.comment);
+
+                    var table = $("#list");
+                    table.append("<b>TIMELINE ID: </b><p>" + data.timelineId + "</p>");
+                    table.append("<b>MEDIA ID: </b><p>" + data.mediaId + "</p>");
+                    table.append("<b>CREATION TIME: </b><p>" + data.creationTime + "</p>");
+                    table.append("<b>STATUS: </b><p>" + data.status + "</p>");
+                    table.append("<b>RATING: </b><p>" + data.rating + "</p>");
+                    table.append("<b>COMMENT: </b><p>" + data.comment + "</p>");
+	            },
+	            error: function (jqXHR, textStatus, errorThrown) {
+	            }
+	        });
+	}
+</script>
+</body>
+</html>
