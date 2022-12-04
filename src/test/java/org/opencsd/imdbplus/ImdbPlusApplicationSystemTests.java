@@ -16,6 +16,9 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
 class ImdbPlusApplicationSystemTests {
@@ -120,7 +123,7 @@ class ImdbPlusApplicationSystemTests {
 
     JSONObject jsonObject = new JSONObject(response);
     String username = jsonObject.getString("username");
-    assert username.equals(testUsername);
+    assertThat(username).isEqualTo(testUsername);
 
     // DELETE the added test user to clean up
     String userId = jsonObject.getString("userId");
@@ -154,7 +157,7 @@ class ImdbPlusApplicationSystemTests {
       response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
     } catch (IOException e) {
       response2 = e.getMessage();
-      assert response2.contains("400");
+      assertThat(response2).contains("400");
     }
 
     // DELETE the added test user to clean up
@@ -197,7 +200,7 @@ class ImdbPlusApplicationSystemTests {
         "\"comment\":\"This is a comment\"" +
         "}";
     String response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/timeline", accessToken);
-    assert response2.contains("tt0000001");
+    assertThat(response2).contains("tt0000001");
 
     // DELETE the added test user and timeline item to clean up
     deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
@@ -249,13 +252,13 @@ class ImdbPlusApplicationSystemTests {
         "\"comment\":\"This is a comment\"" +
         "}";
     String response3 = postRequest(jsonInputString, dynamoDBEndpoint + "/timeline", accessToken);
-    assert response3.contains("tt0000002");
+    assertThat(response3).contains("tt0000002");
 
     // GET request to get all timelines by userId
     String response4 = getRequest(dynamoDBEndpoint + "/timeline/user/" + userId, accessToken);
     // Expected to return two timeline items with mediaId tt0000001 and tt0000002
-    assert response4.contains("tt0000001");
-    assert response4.contains("tt0000002");
+    assertThat(response4).contains("tt0000001");
+    assertThat(response4).contains("tt0000002");
 
     // DELETE the added test user and timeline item to clean up
     deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
@@ -299,7 +302,7 @@ class ImdbPlusApplicationSystemTests {
         "\"comment\":\"This is a comment\"" +
         "}";
     String response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/timeline", accessToken1);
-    assert response2.contains("tt0000001");
+    assertThat(response2).contains("tt0000001");
 
     // POST request to add a new user
     jsonInputString = "{\"" +
@@ -327,8 +330,10 @@ class ImdbPlusApplicationSystemTests {
 
     String response5 = getRequest(dynamoDBEndpoint + "/timeline/media/" + "tt0000001", null);
     String response6 = getRequest(dynamoDBEndpoint + "/timeline/media/" + "tt0000002", null);
-    assert response5.contains("tt0000001") && response5.contains(userId1)
-        && response6.contains("tt0000002") && response6.contains(userId2);
+    assertThat(response5).contains("tt0000001");
+    assertThat(response5).contains(userId1);
+    assertThat(response6).contains("tt0000002");
+    assertThat(response6).contains(userId2);
 
     // DELETE the added test user and timeline item to clean up
     deleteRequest(dynamoDBEndpoint + "/timeline/" + userId1 + "/" + "tt0000001", accessToken1);
@@ -370,7 +375,7 @@ class ImdbPlusApplicationSystemTests {
     // GET request to retrieve the added timeline by userId and mediaId
     String response3 = getRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001",
         accessToken);
-    assert response3.contains("tt0000001");
+    assertThat(response3).contains("tt0000001");
 
     // DELETE the added test user and timeline item to clean up
     deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
