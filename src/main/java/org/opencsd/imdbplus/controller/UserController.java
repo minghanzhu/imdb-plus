@@ -21,10 +21,10 @@ public class UserController {
 
   // Add new user to the database
   @PostMapping("/user")
-  public ResponseEntity saveUser(@RequestBody User user) {
+  public ResponseEntity<User> save(@RequestBody User user) {
     User response = userRepository.save(user);
     if (response == null) {
-      return ResponseEntity.status(400).body("User already exists");
+      return ResponseEntity.badRequest().body(null);
     } else {
       return ResponseEntity.ok(response);
     }
@@ -32,10 +32,10 @@ public class UserController {
 
   // Get user by userId
   @GetMapping("/user/{id}")
-  public ResponseEntity getUser(@PathVariable("id") String userId) {
+  public ResponseEntity<User> getUser(@PathVariable("id") String userId) {
     User response = userRepository.getUser(userId);
     if (response == null) {
-      return ResponseEntity.status(404).body("User not found");
+      return ResponseEntity.notFound().build();
     } else {
       return ResponseEntity.ok(response);
     }
