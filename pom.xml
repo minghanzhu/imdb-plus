@@ -128,7 +128,6 @@
     <sonar.exclusions>
       **/Main.java,
       **/entity/**,
-      Main.java,
     </sonar.exclusions>
   </properties>
   <repositories>
