@@ -1,4 +1,5 @@
 package org.opencsd.imdbplus;
+
 import org.opencsd.imdbplus.entity.AccountSetting;
 import org.opencsd.imdbplus.entity.Timeline;
 import org.opencsd.imdbplus.entity.User;
@@ -72,13 +73,15 @@ class ImdbPlusApplicationIntegrationTests {
     try {
       userRepository.save(testUser);
     } catch (Exception e) {
-      assert e.getClass().equals(com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException.class);
+      assert e.getClass()
+          .equals(com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException.class);
       assert e.getMessage().equals("Conditional check failed");
     }
   }
 
   /**
-   * Test the user retrieval functionality with a single test user. The expected result is that the test user is retrieved from the database.
+   * Test the user retrieval functionality with a single test user. The expected result is that the
+   * test user is retrieved from the database.
    */
   @Test
   @Order(4)
@@ -164,8 +167,8 @@ class ImdbPlusApplicationIntegrationTests {
   }
 
   /**
-   * Test the timeline delete functionality with a single test user and a single test timeline.
-   * The expected behavior is that the test timeline is deleted from the database.
+   * Test the timeline delete functionality with a single test user and a single test timeline. The
+   * expected behavior is that the test timeline is deleted from the database.
    */
   @Test
   @Order(9)
@@ -186,8 +189,8 @@ class ImdbPlusApplicationIntegrationTests {
   }
 
   /**
-   * Test the user delete functionality with a single test user.
-   * The expected behavior is that the test user is deleted from the database.
+   * Test the user delete functionality with a single test user. The expected behavior is that the
+   * test user is deleted from the database.
    */
   @Test
   @Order(11)
