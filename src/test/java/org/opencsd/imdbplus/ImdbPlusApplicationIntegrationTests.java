@@ -37,17 +37,12 @@ class ImdbPlusApplicationIntegrationTests {
 
   static String dynamoDBEndpoint = "http://localhost:8083";
 
-  @Test
-  @Order(1)
-  void contextLoads() {
-  }
-
   /**
    * Test the user sign up functionality with a single test user. The expected result is that the
    * test user is added to the database.
    */
   @Test
-  @Order(2)
+  @Order(1)
   void testUserSave() {
     testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
     testAccountSetting = new AccountSetting(false, true);
@@ -68,7 +63,7 @@ class ImdbPlusApplicationIntegrationTests {
    * ConditionalCheckFailedException should be thrown.
    */
   @Test
-  @Order(3)
+  @Order(2)
   void testUserSaveDuplicatedUsername() {
     // Try to save the second test user to the database and expect an ConditionalCheckFailedException exception to be thrown
     try {
@@ -85,21 +80,21 @@ class ImdbPlusApplicationIntegrationTests {
    * test user is retrieved from the database.
    */
   @Test
-  @Order(4)
+  @Order(3)
   void testGetUser() {
     retrievedUser = userRepository.getUser(testUserId);
     assertThat(retrievedUser.getUserId()).isEqualTo(testUserId);
   }
 
   @Test
-  @Order(5)
+  @Order(4)
   void testGetUserNotFound() {
     retrievedUser = userRepository.getUser("testUserId");
     assertThat(retrievedUser).isNull();
   }
 
   @Test
-  @Order(6)
+  @Order(5)
   void testUpdateUser() {
     User testUser = new User(testUsername, "testEmailUpdated", testAccountSetting);
     testUser.setUserId(testUserId);
@@ -148,7 +143,7 @@ class ImdbPlusApplicationIntegrationTests {
   void testTimelineGetTimelineByUserId() {
     List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
     assertThat(response).isNotNull();
-    assertThat(response.size()).isEqualTo(1);
+    assertThat(response).hasSize(1);
     assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
     assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
     assertThat(response.get(0).getMediaId()).isEqualTo(testMediaId);
@@ -158,11 +153,11 @@ class ImdbPlusApplicationIntegrationTests {
   }
 
   @Test
-  @Order(8)
+  @Order(9)
   void testTimelineGetTimelineByMediaId() {
     List<Timeline> response = timelineRepository.getTimelineByMediaId(testMediaId);
     assertThat(response).isNotNull();
-    assertThat(response.size()).isEqualTo(1);
+    assertThat(response).hasSize(1);
     assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
     assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
     assertThat(response.get(0).getMediaId()).isEqualTo(testMediaId);
@@ -176,7 +171,7 @@ class ImdbPlusApplicationIntegrationTests {
    * expected behavior is that the test timeline is deleted from the database.
    */
   @Test
-  @Order(9)
+  @Order(10)
   void testTimelineDelete() {
     String response = timelineRepository.delete(testUserId, testMediaId, testAccessToken);
     assertThat(response).isEqualTo("Timeline deleted successfully");
@@ -187,7 +182,7 @@ class ImdbPlusApplicationIntegrationTests {
    * The expected behavior is that no timelines are retrieved from the database.
    */
   @Test
-  @Order(10)
+  @Order(11)
   void testTimelineGetTimelineByUserIdNotFound() {
     List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
     assertThat(response).isEmpty();
@@ -198,14 +193,14 @@ class ImdbPlusApplicationIntegrationTests {
    * test user is deleted from the database.
    */
   @Test
-  @Order(11)
+  @Order(12)
   void testDeleteUserInvalidAccessToken() {
     String deleteResult = userRepository.delete(testUserId, "testAccessToken");
     assertThat(deleteResult).isEqualTo("Invalid access token");
   }
 
   @Test
-  @Order(12)
+  @Order(13)
   void testDeleteUser() {
     String deleteResult = userRepository.delete(testUserId, testAccessToken);
     assertThat(deleteResult).isEqualTo("User deleted successfully");
