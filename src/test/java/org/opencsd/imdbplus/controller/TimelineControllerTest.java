@@ -206,6 +206,21 @@ class TimelineControllerTest {
   }
 
   @Test
+  void getTimelineNotFound() throws Exception {
+    String userId = "u3";
+    when(timelineService.getTimelineByUserId(userId)).thenReturn(null);
+
+    RequestBuilder getRequest = get("/user/timeline/{userId}", userId)
+        .header("Authorization", userToken)
+        .contentType(MediaType.APPLICATION_JSON);
+
+    mockMvc.perform(getRequest)
+        .andDo(print())
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("Timeline not found"));
+  }
+
+  @Test
   void getTimelineByMediaId() throws Exception {
     String mediaId = "m1";
     when(timelineService.getTimelineByMediaId(mediaId)).thenReturn(mediaTimelines);
@@ -241,6 +256,20 @@ class TimelineControllerTest {
         .andExpect(MockMvcResultMatchers.
             jsonPath("$[1].comment").value(mediaTimelines.get(1).getComment()));
   }
+  @Test
+  void getTimelineByMediaNotFound() throws Exception {
+    String mediaId = "m3-non";
+    when(timelineService.getTimelineByMediaId(mediaId)).thenReturn(null);
+
+    RequestBuilder getRequest = get("/user/timeline/media/{userId}", mediaId)
+        .header("Authorization", userToken)
+        .contentType(MediaType.APPLICATION_JSON);
+
+    mockMvc.perform(getRequest)
+        .andDo(print())
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("Timeline not found"));
+  }
 
   @Test
   void getTimelineByUserIdAndMediaId() throws Exception {
@@ -268,6 +297,21 @@ class TimelineControllerTest {
             jsonPath("$.rating").value(postedTimeline.getRating()))
         .andExpect(MockMvcResultMatchers.
           jsonPath("$.comment").value(postedTimeline.getComment()));
+  }
+  @Test
+  void getTimelineByUserMediaNotFound() throws Exception {
+    String mediaId = "m3-23";
+    String userId = "u3-h4";
+    when(timelineService.getTimelineByUserIdAndMediaId(userId, mediaId)).thenReturn(null);
+
+    RequestBuilder getRequest = get("/user/timeline/{userId}/{mediaId}", userId, mediaId)
+        .header("Authorization", userToken)
+        .contentType(MediaType.APPLICATION_JSON);
+
+    mockMvc.perform(getRequest)
+        .andDo(print())
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("Timeline not found"));
   }
 
 }

@@ -100,6 +100,38 @@ class TimelineServiceTest {
     Timeline result =  timelineService.save(testLine, userToken);
     assertEquals(testLine, result);
   }
+  @Test
+  void saveFailed() {
+    Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", dateList.get(0),  dateList.get(0), "DONE", 5, "It was great");
+    String userToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
+
+    when(timelineRepository.save(testLine)).thenReturn(null);
+
+    Timeline result =  timelineService.save(testLine, userToken);
+    assertEquals(null, result);
+  }
+
+  @Test
+  void saveBadAccessToken() {
+    Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", dateList.get(0),  dateList.get(0), "DONE", 5, "It was great");
+    String userToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
+
+    when(timelineRepository.save(testLine)).thenReturn(null);
+
+    Timeline result =  timelineService.save(testLine, null);
+    assertEquals(null, result);
+  }
+
+  @Test
+  void saveBadAccessTimeline() {
+    Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", dateList.get(0),  dateList.get(0), "DONE", 5, "It was great");
+    String userToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
+
+    when(timelineRepository.save(null)).thenReturn(null);
+
+    Timeline result =  timelineService.save(testLine, userToken);
+    assertEquals(null, result);
+  }
 
   @Test
   void getTimeline() {
@@ -154,8 +186,6 @@ class TimelineServiceTest {
     Timeline updatedTimeline = timelineService.update(testLine, userToken);
 
     assertEquals(testLine, updatedTimeline);
-
-
   }
 
   @Test
