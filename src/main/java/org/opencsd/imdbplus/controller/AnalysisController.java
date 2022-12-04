@@ -6,17 +6,20 @@ import org.opencsd.imdbplus.repository.AnalysisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/v1/analysis")
 public class AnalysisController {
 
   @Autowired
   private AnalysisRepository analysisRepository;
 
-  @GetMapping("api/v1/analysis/highest-rated")
+  @GetMapping("/highest-rated")
   public ResponseEntity highestRating() {
     try {
       return analysisRepository.getHighestRating();
@@ -25,7 +28,7 @@ public class AnalysisController {
     }
   }
 
-  @GetMapping("api/v1/analysis/most")
+  @GetMapping("/most")
   public ResponseEntity<Media> getMostWatched(
       @RequestParam(name = "status", defaultValue = "DONE") String status) {
     status = (status.equalsIgnoreCase("progress")) ? "IN_PROGRESS" : status.toUpperCase();
@@ -33,7 +36,7 @@ public class AnalysisController {
 
   }
 
-  @GetMapping("api/v1/analysis/top-ten")
+  @GetMapping("/top-ten")
   public ResponseEntity<Media> getTopTen(
       @RequestParam(name = "status", defaultValue = "DONE") String status) {
     status = (status.equalsIgnoreCase("progress")) ? "IN_PROGRESS" : status.toUpperCase();
@@ -41,7 +44,7 @@ public class AnalysisController {
 
   }
 
-  @GetMapping("/api/v1/timeline/analysis/userprofile/{id}")
+  @GetMapping("/userprofile/{id}")
   public ResponseEntity getUserPreference(@PathVariable("id") String userId){
     return analysisRepository.userPreference(userId);
   }

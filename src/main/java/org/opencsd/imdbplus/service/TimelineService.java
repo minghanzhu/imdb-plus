@@ -1,6 +1,9 @@
 package org.opencsd.imdbplus.service;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
+import org.joda.time.LocalTime;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
 import org.opencsd.imdbplus.entity.User;
@@ -41,16 +44,20 @@ public class TimelineService {
     String mediaId = timeline.getMediaId();
     User user = userRepository.getUser(userId);
     Media media = mediaRepository.getEntity(mediaId);
-
+    serviceLogger.debug("user : {} \n media: {}", user, media);
     if (user.getAccessToken().equals(accessToken) && media != null) {
       String id = userId+"-"+mediaId;
       timeline.setTimelineId(id);
       Timeline saveTimeline = timelineRepository.save(timeline);
       serviceLogger.info("{} created {}",userId, timeline.getTimelineId() );
-      return saveTimeline;
+      if(saveTimeline != null){
+        serviceLogger.info(saveTimeline.toString());
+        return saveTimeline;
+      }
     } else {
       return null;
     }
+    return null;
   }
 
   /**
@@ -79,7 +86,7 @@ public class TimelineService {
         return "Invalid access token";
       }
       serviceLogger.info("{} deleted by {}", timelineId, user.getUsername());
-      timelineRepository.delete(timelineId);
+      timelineRepository.delete(timeline.getUserId()+"-"+timeline.getMediaId());
       return "Timeline deleted successfully";
     }
     return "Timeline does not exist";

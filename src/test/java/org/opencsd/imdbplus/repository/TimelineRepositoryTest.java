@@ -1,17 +1,12 @@
 package org.opencsd.imdbplus.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedList;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,11 +14,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.MockitoPostProcessor;
 
 class TimelineRepositoryTest {
 
@@ -33,8 +26,6 @@ class TimelineRepositoryTest {
   @Autowired
   private TimelineRepository timelineRepository;
 
-  @MockBean
-  private TimelineRepository scanMocks;
 
   private Timeline testLine;
   private PaginatedScanList<Timeline> mediaTimelines;
@@ -48,13 +39,13 @@ class TimelineRepositoryTest {
     mockDynamo = Mockito.mock(DynamoDBMapper.class);
     timelineRepository.setDynamoDBMapper(mockDynamo);
 
-    testLine = new Timeline("t1-u1-m1", "u1", "m1", new Date(), "DONE", 5, "It was great");
+    testLine = new Timeline("t1-u1-m1", "u1", "m1", new Date(), new Date(), "DONE", 5, "It was great");
 
-    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", new Date(), "DONE", 5, "It was great");
-    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", new Date(), "DONE", 1, "It was terrible");
-    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", new Date(), "PROGRESS", 3, "Still in progress.");
-    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", new Date(), "WISHLIST", 5, "I head this was great.");
-    Timeline t5 = new Timeline("t5-u1-m4", "u1", "m5", new Date(), "WISHLIST", 0, "I REALLY WANT TO SEE IT.");
+    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", new Date(), new Date(), "DONE", 5, "It was great");
+    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", new Date(), new Date(), "DONE", 1, "It was terrible");
+    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", new Date(), new Date(), "PROGRESS", 3, "Still in progress.");
+    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", new Date(), new Date(), "WISHLIST", 5, "I head this was great.");
+    Timeline t5 = new Timeline("t5-u1-m4", "u1", "m5", new Date(), new Date(), "WISHLIST", 0, "I REALLY WANT TO SEE IT.");
 
   }
 
@@ -64,7 +55,7 @@ class TimelineRepositoryTest {
 
   @Test
   void save() {
-    Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", new Date(), "DONE", 5, "It was great");
+    Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", new Date(), new Date(), "DONE", 5, "It was great");
     String userToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
     mockDynamo.save(testLine);
 
@@ -88,7 +79,7 @@ class TimelineRepositoryTest {
 
   @Test
   void update() {
-    Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", new Date(), "DONE", 3, "It was great");
+    Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", new Date(), new Date(), "DONE", 3, "It was great");
     String userToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
     mockDynamo.save(testLine);
 
@@ -120,7 +111,7 @@ class TimelineRepositoryTest {
 
     when(mockDynamo.scan(Timeline.class, scanExpression)).thenReturn(mediaTimelines);
 
-    List<Timeline> result = timelineRepository.scanDynamo(scanExpression);
+    List<Timeline> result = timelineRepository.getTimelineByMediaId("m1");
     assertEquals(null, result);
   }
 

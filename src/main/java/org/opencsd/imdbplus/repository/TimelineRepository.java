@@ -4,10 +4,10 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import java.util.ArrayList;
 import org.opencsd.imdbplus.entity.Timeline;
 import java.util.HashMap;
 import java.util.List;
+import org.opencsd.imdbplus.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -37,7 +37,8 @@ public class TimelineRepository {
 
   public void delete(String timelineId) {
     // Check if the user exists and the access token is valid
-    dynamoDBMapper.delete(timelineId);
+    Timeline timeline = getTimeline(timelineId);
+    dynamoDBMapper.batchDelete(timeline);
   }
 
   public Timeline update(Timeline timeline) {
@@ -72,7 +73,7 @@ public class TimelineRepository {
         .withFilterExpression("mediaId = :v1")
         .withExpressionAttributeValues(eav);
     List<Timeline> timelines = scanDynamo(scanExpression);
-    if (timelines.size() > 0) {
+    if (timelines != null && !timelines.isEmpty()) {
       return timelines;
     } else {
       return null;

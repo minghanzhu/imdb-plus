@@ -50,11 +50,11 @@ class AnalysisRepositoryTest {
     popularMedia = new Media("m1", "Movie 1", "2012-07-17", "Action");
     highestAvgRating = new Media("m2", "Movie 2", "2032-07-17",
         "Drama");
-    highestRating1 = new Timeline("u1-m1", "u1", "m1", new Date(), "DONE", 5, "It was great");
-    highestRating2 = new Timeline("u1-m2", "u1", "m2", new Date(), "DONE", 3, "It was good");
-    highestRating3 = new Timeline("u1-m1", "u1", "m1", new Date(), "DONE", 5, "It was great");
-    highestRating4 = new Timeline("u1-m2", "u1", "m2", new Date(), "DONE", 3, "It was good");
-    highestRating4 = new Timeline("u1-m2", "u1", "m2", new Date(), "DONE", 3, "It was good");
+    highestRating1 = new Timeline("u1-m1", "u1", "m1", "DONE", 5, "It was great");
+    highestRating2 = new Timeline("u1-m2", "u1", "m2", "DONE", 3, "It was good");
+    highestRating3 = new Timeline("u1-m1", "u1", "m1", "DONE", 5, "It was great");
+    highestRating4 = new Timeline("u1-m2", "u1", "m2", "DONE", 3, "It was good");
+    highestRating4 = new Timeline("u1-m2", "u1", "m2", "DONE", 3, "It was good");
     ;
 
     highestRated = new ArrayList<>();

@@ -59,11 +59,11 @@ class TimelineServiceTest {
     timelineService.setMediaRepository(mediaRepository);
 
 
-    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", new Date(), "DONE", 5, "It was great");
-    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", new Date(), "DONE", 1, "It was terrible");
-    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", new Date(), "PROGRESS", 3, "Still in progress.");
-    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", new Date(), "WISHLIST", 5, "I head this was great.");
-    Timeline t5 = new Timeline("t5-u1-m4", "u1", "m5", new Date(), "WISHLIST", 0, "I REALLY WANT TO SEE IT.");
+    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", new Date(), new Date(), "DONE", 5, "It was great");
+    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", new Date(), new Date(), "DONE", 1, "It was terrible");
+    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", new Date(), new Date(), "PROGRESS", 3, "Still in progress.");
+    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", new Date(), new Date(), "WISHLIST", 5, "I head this was great.");
+    Timeline t5 = new Timeline("t5-u1-m4", "u1", "m5", new Date(), new Date(), "WISHLIST", 0, "I REALLY WANT TO SEE IT.");
 
     testMedia = new Media("m1", "movie", "2012-07-17", "Action");
     updatedMedia = new Media("m5", "Unreleased Movie", "2023-07-17", "Action");
@@ -92,7 +92,7 @@ class TimelineServiceTest {
 
   @Test
   void save() {
-    Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", dateList.get(0), "DONE", 5, "It was great");
+    Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", dateList.get(0),  dateList.get(0), "DONE", 5, "It was great");
     String userToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
 
     when(timelineRepository.save(testLine)).thenReturn(testLine);
@@ -146,7 +146,7 @@ class TimelineServiceTest {
 
   @Test
   void update() {
-    Timeline testLine = new Timeline("t5-u1-m4", "u1", "m5", new Date(), "DONE", 3, "It was underwhelming.");
+    Timeline testLine = new Timeline("t5-u1-m4", "u1", "m5", new Date(), new Date(), "DONE", 3, "It was underwhelming.");
     String userToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
 
     when(timelineRepository.getTimeline("t5-u1-m4")).thenReturn(allTimelines.get(4));

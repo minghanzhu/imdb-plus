@@ -2,6 +2,7 @@ package org.opencsd.imdbplus.entity;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,22 +19,24 @@ class TimelineTest {
 
   @BeforeEach
   void setUp(){
-    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", new Date(), "DONE", 5, "It was great");
-    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", new Date(), "DONE", 1, "It was terrible");
-    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", new Date(), "PROGRESS", 3, "Still in progress.");
-    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", new Date(), "WISHLIST", 5, "I head this was great.");
-    Timeline t5 = new Timeline("t5-u3-m4", "u1", "m5", new Date(), "DONE", 5, "It was great");
+    Date[] curDates = {
+        new Date(),
+        new Date(),
+        new Date(),
+        new Date(),
+        new Date(),
+    };
+
+    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", curDates[0], curDates[0],"DONE", 5, "It was great");
+    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", curDates[1], curDates[1], "DONE", 1, "It was terrible");
+    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", curDates[2], curDates[2], "PROGRESS", 3, "Still in progress.");
+    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", curDates[3], curDates[3], "WISHLIST", 5, "I head this was great.");
+    Timeline t5 = new Timeline("t5-u3-m4", "u1", "m5", curDates[4], curDates[4], "DONE", 5, "It was great");
 
     Timeline[] curTimelines = {t1, t2, t3, t4, t5};
     timelines = curTimelines;
 
-    Date[] curDates = {
-        t1.getCreationTime(),
-        t2.getCreationTime(),
-        t3.getCreationTime(),
-        t4.getCreationTime(),
-        t5.getCreationTime(),
-    };
+
     postTimes = curDates;
 
   }
@@ -104,6 +107,22 @@ class TimelineTest {
   }
 
   @Test
+  void getLastUpdate() {
+    DateTime now = new DateTime();
+    Date lastUpdate = timelines[0].getLastUpdate();
+
+
+    for(int i=0; i<timelines.length; i++){
+      Date result = timelines[i].getLastUpdate();
+      Date expectedTime = postTimes[i];
+      Date unExpectedTime = new Date();
+      assertEquals(result, expectedTime);
+    }
+  }
+
+
+
+  @Test
   void getStatus() {
     String[] status = {"DONE", "DONE", "PROGRESS", "WISHLIST", "DONE"};
     for(int i=0; i<timelines.length; i++){
@@ -138,11 +157,11 @@ class TimelineTest {
   @Test
   void testEquals() {
 
-    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", postTimes[0], "DONE", 5, "It was great");
-    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", postTimes[1], "DONE", 1, "It was terrible");
-    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", postTimes[2], "PROGRESS", 3, "Still in progress.");
-    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", postTimes[3], "WISHLIST", 5, "I head this was great.");
-    Timeline t5 = new Timeline("t5-u3-m4", "u1", "m5", postTimes[4], "DONE", 5, "It was great");
+    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", postTimes[0], postTimes[0],"DONE", 5, "It was great");
+    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", postTimes[1], postTimes[1], "DONE", 1, "It was terrible");
+    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", postTimes[2], postTimes[2], "PROGRESS", 3, "Still in progress.");
+    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", postTimes[3], postTimes[3], "WISHLIST", 5, "I head this was great.");
+    Timeline t5 = new Timeline("t5-u3-m4", "u1", "m5", postTimes[4], postTimes[4], "DONE", 5, "It was great");
     Timeline[] timelinesInstances = {t1, t2, t3, t4, t5};
 
     for(int i = 0; i< timelinesInstances.length; i++){
@@ -155,11 +174,11 @@ class TimelineTest {
 
   @Test
   void testHashcode(){
-    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", postTimes[0], "DONE", 5, "It was great");
-    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", postTimes[1], "DONE", 1, "It was terrible");
-    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", postTimes[2], "PROGRESS", 3, "Still in progress.");
-    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", postTimes[3], "WISHLIST", 5, "I head this was great.");
-    Timeline t5 = new Timeline("t5-u3-m4", "u1", "m5", postTimes[4], "DONE", 5, "It was great");
+    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", postTimes[0], postTimes[0],"DONE", 5, "It was great");
+    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", postTimes[1], postTimes[1], "DONE", 1, "It was terrible");
+    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m3", postTimes[2], postTimes[2], "PROGRESS", 3, "Still in progress.");
+    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", postTimes[3], postTimes[3], "WISHLIST", 5, "I head this was great.");
+    Timeline t5 = new Timeline("t5-u3-m4", "u1", "m5", postTimes[4], postTimes[4], "DONE", 5, "It was great");
     Timeline[] timelinesInstances = {t1, t2, t3, t4, t5};
 
     for(int i = 0; i< timelinesInstances.length; i++){
@@ -171,7 +190,7 @@ class TimelineTest {
 
   @Test
   void testToString(){
-    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", postTimes[0], "DONE", 5, "It was great");
+    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", postTimes[0], postTimes[0], "DONE", 5, "It was great");
     assertEquals(t1.toString(), timelines[0].toString());
   }
 
