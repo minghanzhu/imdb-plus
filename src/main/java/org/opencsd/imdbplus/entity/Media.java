@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Media {
   
   @DynamoDBHashKey
-  @DynamoDBAttribute
+  @DynamoDBAttribute(attributeName = "mediaId")
   private String mediaId; // tt0000001 (IMDB ID)
   @DynamoDBAttribute
   private String title; // The Shawshank Redemption
