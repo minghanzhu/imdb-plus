@@ -1,11 +1,9 @@
 package org.opencsd.imdbplus.controller;
 
 import org.opencsd.imdbplus.entity.Media;
-import org.opencsd.imdbplus.entity.User;
 import org.opencsd.imdbplus.repository.MediaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
