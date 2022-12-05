@@ -22,24 +22,6 @@ public class AnalysisRepository {
   public void setDynamoDBMapper(DynamoDBMapper dynamoDBMapper){
     this.dynamoDBMapper = dynamoDBMapper;
   }
-  public List<Timeline> getTimelineListByByFilter(String filterKey) {
-    // scan the timeline table to get all timelines of the media
-    HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-    eav.put(":v1", new AttributeValue().withS(filterKey));
-    StringBuilder filter = new StringBuilder(filterKey);
-    filter.append(" = :v1");
-
-    DynamoDBScanExpression expression = new DynamoDBScanExpression()
-        .withFilterExpression(filter.toString())
-        .withExpressionAttributeValues(eav);
-    List<Timeline> timelines = dynamoDBMapper.scan(Timeline.class, expression);
-    if (timelines != null && !timelines.isEmpty()) {
-      analysisLogger.info("retrieved: {size} timelines that matched {filter_key}", timelines.size(), filterKey);
-      return timelines;
-    } else {
-      return new ArrayList<>();
-    }
-  }
 
   public List<Timeline> getAllTimelines(){
     return dynamoDBMapper.scan(Timeline.class, new DynamoDBScanExpression());

@@ -68,9 +68,9 @@ class AnalysisServiceTest {
     Timeline t5 = new Timeline("t5-u1-m4", "u1", "m5", new Date(), new Date(), "WISHLIST", 0, "I REALLY WANT TO SEE IT.");
     Timeline t9 = new Timeline("t4-u2-m1", "u2", "m5", new Date(), new Date(), "WISHLIST", 5, "I head this was great.");
     Timeline t10 = new Timeline("t5-u1-m4", "u1", "m5", new Date(), new Date(), "WISHLIST", 0, "I REALLY WANT TO SEE IT.");
-    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m2", new Date(), new Date(), "PROGRESS", 5, "Still in progress.");
-    Timeline t8 = new Timeline("t3-u3-m3", "u3", "m1", new Date(), new Date(), "PROGRESS", 2, "Still in progress.");
-    Timeline t11 = new Timeline("t3-u3-m3", "u4", "m2", new Date(), new Date(), "PROGRESS", 5, "Still in progress.");
+    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m2", new Date(), new Date(), "IN_PROGRESS", 5, "Still in progress.");
+    Timeline t8 = new Timeline("t3-u3-m3", "u3", "m1", new Date(), new Date(), "IN_PROGRESS", 2, "Still in progress.");
+    Timeline t11 = new Timeline("t3-u3-m3", "u4", "m2", new Date(), new Date(), "IN_PROGRESS", 5, "Still in progress.");
 
     popularMedia = m1;
     highestAvgRating = m1;
@@ -123,7 +123,7 @@ class AnalysisServiceTest {
 
   @Test
   void getMediaInDone() {
-    when(analysisRepository.getTimelineListByByFilter("DONE")).thenReturn(doneTimelines);
+    when(analysisRepository.getAllTimelines()).thenReturn(allTimelines);
     when(analysisRepository.getMedia(popularMedia.getMediaId())).thenReturn(popularMedia);
 
     Media media = analysisService.getMediaInCategory("DONE");
@@ -132,7 +132,7 @@ class AnalysisServiceTest {
 
   @Test
   void getMediaInWish() {
-    when(analysisRepository.getTimelineListByByFilter("WISHLIST")).thenReturn(wishTimelines);
+    when(analysisRepository.getAllTimelines()).thenReturn(allTimelines);
     when(analysisRepository.getMedia(wishedMedia.getMediaId())).thenReturn(wishedMedia);
 
     Media media = analysisService.getMediaInCategory("WISHLIST");
@@ -141,7 +141,7 @@ class AnalysisServiceTest {
 
   @Test
   void getMediaInProgress() {
-    when(analysisRepository.getTimelineListByByFilter("IN_PROGRESS")).thenReturn(progressTimelines);
+    when(analysisRepository.getAllTimelines()).thenReturn(allTimelines);
     when(analysisRepository.getMedia(progressMedia.getMediaId())).thenReturn(progressMedia);
     Media media = analysisService.getMediaInCategory("IN_PROGRESS");
     assertEquals(progressMedia, media);
@@ -149,7 +149,7 @@ class AnalysisServiceTest {
 
   @Test
   void getMediaNotFound() {
-    when(analysisRepository.getTimelineListByByFilter("IN_PROGRESS")).thenReturn(allTimelines);
+    when(analysisRepository.getAllTimelines()).thenReturn(allTimelines);
     when(analysisRepository.getMedia(progressMedia.getMediaId())).thenReturn(null);
     Media media = analysisService.getMediaInCategory("IN_PROGRESS");
     assertEquals(null, media);
@@ -157,7 +157,7 @@ class AnalysisServiceTest {
 
   @Test
   void getTopTenDone() {
-    when(analysisRepository.getTimelineListByByFilter("DONE")).thenReturn(doneTimelines);
+    when(analysisRepository.getAllTimelines()).thenReturn(allTimelines);
     when(analysisRepository.getMedia(allMedia.get(0).getMediaId())).thenReturn(allMedia.get(0));
     when(analysisRepository.getMedia(allMedia.get(1).getMediaId())).thenReturn(allMedia.get(1));
     when(analysisRepository.getMedia(allMedia.get(2).getMediaId())).thenReturn(allMedia.get(2));
@@ -174,7 +174,7 @@ class AnalysisServiceTest {
     String id2  = wishTimelines.get(1).getMediaId();
 
 
-    when(analysisRepository.getTimelineListByByFilter("WISHLIST")).thenReturn(wishTimelines);
+    when(analysisRepository.getAllTimelines()).thenReturn(allTimelines);
     when(analysisRepository.getMedia(id1)).thenReturn(topTenListWished.get(0));
     when(analysisRepository.getMedia(id2)).thenReturn(topTenListWished.get(1));
 
@@ -187,7 +187,7 @@ class AnalysisServiceTest {
     String id1  = progressTimelines.get(0).getMediaId();
     String id2  = progressTimelines.get(1).getMediaId();
 
-    when(analysisRepository.getTimelineListByByFilter("IN_PROGRESS")).thenReturn(progressTimelines);
+    when(analysisRepository.getAllTimelines()).thenReturn(allTimelines);
     when(analysisRepository.getMedia(id1)).thenReturn(topTenListProgress.get(0));
     when(analysisRepository.getMedia(id2)).thenReturn(topTenListProgress.get(1));
 
@@ -198,7 +198,7 @@ class AnalysisServiceTest {
 
   @Test
   void userPreference() {
-    when(analysisRepository.getTimelineListByByFilter("u1")).thenReturn(doneTimelines);
+    when(analysisRepository.getAllTimelines()).thenReturn(doneTimelines);
     when(analysisRepository.getMedia(allMedia.get(0).getMediaId())).thenReturn(allMedia.get(0));
     when(analysisRepository.getMedia(allMedia.get(1).getMediaId())).thenReturn(allMedia.get(1));
     when(analysisRepository.getMedia(allMedia.get(2).getMediaId())).thenReturn(allMedia.get(2));
