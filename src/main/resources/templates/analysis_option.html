@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>Demo Application</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+</head>
+<style>
+.button-option{
+            display: inline-block;
+            height:50px;
+            width:500px;
+            outline: 0;
+            border:0;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            color: #000;
+            background: #fff;
+            line-height: 15px;
+            border-radius: 40px;
+            padding: 20px;
+            font-size: 25px;
+            font-weight: 600;
+            box-shadow: rgb(255, 198, 0) -2px -2px 0px 2px, rgb(246, 84, 174) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
+            transition: all 0.2s;
+}
+.home-button {
+            display: inline-block;
+            height:50px;
+            width:270px;
+            outline: 0;
+            border:0;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            color: #000;
+            background: #fff;
+            line-height: 15px;
+            border-radius: 40px;
+            padding: 20px;
+            font-size: 25px;
+            font-weight: 600;
+            box-shadow: rgb(128, 128, 128) -2px -2px 0px 2px, rgb(128, 128, 128) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
+            transition: all 0.2s;
+}
+</style>
+<body>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-6">
+        <input class = "button-option" type="button" value="Get Highest-Rated Movie"
+               onclick="getHighestRatingAPI();"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-6">
+        <input class = "button-option" type="button" value="Get Most Watched Movie"
+               onclick="getMostWatchedAPI();"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-6">
+        <input class = "button-option" type="button" value="Get Top Ten Movies"
+               onclick="getTopTenAPI();"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3" >
+    </div>
+    <div class ="col-md-6" >
+        <button class="button-option" onclick="window.location.href='http://localhost:8083/get-profile';">
+            Get User Preference by ID
+        </button>
+    </div>
+    <div class ="col-md-3" >
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 60px">
+    <div class ="col-md-4">
+    </div>
+    <div class ="col-md-4">
+        <button class="home-button" onclick="window.location.href='http://localhost:8083/home';">
+            Go to Home Page
+        </button>
+    </div>
+    <div class ="col-md-4">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-4">
+    </div>
+    <div class ="col-md-4">
+        <div id="list" style = "padding-top: 50px; font-size: 20px;"></div>
+    </div>
+    <div class ="col-md-4">
+    </div>
+</div>
+
+<script>
+	function getHighestRatingAPI() {
+
+	    $("#list").empty();//Clear old data before ajax
+
+	    $.ajax({
+	        url: "/api/v1/analysis/highest-rated",
+	        type: "GET",
+	        success: function (data) {
+	        	var table = $("#list");
+                table.append("<b>Media ID: </b><p>" + data.mediaId + "</p>");
+                table.append("<b>Title: </b><p>" + data.title + "</p>");
+                table.append("<b>Release Date: </b><p>" + data.release_date + "</p>");
+                table.append("<b>Genre: </b><p>" + data.genre + "</p>");
+	        },
+	        error: function (jqXHR, textStatus, errorThrown) {
+	        }
+		});
+	}
+
+	function getMostWatchedAPI() {
+
+	    $("#list").empty();//Clear old data before ajax
+
+	    $.ajax({
+	        url: "/api/v1/analysis/most",
+	        type: "GET",
+	        success: function (data) {
+	        	var table = $("#list");
+                table.append("<b>Media ID: </b><p>" + data.mediaId + "</p>");
+                table.append("<b>Title: </b><p>" + data.title + "</p>");
+                table.append("<b>Release Date: </b><p>" + data.release_date + "</p>");
+                table.append("<b>Genre: </b><p>" + data.genre + "</p>");
+	        },
+	        error: function (jqXHR, textStatus, errorThrown) {
+	        }
+		});
+	}
+
+	function getTopTenAPI() {
+
+	    $("#list").empty();//Clear old data before ajax
+
+	    $.ajax({
+	        url: "/api/v1/analysis/top-ten",
+	        type: "GET",
+	        success: function (data) {
+	        	var table = $("#list");
+
+	        	for (let i = 0; i < data.length; i++) {
+                    table.append("<b>Media ID: </b><p>" + data[i].mediaId + "</p>");
+                    table.append("<b>Title: </b><p>" + data[i].title + "</p>");
+                    table.append("<b>Release Date: </b><p>" + data[i].release_date + "</p>");
+                    table.append("<b>Genre: </b><p>" + data[i].genre + "</p><br>");
+                }
+
+	        },
+	        error: function (jqXHR, textStatus, errorThrown) {
+	        }
+		});
+	}
+
+</script>
+</body>
+</html>
