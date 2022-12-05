@@ -1,11 +1,5 @@
 package org.opencsd.imdbplus.controller;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.repository.MediaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
