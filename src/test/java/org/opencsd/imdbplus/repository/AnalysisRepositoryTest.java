@@ -39,6 +39,7 @@ class AnalysisRepositoryTest {
   private List<Timeline> progressTimelines;
   private List<Timeline> wishTimelines;
   private PaginatedScanList<Timeline> emptyList;
+  private Media m1;
 
   @BeforeEach
   void setUp() {
@@ -46,6 +47,7 @@ class AnalysisRepositoryTest {
     mockDynamo = mock(DynamoDBMapper.class);
     analysisRepository.setDynamoDBMapper(mockDynamo);
 
+    m1 =  new Media("m1", "Movie 1", "2012-07-17", "Action");
 
     Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", new Date(), new Date(), "DONE", 5, "It was great");
     Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", new Date(), new Date(), "DONE", 1, "It was terrible");
@@ -70,7 +72,6 @@ class AnalysisRepositoryTest {
 
   }
 
-
   @Test
   void getTimelineListByByFilter() {
     HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
@@ -83,5 +84,20 @@ class AnalysisRepositoryTest {
     List<Timeline> result = analysisRepository.getTimelineListByByFilter("DONE");
     assertEquals(new ArrayList<>(), result);
   }
+
+  @Test
+  void getAllTimelines(){
+    when(mockDynamo.scan(Timeline.class, new DynamoDBScanExpression())).thenReturn(emptyList);
+    List<Timeline> result = analysisRepository.getAllTimelines();
+    assertEquals(emptyList, result);
+  }
+  @Test
+  void getMedia(){
+    when(mockDynamo.load(Media.class, "m1")).thenReturn(m1);
+
+    Media media = analysisRepository.getMedia("u1");
+    assertEquals(null, media);
+  }
+
 }
 

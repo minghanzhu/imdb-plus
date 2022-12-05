@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
 import java.util.ArrayList;
@@ -49,6 +51,7 @@ class AnalysisControllerTest {
   private List<Media> topTenListWanted;
   private List<Media> topTenListProgress;
   private List<Media> topTenListWished;
+  private Map<String, Long> userPrefered;
 
 
   @BeforeEach
@@ -63,6 +66,11 @@ class AnalysisControllerTest {
     topTenListWanted = Arrays.asList(popularMedia, wishedMedia, progressMedia);
     topTenListWished = Arrays.asList(popularMedia, wishedMedia);
     topTenListProgress = Arrays.asList(progressMedia, other);
+
+    userPrefered = new HashMap<>();
+    userPrefered.put("Action", 2L);
+    userPrefered.put("Adventure", 1L);
+    userPrefered.put("Comedy", 1L);
 
   }
 
@@ -250,6 +258,22 @@ class AnalysisControllerTest {
         .andExpect(MockMvcResultMatchers.
             jsonPath("$[1].title").value(topTenListProgress.get(1).getTitle()));
   }
+
+  @Test
+  void getUserPerference() throws Exception {
+    when(mockAnalysisService.userPreference("u1")).thenReturn(userPrefered);
+    RequestBuilder request = get("/api/v1/analysis/userprofile/{id}", "u1");
+
+    mockMvc.perform(request).andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.
+            jsonPath("$.Action").value(userPrefered.get("Action")))
+        .andExpect(MockMvcResultMatchers.
+            jsonPath("$.Adventure").value(userPrefered.get("Adventure")))
+        .andExpect(MockMvcResultMatchers.
+            jsonPath("$.Comedy").value(userPrefered.get("Comedy")));
+  }
+
 
   /**
    * Simple file reader that returns a list of media

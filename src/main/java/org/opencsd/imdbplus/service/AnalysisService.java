@@ -156,13 +156,9 @@ public class AnalysisService {
       this.mediaId = mediaId;
       this.count = count;
     }
-
     @Override
     public int compareTo(MediaWrapper other) {
       return count - other.count;
     }
   }
-
-
-
 }
