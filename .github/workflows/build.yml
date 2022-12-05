@@ -5,6 +5,7 @@ on:
       - master
       - sahitya-tests
       - mzhu-add-tests-v2
+      - bgutu-tests
       - rex-branch
 
   pull_request:
