@@ -1,0 +1,12 @@
+.DS_Store
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/encodings.xml
+.idea/jpa-buddy.xml
+.idea/misc.xml
+.idea/vcs.xml
+*.xml
+*.class
+src/main/resources/config-dev.properties
+target
+imdb-plus.iml
