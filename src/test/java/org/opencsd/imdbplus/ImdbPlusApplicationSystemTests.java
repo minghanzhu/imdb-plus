@@ -1,11 +1,15 @@
 package org.opencsd.imdbplus;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,6 +17,9 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.opencsd.imdbplus.entity.Media;
+import org.opencsd.imdbplus.repository.MediaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -24,6 +31,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ImdbPlusApplicationSystemTests {
 
   static String dynamoDBEndpoint = "http://localhost:8083";
+
+  @Autowired
+  private MediaRepository mediaRepository;
+
+  ImdbPlusApplicationSystemTests() throws IOException {
+  }
 
   public static String postRequest(String jsonInputString, String urlString, String accessToken)
       throws IOException {
@@ -203,7 +216,7 @@ class ImdbPlusApplicationSystemTests {
     assertThat(response2).contains("tt0000001");
 
     // DELETE the added test user and timeline item to clean up
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "-tt0000001", accessToken);
     deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
   }
 
@@ -260,8 +273,8 @@ class ImdbPlusApplicationSystemTests {
     assertThat(response4).contains("tt0000001").contains("tt0000002");
 
     // DELETE the added test user and timeline item to clean up
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000002", accessToken);
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "-tt0000001", accessToken);
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId +  "-tt0000002", accessToken);
     deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
   }
 
@@ -333,8 +346,8 @@ class ImdbPlusApplicationSystemTests {
     assertThat(response6).contains("tt0000002").contains(userId2);
 
     // DELETE the added test user and timeline item to clean up
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId1 + "/" + "tt0000001", accessToken1);
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId2 + "/" + "tt0000002", accessToken2);
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId1 + "-tt0000001", accessToken1);
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId2 + "-tt0000002", accessToken2);
     deleteRequest(dynamoDBEndpoint + "/user/" + userId1, accessToken1);
     deleteRequest(dynamoDBEndpoint + "/user/" + userId2, accessToken2);
   }
@@ -375,7 +388,7 @@ class ImdbPlusApplicationSystemTests {
     assertThat(response3).contains("tt0000001");
 
     // DELETE the added test user and timeline item to clean up
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001", accessToken);
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "-tt0000001", accessToken);
     deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
   }
 }

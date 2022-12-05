@@ -6,7 +6,6 @@ import org.opencsd.imdbplus.entity.AccountSetting;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
 import org.opencsd.imdbplus.entity.User;
-import org.opencsd.imdbplus.repository.TimelineRepository;
 import org.opencsd.imdbplus.repository.UserRepository;
 import org.opencsd.imdbplus.repository.MediaRepository;
 import java.util.List;
@@ -15,6 +14,7 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.opencsd.imdbplus.service.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -27,7 +27,7 @@ class ImdbPlusApplicationIntegrationTests {
   private UserRepository userRepository;
 
   @Autowired
-  private TimelineRepository timelineRepository;
+  private TimelineService timelineService;
 
   @Autowired
   private MediaRepository mediaRepository;
@@ -39,7 +39,7 @@ class ImdbPlusApplicationIntegrationTests {
   public static String testAccessToken = "";
   public static User retrievedUser = new User();
   public static String testMediaId = "";
-  
+
   static String dynamoDBEndpoint = "http://localhost:8083";
 
 
@@ -123,7 +123,7 @@ class ImdbPlusApplicationIntegrationTests {
     String testComment = "This is a test comment";
     Timeline testTimeline = new Timeline(testTimelineId, testUserId, testMediaId, testStatus,
         testRating, testComment);
-    Timeline response = timelineRepository.save(testTimeline, testAccessToken);
+    Timeline response = timelineService.save(testTimeline, testAccessToken);
     assertThat(response).isNotNull();
   }
 
@@ -136,7 +136,7 @@ class ImdbPlusApplicationIntegrationTests {
     String testComment = "This is a test comment";
     Timeline testTimeline = new Timeline(testTimelineId, testUserId, testMediaId, testStatus,
         testRating, testComment);
-    Timeline response = timelineRepository.save(testTimeline, "testAccessToken");
+    Timeline response = timelineService.save(testTimeline, "testAccessToken");
     assertThat(response).isNull();
   }
 
@@ -147,7 +147,7 @@ class ImdbPlusApplicationIntegrationTests {
   @Test
   @Order(8)
   void testTimelineGetTimelineByUserId() {
-    List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
+    List<Timeline> response = timelineService.getTimelineByUserId(testUserId);
     assertThat(response).isNotNull().hasSize(1);
     assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
     assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
@@ -160,7 +160,7 @@ class ImdbPlusApplicationIntegrationTests {
   @Test
   @Order(9)
   void testTimelineGetTimelineByMediaId() {
-    List<Timeline> response = timelineRepository.getTimelineByMediaId(testMediaId);
+    List<Timeline> response = timelineService.getTimelineByMediaId(testMediaId);
     assertThat(response).isNotNull().hasSize(1);
     assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
     assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
@@ -177,7 +177,7 @@ class ImdbPlusApplicationIntegrationTests {
   @Test
   @Order(10)
   void testTimelineDelete() {
-    String response = timelineRepository.delete(testUserId, testMediaId, testAccessToken);
+    String response = timelineService.delete(testUserId+"-"+testMediaId, testAccessToken);
     assertThat(response).isEqualTo("Timeline deleted successfully");
   }
 
@@ -188,7 +188,7 @@ class ImdbPlusApplicationIntegrationTests {
   @Test
   @Order(11)
   void testTimelineGetTimelineByUserIdNotFound() {
-    List<Timeline> response = timelineRepository.getTimelineByUserId(testUserId);
+    List<Timeline> response = timelineService.getTimelineByUserId(testUserId);
     assertThat(response).isEmpty();
   }
 
@@ -220,19 +220,19 @@ class ImdbPlusApplicationIntegrationTests {
     assert response.equals(testMedia);
   }
 
-    @Test
-    @Order(14)
-    void testMediaSaveDuplicate() {
-        // Create a test media
-      Media testMedia = new Media("tt0000012", "testTitle", "2017-09-09", "Drama");
-      try {
-        mediaRepository.saveMedia(testMedia);
-      } catch (Exception e) {
-        assert e.getClass().equals(com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException.class);
-        assert e.getMessage().equals("Conditional check failed");
-      }
-
+  @Test
+  @Order(14)
+  void testMediaSaveDuplicate() {
+    // Create a test media
+    Media testMedia = new Media("tt0000012", "testTitle", "2017-09-09", "Drama");
+    try {
+      mediaRepository.saveMedia(testMedia);
+    } catch (Exception e) {
+      assert e.getClass().equals(com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException.class);
+      assert e.getMessage().equals("Conditional check failed");
     }
+
+  }
 
   @Test
   @Order(15)
