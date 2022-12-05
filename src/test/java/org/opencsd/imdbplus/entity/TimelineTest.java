@@ -100,8 +100,6 @@ class TimelineTest {
     for(int i=0; i<timelines.length; i++){
       Date result = timelines[i].getCreationTime();
       Date expectedTime = postTimes[i];
-      Date unExpectedTime = new Date();
-      assertNotEquals(result, unExpectedTime);
       assertEquals(result, expectedTime);
     }
   }

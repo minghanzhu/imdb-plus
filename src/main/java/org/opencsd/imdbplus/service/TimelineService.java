@@ -132,13 +132,15 @@ public class TimelineService {
    */
   public List<Timeline> getTimelineByMediaId(String mediaId) {
     // scan the timeline table to get all timelines of the media
-    Media curMedia = mediaRepository.getEntity(mediaId);
-    if(curMedia != null){
-      serviceLogger.info("{}'s timelines retrieved", mediaId);
-      return  timelineRepository.getTimelineByMediaId(mediaId);
-    }else{
-      return new ArrayList<>();
-    }
+//    Media curMedia = mediaRepository.getEntity(mediaId);
+//    if(curMedia != null){
+//      serviceLogger.info("{}'s timelines retrieved", mediaId);
+//      return  timelineRepository.getTimelineByMediaId(mediaId);
+//    }else{
+//      return new ArrayList<>();
+//    }
+    serviceLogger.info("{}'s timelines retrieved", mediaId);
+    return  timelineRepository.getTimelineByMediaId(mediaId);
   }
 
   /**
