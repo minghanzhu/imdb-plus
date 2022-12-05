@@ -85,7 +85,7 @@ class TimelineControllerTest {
 
     when(timelineService.save(testLine, token)).thenReturn(allTimelines.get(1));
 
-    RequestBuilder requestBuilderSucess = post("/user/timeline")
+    RequestBuilder requestBuilderSucess = post("/timeline")
         .content(asJsonString(testLine))
         .header("Authorization", token)
         .contentType(MediaType.APPLICATION_JSON)
@@ -104,7 +104,7 @@ class TimelineControllerTest {
             jsonPath("$.rating").value(postedTimeline.getRating()));
 
     String wrongToken = "some-token";
-    RequestBuilder requestBuilderFail = post("/user/timeline")
+    RequestBuilder requestBuilderFail = post("/timeline")
         .content(asJsonString(testLine))
         .header("Authorization", wrongToken)
         .contentType(MediaType.APPLICATION_JSON)
@@ -121,8 +121,9 @@ class TimelineControllerTest {
   void deleteTimelineSuccess() throws Exception {
 
     when(timelineService.delete(allTimelines.get(4).getTimelineId(), userToken)).thenReturn("Timeline deleted successfully");
-
-    RequestBuilder deleteRequestSucess = delete("/user/timeline/{timelineId}", allTimelines.get(4).getTimelineId())
+//    String userId = allTimelines.get(4).getUserId();
+    String timelineId = allTimelines.get(4).getTimelineId();
+    RequestBuilder deleteRequestSucess = delete("/timeline/{timelineId}", timelineId)
         .content(asJsonString(allTimelines.get(4)))
         .header("Authorization", userToken)
         .contentType(MediaType.APPLICATION_JSON);
@@ -139,7 +140,7 @@ class TimelineControllerTest {
     when(timelineService.delete(allTimelines.get(3).getTimelineId(), userToken)).thenReturn("Invalid access token");
 
 
-    RequestBuilder deleteRequestSucess = delete("/user/timeline/{timelineId}", allTimelines.get(3).getTimelineId())
+    RequestBuilder deleteRequestSucess = delete("/timeline/{timelineId}", allTimelines.get(3).getTimelineId())
         .content(asJsonString(allTimelines.get(2)))
         .header("Authorization", userToken)
         .contentType(MediaType.APPLICATION_JSON);
@@ -156,7 +157,7 @@ class TimelineControllerTest {
     when(timelineService.delete(allTimelines.get(3).getTimelineId(), userToken)).thenReturn("Timeline not found");
 
 
-    RequestBuilder deleteRequestSucess = delete("/user/timeline/{timelineId}", allTimelines.get(3).getTimelineId())
+    RequestBuilder deleteRequestSucess = delete("/timeline/{timelineId}", allTimelines.get(3).getTimelineId())
         .content(asJsonString(allTimelines.get(2)))
         .header("Authorization", userToken)
         .contentType(MediaType.APPLICATION_JSON);
@@ -173,7 +174,7 @@ class TimelineControllerTest {
     String userId = "u3";
     when(timelineService.getTimelineByUserId(userId)).thenReturn(userTimelines);
 
-    RequestBuilder getRequest = get("/user/timeline/{userId}", userId)
+    RequestBuilder getRequest = get("/timeline/user/{userId}", userId)
         .header("Authorization", userToken)
         .contentType(MediaType.APPLICATION_JSON);
 
@@ -210,7 +211,7 @@ class TimelineControllerTest {
     String userId = "u3";
     when(timelineService.getTimelineByUserId(userId)).thenReturn(null);
 
-    RequestBuilder getRequest = get("/user/timeline/{userId}", userId)
+    RequestBuilder getRequest = get("/timeline/user/{userId}", userId)
         .header("Authorization", userToken)
         .contentType(MediaType.APPLICATION_JSON);
 
@@ -225,7 +226,7 @@ class TimelineControllerTest {
     String mediaId = "m1";
     when(timelineService.getTimelineByMediaId(mediaId)).thenReturn(mediaTimelines);
 
-    RequestBuilder getRequest = get("/user/timeline/media/{mediaId}", mediaId)
+    RequestBuilder getRequest = get("/timeline/media/{mediaId}", mediaId)
         .header("Authorization", userToken)
         .contentType(MediaType.APPLICATION_JSON);
 
@@ -261,7 +262,7 @@ class TimelineControllerTest {
     String mediaId = "m3-non";
     when(timelineService.getTimelineByMediaId(mediaId)).thenReturn(null);
 
-    RequestBuilder getRequest = get("/user/timeline/media/{userId}", mediaId)
+    RequestBuilder getRequest = get("/timeline/media/{userId}", mediaId)
         .header("Authorization", userToken)
         .contentType(MediaType.APPLICATION_JSON);
 
@@ -277,7 +278,7 @@ class TimelineControllerTest {
     String userId = "u1";
     when(timelineService.getTimelineByUserIdAndMediaId(userId, mediaId)).thenReturn(postedTimeline);
 
-    RequestBuilder getRequest = get("/user/timeline/{userId}/{mediaId}", userId, mediaId)
+    RequestBuilder getRequest = get("/timeline/{userId}/{mediaId}", userId, mediaId)
         .header("Authorization", userToken)
         .contentType(MediaType.APPLICATION_JSON);
 
@@ -304,7 +305,7 @@ class TimelineControllerTest {
     String userId = "u3-h4";
     when(timelineService.getTimelineByUserIdAndMediaId(userId, mediaId)).thenReturn(null);
 
-    RequestBuilder getRequest = get("/user/timeline/{userId}/{mediaId}", userId, mediaId)
+    RequestBuilder getRequest = get("/timeline/{userId}/{mediaId}", userId, mediaId)
         .header("Authorization", userToken)
         .contentType(MediaType.APPLICATION_JSON);
 

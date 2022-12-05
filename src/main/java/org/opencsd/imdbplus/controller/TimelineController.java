@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user/timeline")
+@RequestMapping()
 public class TimelineController {
   Logger timelineControllerLogger = LoggerFactory.getLogger(TimelineController.class);
 
@@ -28,7 +28,7 @@ public class TimelineController {
   @Autowired
   private UserRepository userRepository;
 
-  @PostMapping()
+  @PostMapping("/timeline")
   public ResponseEntity<Timeline> saveTimeline(@RequestBody() Timeline timeline,
       @RequestHeader("Authorization") String accessToken) {
 
@@ -42,7 +42,7 @@ public class TimelineController {
     }
   }
 
-  @DeleteMapping("/{timelineId}")
+  @DeleteMapping("/timeline/{timelineId}")
   public ResponseEntity<String> deleteTimeline(@PathVariable("timelineId") String timelineId,
       @RequestHeader("Authorization") String accessToken) {
     String response =  timelineService.delete(timelineId, accessToken);
@@ -56,7 +56,7 @@ public class TimelineController {
   }
 
   // Get all timelines by userId
-  @GetMapping("/{userId}")
+  @GetMapping("/timeline/user/{userId}")
   public ResponseEntity<List<Timeline>> getTimeline(@PathVariable("userId") String userId) {
     List<Timeline> response = timelineService.getTimelineByUserId(userId);
     if (response != null) {
@@ -67,7 +67,7 @@ public class TimelineController {
   }
 
   // Get all timelines by mediaId
-  @GetMapping("/media/{mediaId}")
+  @GetMapping("/timeline/media/{mediaId}")
   public ResponseEntity<List<Timeline>> getTimelineByMediaId(@PathVariable("mediaId") String mediaId) {
     List<Timeline> response =  timelineService.getTimelineByMediaId(mediaId);
     if (response == null) {
@@ -78,7 +78,7 @@ public class TimelineController {
   }
 
   // Get a timeline by userId and mediaId
-  @GetMapping("/{userId}/{mediaId}")
+  @GetMapping("/timeline/{userId}/{mediaId}")
   public ResponseEntity<Timeline> getTimelineByUserIdAndMediaId(@PathVariable("userId") String userId,
       @PathVariable("mediaId") String mediaId) {
     Timeline timeline = timelineService.getTimelineByUserIdAndMediaId(userId, mediaId);

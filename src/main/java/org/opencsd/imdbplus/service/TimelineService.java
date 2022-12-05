@@ -43,7 +43,7 @@ public class TimelineService {
     User user = userRepository.getUser(userId);
     Media media = mediaRepository.getEntity(mediaId);
     serviceLogger.debug("user : {} \n media: {}", user, media);
-    if (user.getAccessToken().equals(accessToken) && media != null) {
+    if (user.getAccessToken().equals(accessToken)) {
       String id = userId+"-"+mediaId;
       timeline.setTimelineId(id);
       Timeline saveTimeline = timelineRepository.save(timeline);
