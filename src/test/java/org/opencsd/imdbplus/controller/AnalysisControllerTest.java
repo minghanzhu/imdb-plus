@@ -63,11 +63,6 @@ class AnalysisControllerTest {
 
   @AfterEach
   void tearDown() {
-    mockAnalysisRepo = null;
-    popularMedia = null;
-    highestAvgRating = null;
-    topTenListWanted.clear();
-    topTenListWished.clear();
   }
 
 

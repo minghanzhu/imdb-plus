@@ -1,5 +1,11 @@
 package org.opencsd.imdbplus.controller;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.repository.MediaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -138,6 +144,25 @@ public class MediaControllerTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Simple file reader that returns a list of media
+     * */
+    public List<Media> readMediaFile(String path) throws IOException {
+        FileInputStream inputStream = new FileInputStream(path);
+        List<Media> readList = new ArrayList<>();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+        while(bufferedReader.ready()){
+            String line = bufferedReader.readLine();
+            String[] lineValues = line.split(",");
+            if(lineValues.length == 4){
+                Media media = new Media(lineValues[0], lineValues[1], lineValues[2], lineValues[3]);
+                readList.add(media);
+            }
+        }
+        return readList;
     }
 
 }

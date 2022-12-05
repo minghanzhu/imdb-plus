@@ -1,28 +1,24 @@
 package org.opencsd.imdbplus.controller;
 
 import org.opencsd.imdbplus.entity.Media;
-import org.opencsd.imdbplus.entity.Timeline;
 import org.opencsd.imdbplus.repository.AnalysisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/v1/analysis")
 public class AnalysisController {
 
   @Autowired
   private AnalysisRepository analysisRepository;
 
-  @GetMapping("api/v1/analysis/timelines")
-  public ResponseEntity<Timeline> getTimeline() {
-    return analysisRepository.getAllTimeline();
-  }
-
-  @GetMapping("api/v1/analysis/highest-rated")
-  public ResponseEntity highestRating() {
+  @GetMapping("/highest-rated")
+  public ResponseEntity<Object> highestRating() {
     try {
       return analysisRepository.getHighestRating();
     } catch (Exception e) {
@@ -30,7 +26,7 @@ public class AnalysisController {
     }
   }
 
-  @GetMapping("api/v1/analysis/most")
+  @GetMapping("/most")
   public ResponseEntity<Media> getMostWatched(
       @RequestParam(name = "status", defaultValue = "DONE") String status) {
     status = (status.equalsIgnoreCase("progress")) ? "IN_PROGRESS" : status.toUpperCase();
@@ -38,7 +34,7 @@ public class AnalysisController {
 
   }
 
-  @GetMapping("api/v1/analysis/top-ten")
+  @GetMapping("/top-ten")
   public ResponseEntity<Media> getTopTen(
       @RequestParam(name = "status", defaultValue = "DONE") String status) {
     status = (status.equalsIgnoreCase("progress")) ? "IN_PROGRESS" : status.toUpperCase();
@@ -46,8 +42,8 @@ public class AnalysisController {
 
   }
 
-  @GetMapping("/api/v1/timeline/analysis/userprofile/{id}")
-  public ResponseEntity getUserPreference(@PathVariable("id") String userId){
+  @GetMapping("/userprofile/{id}")
+  public ResponseEntity<Media> getUserPreference(@PathVariable("id") String userId){
     return analysisRepository.userPreference(userId);
   }
 }

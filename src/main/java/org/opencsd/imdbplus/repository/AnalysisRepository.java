@@ -4,7 +4,6 @@ package org.opencsd.imdbplus.repository;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.PriorityQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
@@ -27,18 +25,6 @@ public class AnalysisRepository {
   @Autowired
   private DynamoDBMapper dynamoDBMapper;
 
-  public ResponseEntity getAllTimeline() {
-    PaginatedScanList<Timeline> timelines = dynamoDBMapper.scan(Timeline.class,
-        new DynamoDBScanExpression());
-
-    try {
-      return ResponseEntity.ok(timelines);
-    } catch (DynamoDBMappingException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
-          .body("Sorry, our servers are down at the moment.");
-    }
-
-  }
 
   public String getHighestRatingHelper(List<Timeline> allTimelines) {
     Map<String, List<Long>> ratingMap = new HashMap<>();

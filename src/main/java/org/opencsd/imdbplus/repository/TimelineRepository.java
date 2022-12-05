@@ -1,12 +1,14 @@
 package org.opencsd.imdbplus.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import java.util.ArrayList;
 import org.opencsd.imdbplus.entity.Timeline;
-import org.opencsd.imdbplus.entity.User;
 import java.util.HashMap;
 import java.util.List;
+import org.opencsd.imdbplus.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,41 +18,38 @@ public class TimelineRepository {
   @Autowired
   private DynamoDBMapper dynamoDBMapper;
 
-  @Autowired
-  private UserRepository userRepository;
+  public void setDynamoDBMapper(DynamoDBMapper dynamoDBMapper){
+    this.dynamoDBMapper = dynamoDBMapper;
+  }
 
-  public Timeline save(Timeline timeline, String accessToken) {
-    // Update creation time
-    String creationTime = String.valueOf(System.currentTimeMillis());
-    timeline.setCreationTime(creationTime);
+  public Timeline save(Timeline timeline) {
     // Check if the user exists and the access token is valid
-    String userId = timeline.getUserId();
-    User user = userRepository.getUser(userId);
-    if (user.getAccessToken().equals(accessToken)) {
+    try {
       dynamoDBMapper.save(timeline);
       return timeline;
-    } else {
+    }catch (DynamoDBMappingException e){
       return null;
     }
   }
 
-  public String delete(String userId, String mediaId, String accessToken) {
-    // Check if the user exists and the access token is valid
-    User user = userRepository.getUser(userId);
-    if (!user.getAccessToken().equals(accessToken)) {
-      return "Invalid access token";
-    }
-    // Check if the timeline exists
-    Timeline timeline = getTimelineByTimelineId(userId, mediaId);
-    if (timeline == null) {
-      return "Timeline does not exist";
-    }
-    dynamoDBMapper.delete(timeline);
-    return "Timeline deleted successfully";
+  public Timeline getTimeline(String timelineId) {
+    return dynamoDBMapper.load(Timeline.class, timelineId);
   }
 
-  public void update(Timeline timeline) {
+  public void delete(String timelineId) {
+    // Check if the user exists and the access token is valid
+    Timeline timeline = getTimeline(timelineId);
+    if (timeline != null)
+      dynamoDBMapper.batchDelete(timeline);
+  }
+
+  public Timeline update(Timeline timeline) {
     dynamoDBMapper.save(timeline);
+    return timeline;
+  }
+
+  public List<Timeline> scanDynamo(DynamoDBScanExpression expression){
+    return dynamoDBMapper.scan(Timeline.class, expression);
   }
 
   public List<Timeline> getTimelineByUserId(String userId) {
@@ -60,7 +59,12 @@ public class TimelineRepository {
     DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
         .withFilterExpression("userId = :v1")
         .withExpressionAttributeValues(eav);
-    return dynamoDBMapper.scan(Timeline.class, scanExpression);
+    List<Timeline> timelines = scanDynamo(scanExpression);
+    if (timelines != null && !timelines.isEmpty()) {
+      return timelines;
+    } else {
+      return new ArrayList<>();
+    }
   }
 
   public List<Timeline> getTimelineByMediaId(String mediaId) {
@@ -70,11 +74,20 @@ public class TimelineRepository {
     DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
         .withFilterExpression("mediaId = :v1")
         .withExpressionAttributeValues(eav);
-    return dynamoDBMapper.scan(Timeline.class, scanExpression);
+    List<Timeline> timelines = scanDynamo(scanExpression);
+    if (timelines != null && !timelines.isEmpty()) {
+      return timelines;
+    } else {
+      return new ArrayList<>();
+    }
   }
 
-  public Timeline getTimelineByTimelineId(String userId, String mediaId) {
-    String timelineId = userId + "-" + mediaId;
-    return dynamoDBMapper.load(Timeline.class, timelineId);
+  public Timeline getTimelineByUserIdAndMediaId(String userId, String mediaId) {
+    Timeline timeline = dynamoDBMapper.load(Timeline.class, userId + "-" + mediaId);
+    if (timeline != null) {
+      return timeline;
+    } else {
+      return null;
+    }
   }
 }
