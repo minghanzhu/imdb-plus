@@ -139,7 +139,6 @@ class TimelineServiceTest {
 
     Timeline result = timelineService.getTimeline("t3-u3-m3");
     assertEquals(result, allTimelines.get(2));
-
   }
 
   @Test

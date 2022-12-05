@@ -46,6 +46,8 @@ public class TimelineService {
     if (user.getAccessToken().equals(accessToken)) {
       String id = userId+"-"+mediaId;
       timeline.setTimelineId(id);
+      timeline.getCreationTime();
+      timeline.getLastUpdate();
       Timeline saveTimeline = timelineRepository.save(timeline);
       serviceLogger.info("{} created {}",userId, timeline.getTimelineId() );
       if(saveTimeline != null){

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import org.opencsd.imdbplus.entity.Timeline;
 import java.util.HashMap;
 import java.util.List;
-import org.opencsd.imdbplus.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
