@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>Demo Application</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+</head>
+<style>
+.button-main{
+            display: inline-block;
+            height:80px;
+            width:200px;
+            outline: 0;
+            border:0;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            color: #000;
+            background: #fff;
+            line-height: 30px;
+            border-radius: 40px;
+            padding: 20px;
+            font-size: 30px;
+            font-weight: 600;
+            box-shadow: rgb(255, 198, 0) -2px -2px 0px 2px, rgb(246, 84, 174) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
+            transition: all 0.2s;
+}
+</style>
+<body>
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-2" >
+    </div>
+    <div class ="col-md-8" >
+        <p style="font-size: 40px; display:inline">   Welcome to IMDb plus!   </p>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjtGXlNNed7NRin71dU9PcGL7P60Gm9D7ZDp4bKth8JT3a1fT5_Otb7heZeJ9rTEh5QxM&usqp=CAU"
+             alt="home_image">
+    </div>
+    <div class ="col-md-2" >
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-3" >
+    </div>
+    <div class ="col-md-6" >
+        <p style="font-size: 30px;">   Please Choose a Service:   </p>
+    </div>
+    <div class ="col-md-3" >
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-4" >
+    </div>
+    <div class ="col-md-4" >
+        <button class="button-main" onclick="window.location.href='http://localhost:8083/user-option';">
+            User
+        </button>
+    </div>
+    <div class ="col-md-4" >
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-4" >
+    </div>
+    <div class ="col-md-4" >
+        <button class="button-main" onclick="window.location.href='http://localhost:8083/timeline-option';">
+            Timeline
+        </button>
+    </div>
+    <div class ="col-md-4" >
+    </div>
+</div>
+
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-4" >
+    </div>
+    <div class ="col-md-4" >
+        <button class="button-main" onclick="window.location.href='http://localhost:8083/analysis-option';">
+            Analysis
+        </button>
+    </div>
+    <div class ="col-md-4" >
+    </div>
+</div>
+
+<script>
+</script>
+</body>
+</html>
