@@ -1,8 +1,13 @@
 package org.opencsd.imdbplus.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import org.joda.time.DateTime;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
@@ -13,6 +18,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.opencsd.imdbplus.service.AnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.slf4j.Logger;
@@ -24,118 +30,58 @@ import org.springframework.http.ResponseEntity;
 class AnalysisRepositoryTest {
   private Logger analysisLoggertest = LoggerFactory.getLogger(AnalysisRepository.class);
 
-  private Media popularMedia;
-  private Media highestAvgRating;
-  private List<Media> topTenListWatched;
-  private List<Media> topTenListWished;
-
-  private List<Timeline> highestRated;
-
-  private Timeline highestRating1;
-
-  private Timeline highestRating2;
-
-  private Timeline highestRating3;
-
-  private Timeline highestRating4;
-
-  private Map<String, Long> topTen;
-
   @Autowired
   private AnalysisRepository analysisRepository;
+  @MockBean
+  private DynamoDBMapper mockDynamo;
+  private List<Timeline> allTimelines;
+  private List<Timeline> doneTimelines;
+  private List<Timeline> progressTimelines;
+  private List<Timeline> wishTimelines;
+  private PaginatedScanList<Timeline> emptyList;
 
   @BeforeEach
   void setUp() {
     analysisRepository = new AnalysisRepository();
-    popularMedia = new Media("m1", "Movie 1", "2012-07-17", "Action");
-    highestAvgRating = new Media("m2", "Movie 2", "2032-07-17",
-        "Drama");
-    highestRating1 = new Timeline("u1-m1", "u1", "m1", "DONE", 5, "It was great");
-    highestRating2 = new Timeline("u1-m2", "u1", "m2", "DONE", 3, "It was good");
-    highestRating3 = new Timeline("u1-m1", "u1", "m1", "DONE", 5, "It was great");
-    highestRating4 = new Timeline("u1-m2", "u1", "m2", "DONE", 3, "It was good");
-    highestRating4 = new Timeline("u1-m2", "u1", "m2", "DONE", 3, "It was good");
-    ;
-
-    highestRated = new ArrayList<>();
-    highestRated.add(highestRating1);
-    highestRated.add(highestRating2);
-    highestRated.add(highestRating3);
-    highestRated.add(highestRating4);
-
-    topTen = new HashMap<>();
-    topTen.put("m1", 5L);
-    topTen.put("m2", 4L);
-    topTen.put("m3", 4L);
-    topTen.put("m4", 6L);
-    topTen.put("m5", 5L);
-    topTen.put("m6", 7L);
-    topTen.put("m7", 8L);
-    topTen.put("m8", 9L);
-    topTen.put("m9", 10L);
-    topTen.put("m10", 11L);
-    topTen.put("m11", 12L);
-    topTen.put("m12", 12L);
+    mockDynamo = mock(DynamoDBMapper.class);
+    analysisRepository.setDynamoDBMapper(mockDynamo);
 
 
+    Timeline t1 = new Timeline("t1-u1-m1", "u1", "m1", new Date(), new Date(), "DONE", 5, "It was great");
+    Timeline t2 = new Timeline("t2-u1-m1", "u1", "m4", new Date(), new Date(), "DONE", 1, "It was terrible");
+    Timeline t6 = new Timeline("t1-u1-m1", "u1", "m3", new Date(), new Date(), "DONE", 5, "It was great");
+    Timeline t7 = new Timeline("t2-u1-m1", "u1", "m1", new Date(), new Date(), "DONE", 1, "It was terrible");
+    Timeline t4 = new Timeline("t4-u2-m1", "u2", "m1", new Date(), new Date(), "WISHLIST", 5, "I head this was great.");
+    Timeline t5 = new Timeline("t5-u1-m4", "u1", "m5", new Date(), new Date(), "WISHLIST", 0, "I REALLY WANT TO SEE IT.");
+    Timeline t9 = new Timeline("t4-u2-m1", "u2", "m5", new Date(), new Date(), "WISHLIST", 5, "I head this was great.");
+    Timeline t10 = new Timeline("t5-u1-m4", "u1", "m5", new Date(), new Date(), "WISHLIST", 0, "I REALLY WANT TO SEE IT.");
+    Timeline t3 = new Timeline("t3-u3-m3", "u3", "m2", new Date(), new Date(), "PROGRESS", 5, "Still in progress.");
+    Timeline t8 = new Timeline("t3-u3-m3", "u3", "m1", new Date(), new Date(), "PROGRESS", 2, "Still in progress.");
+    Timeline t11 = new Timeline("t3-u3-m3", "u4", "m2", new Date(), new Date(), "PROGRESS", 5, "Still in progress.");
 
-    topTenListWatched = new ArrayList<>();
-    topTenListWatched.add(popularMedia);
-    topTenListWatched.add(highestAvgRating);
-
-    topTenListWished = new ArrayList<>();
-    topTenListWished.add(popularMedia);
+    allTimelines = Arrays.asList(t1, t2, t3, t4, t5, t5, t6, t7, t8, t9, t10, t11);
+    doneTimelines = Arrays.asList(t1, t2, t6, t7);
+    progressTimelines = Arrays.asList(t3, t8, t11);
+    wishTimelines = Arrays.asList(t4,t5, t9, t10);
   }
 
   @AfterEach
   void tearDown() {
-    analysisRepository = null;
-    popularMedia = null;
-    highestAvgRating = null;
-    topTenListWatched.clear();
-    topTenListWished.clear();
-  }
-
-  @Test
-  void getAllTimeline() {
 
   }
 
 
   @Test
-  void getHighestRating() {
-    String highestRatedId = analysisRepository.getHighestRatingHelper(highestRated);
-    assertEquals(popularMedia.getMediaId(), highestRatedId);
-  }
+  void getTimelineListByByFilter() {
+    HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+    eav.put(":v1", new AttributeValue().withS("DONE"));
+    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+        .withFilterExpression("mediaId = :v1")
+        .withExpressionAttributeValues(eav);
 
-//  @Test
-//  void calculateMostDone() {
-//    when(analysisRepository.calculateMost("DONE")).thenReturn(popularMedia);
-//    Media result = analysisRepository.calculateMost("DONE");
-//    assertEquals(result, popularMedia);
-//    when(analysisRepository.calculateMost("WISHLIST")).thenReturn(new Media());
-//    result = analysisRepository.calculateMost("WISHLIST");
-//    assertEquals(result, new Media());
-//    when(analysisRepository.calculateMost("PROGRESS")).thenReturn(new Media());
-//    result = analysisRepository.calculateMost("PROGRESS");
-//    assertEquals(result, new Media());
-//  }
-
-  @Test
-  void getTopTenMost() {
-    List<String> topTenList = analysisRepository.getTopTenListHelper(topTen);
-    List<String> topTenListResult = new ArrayList<>();
-    topTenListResult.add("m1");
-    topTenListResult.add("m5");
-    topTenListResult.add("m4");
-    topTenListResult.add("m6");
-    topTenListResult.add("m7");
-    topTenListResult.add("m8");
-    topTenListResult.add("m9");
-    topTenListResult.add("m10");
-    topTenListResult.add("m12");
-    topTenListResult.add("m11");
-    assertEquals(topTenListResult, topTenList);
+    when(mockDynamo.scan(Timeline.class, scanExpression)).thenReturn(emptyList);
+    List<Timeline> result = analysisRepository.getTimelineListByByFilter("DONE");
+    assertEquals(new ArrayList<>(), result);
   }
 }
 
