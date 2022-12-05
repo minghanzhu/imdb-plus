@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+      - sahitya-tests
+      - mzhu-add-tests-v2
       - bgutu-tests
 
   pull_request:
