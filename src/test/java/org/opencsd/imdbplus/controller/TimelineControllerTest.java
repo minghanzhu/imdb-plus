@@ -197,9 +197,9 @@ class TimelineControllerTest {
         .andExpect(MockMvcResultMatchers.
             jsonPath("$[1].mediaId").value(userTimelines.get(1).getMediaId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[0].currentStatus").value(userTimelines.get(0).getCurrentStatus()))
+            jsonPath("$[0].status").value(userTimelines.get(0).getStatus()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[1].currentStatus").value(userTimelines.get(1).getCurrentStatus()))
+            jsonPath("$[1].status").value(userTimelines.get(1).getStatus()))
         .andExpect(MockMvcResultMatchers.
             jsonPath("$[0].comment").value(userTimelines.get(0).getComment()))
         .andExpect(MockMvcResultMatchers.
@@ -249,9 +249,9 @@ class TimelineControllerTest {
         .andExpect(MockMvcResultMatchers.
             jsonPath("$[1].mediaId").value(mediaTimelines.get(1).getMediaId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[0].currentStatus").value(mediaTimelines.get(0).getCurrentStatus()))
+            jsonPath("$[0].status").value(mediaTimelines.get(0).getStatus()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[1].currentStatus").value(mediaTimelines.get(1).getCurrentStatus()))
+            jsonPath("$[1].status").value(mediaTimelines.get(1).getStatus()))
         .andExpect(MockMvcResultMatchers.
             jsonPath("$[0].comment").value(mediaTimelines.get(0).getComment()))
         .andExpect(MockMvcResultMatchers.
@@ -293,7 +293,7 @@ class TimelineControllerTest {
         .andExpect(MockMvcResultMatchers.
             jsonPath("$.mediaId").value(postedTimeline.getMediaId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.currentStatus").value(postedTimeline.getCurrentStatus()))
+            jsonPath("$.status").value(postedTimeline.getStatus()))
         .andExpect(MockMvcResultMatchers.
             jsonPath("$.rating").value(postedTimeline.getRating()))
         .andExpect(MockMvcResultMatchers.

@@ -70,19 +70,6 @@ class AnalysisRepositoryTest {
   }
 
   @Test
-  void getTimelineListByByFilter() {
-    HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-    eav.put(":v1", new AttributeValue().withS("DONE"));
-    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-        .withFilterExpression("mediaId = :v1")
-        .withExpressionAttributeValues(eav);
-
-    when(mockDynamo.scan(Timeline.class, scanExpression)).thenReturn(emptyList);
-    List<Timeline> result = analysisRepository.getTimelineListByByFilter("statue","DONE");
-    assertEquals(new ArrayList<>(), result);
-  }
-
-  @Test
   void getAllTimelines(){
     when(mockDynamo.scan(Timeline.class, new DynamoDBScanExpression())).thenReturn(emptyList);
     List<Timeline> result = analysisRepository.getAllTimelines();

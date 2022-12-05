@@ -48,7 +48,7 @@ public class Timeline {
 
 
   @DynamoDBAttribute
-  private String currentStatus; // DONE, PROGRESS, WISHLIST (enum)
+  private String status; // DONE, PROGRESS, WISHLIST (enum)
   @DynamoDBAttribute
   private Integer rating; // 1-5 (optional, only for DONE)
   @DynamoDBAttribute
@@ -58,7 +58,7 @@ public class Timeline {
     this.timelineId = timelineId;
     this.userId = userId;
     this.mediaId = mediaId;
-    this.currentStatus = status;
+    this.status = status;
     this.rating = rating;
     this.comment = comment;
   }
