@@ -43,14 +43,16 @@ public class UserController {
 
   // Delete user by userId
   @DeleteMapping("/user/{id}")
-  public String deleteUser(@PathVariable("id") String userId,
+  public ResponseEntity<String> deleteUser(@PathVariable("id") String userId,
       @RequestHeader("Authorization") String accessToken) {
-    return userRepository.delete(userId, accessToken);
+    String response = userRepository.delete(userId, accessToken);
+    return ResponseEntity.ok(response);
   }
 
   // Update user by userId
   @PutMapping("/user/{id}")
-  public String updateUser(@PathVariable("id") String userId, @RequestBody User user) {
-    return userRepository.update(userId, user);
+  public ResponseEntity<String> updateUser(@PathVariable("id") String userId, @RequestBody User user) {
+    String response = userRepository.update(userId, user);
+    return ResponseEntity.ok(response);
   }
 }

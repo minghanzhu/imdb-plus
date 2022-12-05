@@ -1,8 +1,11 @@
 package org.opencsd.imdbplus.controller;
 
 import org.opencsd.imdbplus.entity.Timeline;
-import org.opencsd.imdbplus.repository.TimelineRepository;
+import org.opencsd.imdbplus.repository.UserRepository;
+import org.opencsd.imdbplus.service.TimelineService;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,30 +15,37 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping()
 public class TimelineController {
+  Logger timelineControllerLogger = LoggerFactory.getLogger(TimelineController.class);
 
   @Autowired
-  private TimelineRepository timelineRepository;
+  private TimelineService timelineService;
+  @Autowired
+  private UserRepository userRepository;
 
   @PostMapping("/timeline")
   public ResponseEntity<Timeline> saveTimeline(@RequestBody() Timeline timeline,
       @RequestHeader("Authorization") String accessToken) {
-    Timeline response = timelineRepository.save(timeline, accessToken);
+
+    Timeline response = timelineService.save(timeline, accessToken);
+
     if (response == null) {
+      timelineControllerLogger.warn("{} wrong", response);
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     } else {
       return ResponseEntity.ok(response);
     }
   }
 
-  @DeleteMapping("/timeline/{userId}/{mediaId}")
-  public ResponseEntity<String> deleteTimeline(@PathVariable("userId") String userId,
-      @PathVariable("mediaId") String mediaId,
+  @DeleteMapping("/timeline/{timelineId}")
+  public ResponseEntity<String> deleteTimeline(@PathVariable("timelineId") String timelineId,
       @RequestHeader("Authorization") String accessToken) {
-    String response = timelineRepository.delete(userId, mediaId, accessToken);
+    String response =  timelineService.delete(timelineId, accessToken);
     if (response.equals("Invalid access token")) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     } else if (response.equals("Timeline not found")) {
@@ -48,8 +58,8 @@ public class TimelineController {
   // Get all timelines by userId
   @GetMapping("/timeline/user/{userId}")
   public ResponseEntity<List<Timeline>> getTimeline(@PathVariable("userId") String userId) {
-    List<Timeline> response = timelineRepository.getTimelineByUserId(userId);
-    if (response.size() > 0) {
+    List<Timeline> response = timelineService.getTimelineByUserId(userId);
+    if (response != null) {
       return ResponseEntity.ok(response);
     } else {
       return ResponseEntity.notFound().build();
@@ -58,9 +68,8 @@ public class TimelineController {
 
   // Get all timelines by mediaId
   @GetMapping("/timeline/media/{mediaId}")
-  public ResponseEntity<List<Timeline>> getTimelineByMediaId(
-      @PathVariable("mediaId") String mediaId) {
-    List<Timeline> response = timelineRepository.getTimelineByMediaId(mediaId);
+  public ResponseEntity<List<Timeline>> getTimelineByMediaId(@PathVariable("mediaId") String mediaId) {
+    List<Timeline> response =  timelineService.getTimelineByMediaId(mediaId);
     if (response == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     } else {
@@ -70,13 +79,14 @@ public class TimelineController {
 
   // Get a timeline by userId and mediaId
   @GetMapping("/timeline/{userId}/{mediaId}")
-  public ResponseEntity<Timeline> getTimelineByTimelineId(@PathVariable("userId") String userId,
+  public ResponseEntity<Timeline> getTimelineByUserIdAndMediaId(@PathVariable("userId") String userId,
       @PathVariable("mediaId") String mediaId) {
-    Timeline response = timelineRepository.getTimelineByTimelineId(userId, mediaId);
-    if (response == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    Timeline timeline = timelineService.getTimelineByUserIdAndMediaId(userId, mediaId);
+    if (timeline != null) {
+      return ResponseEntity.ok(timeline);
     } else {
-      return ResponseEntity.ok(response);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
     }
   }
 }

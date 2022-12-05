@@ -8,11 +8,14 @@ import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import org.opencsd.imdbplus.entity.User;
 import java.util.HashMap;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository {
+  Logger userLogger = LoggerFactory.getLogger(UserRepository.class);
 
   @Autowired
   private DynamoDBMapper dynamoDBMapper;
