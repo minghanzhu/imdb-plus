@@ -146,25 +146,6 @@ public class MediaControllerTest {
         }
     }
 
-    /**
-     * Simple file reader that returns a list of media
-     * */
-    public List<Media> readMediaFile(String path) throws IOException {
-        FileInputStream inputStream = new FileInputStream(path);
-        List<Media> readList = new ArrayList<>();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-        while(bufferedReader.ready()){
-            String line = bufferedReader.readLine();
-            String[] lineValues = line.split(",");
-            if(lineValues.length == 4){
-                Media media = new Media(lineValues[0], lineValues[1], lineValues[2], lineValues[3]);
-                readList.add(media);
-            }
-        }
-        return readList;
-    }
-
 }
 
 
