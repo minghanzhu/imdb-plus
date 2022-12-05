@@ -100,7 +100,7 @@ class AnalysisServiceTest {
 
   @Test
   void highestRatingHelper() {
-    when(analysisRepository.getAllTimelines()).thenReturn(allTimelines);
+    when(analysisRepository.getAllTimelines()).thenReturn(doneTimelines);
     String mediaId = analysisService.highestRatingHelper();
     assertEquals(mediaId, highestAvgRating.getMediaId());
   }
