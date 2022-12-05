@@ -8,7 +8,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import org.joda.time.DateTime;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
 
@@ -17,8 +16,6 @@ import java.util.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.opencsd.imdbplus.service.AnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.slf4j.Logger;
@@ -81,7 +78,7 @@ class AnalysisRepositoryTest {
         .withExpressionAttributeValues(eav);
 
     when(mockDynamo.scan(Timeline.class, scanExpression)).thenReturn(emptyList);
-    List<Timeline> result = analysisRepository.getTimelineListByByFilter("DONE");
+    List<Timeline> result = analysisRepository.getTimelineListByByFilter("statue","DONE");
     assertEquals(new ArrayList<>(), result);
   }
 

@@ -33,7 +33,7 @@ public class AnalysisService {
     // Walk down the timeline {id : [count, total]}
     for (Timeline curLine : allTimelines) {
       String id = curLine.getMediaId();
-      if (curLine.getRating() != null && curLine.getStatus().equals("DONE")
+      if (curLine.getRating() != null && curLine.getCurrentStatus().equals("DONE")
           && curLine.getMediaId() != null)
         if (ratingMap.containsKey(id)) {
           List<Long> avgRating = ratingMap.get(id);
@@ -78,11 +78,11 @@ public class AnalysisService {
 
 
   private Map<String, Long> countMedia(String status) {
-    List<Timeline> timelineList = analysisRepository.getTimelineListByByFilter(status);
+    List<Timeline> timelineList = analysisRepository.getTimelineListByByFilter("currentStatus", status);
     Map<String, Long> mediaCounter = new HashMap<>();
     // Compile a list of watched Media
     for (Timeline line : timelineList) {
-      String mediaId = line.getMediaId();
+        String mediaId = line.getMediaId();
         long count = mediaCounter.containsKey(mediaId) ? mediaCounter.get(mediaId) : 0;
         mediaCounter.put(mediaId, count + 1);
     }
@@ -92,6 +92,7 @@ public class AnalysisService {
   // mediaId, status -> [DONE, IN_PROGRESS, WISHLIST]
   public Media getMediaInCategory(String category) {
     Map<String, Long> mediaCounter = countMedia(category);
+    serviceAnalysisLogger.info("retrieved media Map {} category", mediaCounter);
     long curMostWatched = Long.MIN_VALUE;
     String mostWatchedMediaId = "";
     for (String mediaId : mediaCounter.keySet()){
@@ -99,8 +100,13 @@ public class AnalysisService {
         curMostWatched = mediaCounter.get(mediaId);
         mostWatchedMediaId = mediaId;
       }
+      serviceAnalysisLogger.info("retrieved {} in {} category", mostWatchedMediaId, category);
     }
-    Media mostMedia = analysisRepository.getMedia(mostWatchedMediaId);
+    Media mostMedia;
+    if(!mostWatchedMediaId.isEmpty())
+      mostMedia = analysisRepository.getMedia(mostWatchedMediaId);
+    else
+      mostMedia = new Media();
     serviceAnalysisLogger.info("retrieved {} in {} category", mostMedia, category);
     return mostMedia;
   }
@@ -132,7 +138,7 @@ public class AnalysisService {
   }
 
   public Map<String, Long> userPreference(String userId) {
-    List<Timeline> timelineList = analysisRepository.getTimelineListByByFilter(userId);
+    List<Timeline> timelineList = analysisRepository.getTimelineListByByFilter("userId", userId);
     Map<String, Long> userPreferenceMap = new HashMap<>();
     for(Timeline line: timelineList){
           String mediaId = line.getMediaId();

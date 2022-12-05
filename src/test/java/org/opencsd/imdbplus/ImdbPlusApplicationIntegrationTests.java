@@ -152,7 +152,7 @@ class ImdbPlusApplicationIntegrationTests {
     assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
     assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
     assertThat(response.get(0).getMediaId()).isEqualTo(testMediaId);
-    assertThat(response.get(0).getStatus()).isEqualTo("DONE");
+    assertThat(response.get(0).getCurrentStatus()).isEqualTo("DONE");
     assertThat(response.get(0).getRating()).isEqualTo(5);
     assertThat(response.get(0).getComment()).isEqualTo("This is a test comment");
   }
@@ -165,7 +165,7 @@ class ImdbPlusApplicationIntegrationTests {
     assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
     assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
     assertThat(response.get(0).getMediaId()).isEqualTo(testMediaId);
-    assertThat(response.get(0).getStatus()).isEqualTo("DONE");
+    assertThat(response.get(0).getCurrentStatus()).isEqualTo("DONE");
     assertThat(response.get(0).getRating()).isEqualTo(5);
     assertThat(response.get(0).getComment()).isEqualTo("This is a test comment");
   }

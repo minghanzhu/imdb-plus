@@ -124,12 +124,12 @@ class TimelineTest {
   void getStatus() {
     String[] status = {"DONE", "DONE", "PROGRESS", "WISHLIST", "DONE"};
     for(int i=0; i<timelines.length; i++){
-      String result = timelines[i].getStatus();
+      String result = timelines[i].getCurrentStatus();
       String stat = status[i];
       assertEquals(result, stat);
     }
 
-    assertNotEquals(timelines[0].getStatus(), "PROGRESS");
+    assertNotEquals(timelines[0].getCurrentStatus(), "PROGRESS");
 
   }
 
