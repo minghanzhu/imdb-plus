@@ -10,3 +10,4 @@
 src/main/resources/config-dev.properties
 target
 imdb-plus.iml
+target/classes/application.properties

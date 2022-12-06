@@ -1,15 +1,11 @@
 package org.opencsd.imdbplus;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +13,6 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.repository.MediaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;

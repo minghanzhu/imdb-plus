@@ -60,6 +60,10 @@
   </build>
   <dependencies>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+    <dependency>
       <artifactId>spring-boot-starter-web</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
@@ -131,13 +135,8 @@
     </sonar.exclusions>
   </properties>
   <repositories>
-    <!--    <repository>-->
-    <!--      <id>dynamodb-local-oregon</id>-->
-    <!--      <name>DynamoDB Local Release Repository</name>-->
-    <!--      <url>https://s3-us-west-2.amazonaws.com/dynamodb-local/release</url>-->
-    <!--    </repository>-->
   </repositories>
 
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
 
 </project>
