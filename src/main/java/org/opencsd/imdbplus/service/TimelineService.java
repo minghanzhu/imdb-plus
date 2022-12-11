@@ -40,24 +40,24 @@ public class TimelineService {
     // Check if the client exists and the access token is valid
     String clientId = timeline.getClientId();
     String mediaId = timeline.getMediaId();
-    Client client = clientRepository.getClient(clientId);
+    Client client = clientRepository.getClient(clientId, accessToken);
+    if (client == null) {
+      return null;
+    }
     Media media = mediaRepository.getEntity(mediaId);
     serviceLogger.debug("client : {} \n media: {}", client, media);
-    if (client.getAccessToken().equals(accessToken)) {
-      String id = clientId+"-"+mediaId;
-      timeline.setTimelineId(id);
-      timeline.getCreationTime();
-      timeline.getLastUpdate();
-      Timeline saveTimeline = timelineRepository.save(timeline);
-      serviceLogger.info("{} created {}",clientId, timeline.getTimelineId() );
-      if(saveTimeline != null){
-        serviceLogger.info(saveTimeline.toString());
-        return saveTimeline;
-      }
+    String id = clientId+"-"+mediaId;
+    timeline.setTimelineId(id);
+    timeline.getCreationTime();
+    timeline.getLastUpdate();
+    Timeline saveTimeline = timelineRepository.save(timeline);
+    serviceLogger.info("{} created {}",clientId, timeline.getTimelineId() );
+    if(saveTimeline != null) {
+      serviceLogger.info(saveTimeline.toString());
+      return saveTimeline;
     } else {
       return null;
     }
-    return null;
   }
 
   /**
@@ -81,8 +81,8 @@ public class TimelineService {
     // Check if the client exists and the access token is valid
     Timeline timeline = getTimeline(timelineId);
     if (timeline != null ){
-      Client client = clientRepository.getClient(timeline.getClientId());
-      if (!client.getAccessToken().equals(accessToken)) {
+      Client client = clientRepository.getClient(timeline.getClientId(), accessToken);
+      if (client == null) {
         return "Invalid access token";
       }
       serviceLogger.info("{} deleted by {}", timelineId, client.getClientname());
@@ -99,7 +99,7 @@ public class TimelineService {
     Timeline oldTimeline = timelineRepository.getTimeline(timeline.getTimelineId());
 
     if(oldTimeline != null){
-      Client curClient = clientRepository.getClient(timeline.getClientId());
+      Client curClient = clientRepository.getClient(timeline.getClientId(), accessToken);
       if(curClient.getAccessToken().equals(accessToken)) {
         if (oldTimeline.getClientId().equals(timeline.getClientId()) &&
             oldTimeline.getMediaId().equals(timeline.getMediaId())){
@@ -119,12 +119,11 @@ public class TimelineService {
    *  Given a valid client id that also exists in the repository, returns a list of client timelines.
    */
   public List<Timeline> getTimelineByClientId(String clientId) {
-    // scan the timeline table to get all timelines of the client
-    Client curClient = clientRepository.getClient(clientId);
-    if(curClient != null){
-      serviceLogger.info("{}'s timelines retrieved", clientId);
-      return  timelineRepository.getTimelineByClientId(curClient.getClientId());
-    }else{
+    List<Timeline> timelines = timelineRepository.getTimelineByClientId(clientId);
+    serviceLogger.info("{} retrieved {} timelines", clientId, timelines.size());
+    if (timelines.size() > 0) {
+      return timelines;
+    } else {
       return new ArrayList<>();
     }
   }
@@ -133,14 +132,6 @@ public class TimelineService {
    *  Given a valid media id that also exists in the repository, returns a list of timelines.
    */
   public List<Timeline> getTimelineByMediaId(String mediaId) {
-    // scan the timeline table to get all timelines of the media
-//    Media curMedia = mediaRepository.getEntity(mediaId);
-//    if(curMedia != null){
-//      serviceLogger.info("{}'s timelines retrieved", mediaId);
-//      return  timelineRepository.getTimelineByMediaId(mediaId);
-//    }else{
-//      return new ArrayList<>();
-//    }
     serviceLogger.info("{}'s timelines retrieved", mediaId);
     return  timelineRepository.getTimelineByMediaId(mediaId);
   }

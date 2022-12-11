@@ -81,7 +81,7 @@ class TimelineServiceTest {
     String token = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
     AccountSetting accountSetting = new AccountSetting(true, true);
     testClient = new Client("u1", token, "newClient1", "newClient1@gmail.com", accountSetting);
-    when(clientRepository.getClient("u1")).thenReturn(testClient);
+    when(clientRepository.getClient("u1", "8ed4cea1-eee6-41bc-97f1-12a6095b51aa")).thenReturn(testClient);
     when(mediaRepository.getEntity("m1")).thenReturn(testMedia);
 
   }

@@ -38,17 +38,28 @@ public class ClientRepository {
     }
   }
 
-  public Client getClient(String clientId) {
-    return dynamoDBMapper.load(Client.class, clientId);
+  public Client getClient(String clientId, String accessToken) {
+    HashMap<String, AttributeValue> eav = new HashMap<>();
+    eav.put(":v1", new AttributeValue().withS(clientId));
+    eav.put(":v2", new AttributeValue().withS(accessToken));
+    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+        .withFilterExpression("clientId = :v1 and accessToken = :v2")
+        .withExpressionAttributeValues(eav);
+    List<Client> replies = dynamoDBMapper.scan(Client.class, scanExpression);
+    if (replies.isEmpty()) {
+      return null;
+    } else {
+      return replies.get(0);
+    }
   }
 
   public String delete(String clientId, String accessToken) {
-    Client client = getClient(clientId);
-    if (client.getAccessToken().equals(accessToken)) {
+    Client client = getClient(clientId, accessToken);
+    if (client == null) {
+      return "Invalid access token";
+    } else {
       dynamoDBMapper.delete(client);
       return "Client deleted successfully";
-    } else {
-      return "Invalid access token";
     }
   }
 

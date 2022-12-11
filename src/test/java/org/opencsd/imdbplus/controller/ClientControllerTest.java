@@ -68,12 +68,12 @@ class ClientControllerTest {
   @Order(1)
   @Test
   void getClient() throws Exception {
-    when(mockClientRepository.getClient("f7e4fb88-b59c-4c73-ad36-21fb5107646c")).thenReturn(
+    when(mockClientRepository.getClient("f7e4fb88-b59c-4c73-ad36-21fb5107646c", "8ed4cea1-eee6-41bc-97f1-12a6095b51aa")).thenReturn(
         clientReturn1);
-    when(mockClientRepository.getClient("a7e4fb88-b59c-4c73-ad36-21fb5107646c")).thenReturn(null);
+    when(mockClientRepository.getClient("a7e4fb88-b59c-4c73-ad36-21fb5107646c", "ccced4cea1-eee6-41bc-97f1-12a6095b51aa")).thenReturn(null);
 
-    RequestBuilder requestBuilder1 = get("/client/{id}", "f7e4fb88-b59c-4c73-ad36-21fb5107646c");
-    RequestBuilder requestBuilder2 = get("/client/{id}", "a7e4fb88-b59c-4c73-ad36-21fb5107646c");
+    RequestBuilder requestBuilder1 = get("/client/{id}", "f7e4fb88-b59c-4c73-ad36-21fb5107646c").header("Authorization","8ed4cea1-eee6-41bc-97f1-12a6095b51aa");
+    RequestBuilder requestBuilder2 = get("/client/{id}", "a7e4fb88-b59c-4c73-ad36-21fb5107646c").header("Authorization","ccced4cea1-eee6-41bc-97f1-12a6095b51aa");
 
     mockMvc.perform(requestBuilder1)
         .andDo(print())

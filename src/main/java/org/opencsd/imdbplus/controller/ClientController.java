@@ -32,8 +32,9 @@ public class ClientController {
 
   // Get client by clientId
   @GetMapping("/client/{id}")
-  public ResponseEntity<Client> getClient(@PathVariable("id") String clientId) {
-    Client response = clientRepository.getClient(clientId);
+  public ResponseEntity<Client> getClient(@PathVariable("id") String clientId,
+      @RequestHeader("Authorization") String accessToken) {
+    Client response = clientRepository.getClient(clientId, accessToken);
     if (response == null) {
       return ResponseEntity.notFound().build();
     } else {

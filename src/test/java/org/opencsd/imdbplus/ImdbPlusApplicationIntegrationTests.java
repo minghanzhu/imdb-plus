@@ -88,14 +88,14 @@ class ImdbPlusApplicationIntegrationTests {
   @Test
   @Order(3)
   void testGetClient() {
-    retrievedClient = clientRepository.getClient(testClientId);
+    retrievedClient = clientRepository.getClient(testClientId, testAccessToken);
     assertThat(retrievedClient.getClientId()).isEqualTo(testClientId);
   }
 
   @Test
   @Order(4)
   void testGetClientNotFound() {
-    retrievedClient = clientRepository.getClient("testClientId");
+    retrievedClient = clientRepository.getClient("testClientId", "testAccessToken");
     assertThat(retrievedClient).isNull();
   }
 
