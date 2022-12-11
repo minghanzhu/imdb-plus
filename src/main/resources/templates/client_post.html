@@ -52,7 +52,7 @@
     <div class ="col-md-3">
     </div>
     <div class ="col-md-6">
-        <p style = "font-size: 40px;"> Please Enter User's Information: </p>
+        <p style = "font-size: 40px;"> Please Enter Client's Information: </p>
     </div>
     <div class ="col-md-3">
     </div>
@@ -62,10 +62,10 @@
     <div class ="col-md-3">
     </div>
     <div class ="col-md-2">
-        <span style = "font-size: 25px;">User Name: </span>
+        <span style = "font-size: 25px;">Client Name: </span>
     </div>
     <div class ="col-md-4">
-        <input type="text" name="user_name" id="user_name"/>
+        <input type="text" name="client_name" id="client_name"/>
     </div>
     <div class ="col-md-3">
     </div>
@@ -78,7 +78,7 @@
         <span style = "font-size: 25px;">Email: </span>
     </div>
     <div class ="col-md-4">
-        <input type="text" name="user_email" id="user_email"/>
+        <input type="text" name="client_email" id="client_email"/>
     </div>
     <div class ="col-md-3">
     </div>
@@ -120,7 +120,7 @@
     <div class ="col-md-4">
     </div>
     <div class ="col-md-4">
-        <input class = "button-option" type="button" name="postData" id="postData" value="Create a User" onclick="postDataFromAPI();"/>
+        <input class = "button-option" type="button" name="postData" id="postData" value="Create a Client" onclick="postDataFromAPI();"/>
     </div>
     <div class ="col-md-4">
     </div>
@@ -153,8 +153,8 @@
 	    const bool1 = document.getElementById('selectIsPrivate').value == "true" ? true : false;
 	    const bool2 = document.getElementById('selectIsAdult').value == "true" ? true : false;
 	    var modelObj = {
-            "username": $("#user_name").val(),
-            "email": $("#user_email").val(),
+            "clientname": $("#client_name").val(),
+            "email": $("#client_email").val(),
             "accountSetting": {
                 "isPrivate": bool1,
                 "isAdult": bool2
@@ -162,15 +162,15 @@
         };
 		 $.ajax({
 	            type: "POST",
-	            url: "/user",
+	            url: "/client",
 	            headers: {
 	                "Content-Type": "application/json"
 	            },
 	            data: JSON.stringify(modelObj),
 	            success: function (data) {
                     var table = $("#list");
-                    table.append("<b>USER ID: </b><p>" + data.userId + "</p>");
-                    table.append("<b>USER NAME: </b><p>" + data.username + "</p>");
+                    table.append("<b>USER ID: </b><p>" + data.clientId + "</p>");
+                    table.append("<b>USER NAME: </b><p>" + data.clientname + "</p>");
                     table.append("<b>USER EMAIL: </b><p>" + data.email + "</p>");
                     table.append("<b>USER IS PRIVATE: </b><p>" + data.accountSetting.isPrivate + "</p>");
                     table.append("<b>USER IS ADULT: </b><p>" + data.accountSetting.isAdult + "</p>");

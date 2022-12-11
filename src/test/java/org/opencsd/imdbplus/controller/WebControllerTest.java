@@ -23,10 +23,10 @@ class WebControllerTest {
     }
 
     @Test
-    void userOptionPage() throws Exception {
-        mockMvc.perform(get("/user-option"))
+    void clientOptionPage() throws Exception {
+        mockMvc.perform(get("/client-option"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user_option"));
+                .andExpect(view().name("client_option"));
     }
 
     @Test
@@ -37,25 +37,25 @@ class WebControllerTest {
     }
 
     @Test
-    void userGetPage() throws Exception {
-        mockMvc.perform(get("/user-get"))
+    void clientGetPage() throws Exception {
+        mockMvc.perform(get("/client-get"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user_get"));
+                .andExpect(view().name("client_get"));
     }
 
     @Test
-    void userPostPage() throws Exception {
-        mockMvc.perform(get("/user-post"))
+    void clientPostPage() throws Exception {
+        mockMvc.perform(get("/client-post"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user_post"));
+                .andExpect(view().name("client_post"));
     }
 
 
     @Test
-    void userDeletePage() throws Exception {
-        mockMvc.perform(get("/user-delete"))
+    void clientDeletePage() throws Exception {
+        mockMvc.perform(get("/client-delete"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user_delete"));
+                .andExpect(view().name("client_delete"));
     }
 
     @Test
@@ -66,10 +66,10 @@ class WebControllerTest {
     }
 
     @Test
-    void timelineGETByUserIdPage() throws Exception {
-        mockMvc.perform(get("/timeline-get-by-user-id"))
+    void timelineGETByClientIdPage() throws Exception {
+        mockMvc.perform(get("/timeline-get-by-client-id"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("timeline_get_user"));
+                .andExpect(view().name("timeline_get_client"));
     }
 
     @Test
@@ -80,8 +80,8 @@ class WebControllerTest {
     }
 
     @Test
-    void timelineGETByUserMediaIdPage() throws Exception {
-        mockMvc.perform(get("/timeline-get-by-user-media-id"))
+    void timelineGETByClientMediaIdPage() throws Exception {
+        mockMvc.perform(get("/timeline-get-by-client-media-id"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("timeline_get_search"));
     }

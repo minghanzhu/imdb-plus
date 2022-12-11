@@ -1,7 +1,7 @@
 package org.opencsd.imdbplus.controller;
 
 import org.opencsd.imdbplus.entity.Timeline;
-import org.opencsd.imdbplus.repository.UserRepository;
+import org.opencsd.imdbplus.repository.ClientRepository;
 import org.opencsd.imdbplus.service.TimelineService;
 import java.util.List;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class TimelineController {
   @Autowired
   private TimelineService timelineService;
   @Autowired
-  private UserRepository userRepository;
+  private ClientRepository clientRepository;
 
   @PostMapping("/timeline")
   public ResponseEntity<Timeline> saveTimeline(@RequestBody() Timeline timeline,
@@ -55,10 +55,10 @@ public class TimelineController {
     }
   }
 
-  // Get all timelines by userId
-  @GetMapping("/timeline/user/{userId}")
-  public ResponseEntity<List<Timeline>> getTimeline(@PathVariable("userId") String userId) {
-    List<Timeline> response = timelineService.getTimelineByUserId(userId);
+  // Get all timelines by clientId
+  @GetMapping("/timeline/client/{clientId}")
+  public ResponseEntity<List<Timeline>> getTimeline(@PathVariable("clientId") String clientId) {
+    List<Timeline> response = timelineService.getTimelineByClientId(clientId);
     if (response != null) {
       return ResponseEntity.ok(response);
     } else {
@@ -77,11 +77,11 @@ public class TimelineController {
     }
   }
 
-  // Get a timeline by userId and mediaId
-  @GetMapping("/timeline/{userId}/{mediaId}")
-  public ResponseEntity<Timeline> getTimelineByUserIdAndMediaId(@PathVariable("userId") String userId,
+  // Get a timeline by clientId and mediaId
+  @GetMapping("/timeline/{clientId}/{mediaId}")
+  public ResponseEntity<Timeline> getTimelineByClientIdAndMediaId(@PathVariable("clientId") String clientId,
       @PathVariable("mediaId") String mediaId) {
-    Timeline timeline = timelineService.getTimelineByUserIdAndMediaId(userId, mediaId);
+    Timeline timeline = timelineService.getTimelineByClientIdAndMediaId(clientId, mediaId);
     if (timeline != null) {
       return ResponseEntity.ok(timeline);
     } else {

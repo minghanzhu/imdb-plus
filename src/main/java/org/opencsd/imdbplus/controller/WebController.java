@@ -11,9 +11,9 @@ public class WebController {
         return "home";
     }
 
-    @GetMapping(value = "/user-option")
-    public String userOptionPage() {
-        return "user_option";
+    @GetMapping(value = "/client-option")
+    public String clientOptionPage() {
+        return "client_option";
     }
 
     @GetMapping(value = "/timeline-option")
@@ -21,17 +21,17 @@ public class WebController {
         return "timeline_option";
     }
 
-    @GetMapping(value = "/user-get")
-    public String userGetPage() { return "user_get"; }
+    @GetMapping(value = "/client-get")
+    public String clientGetPage() { return "client_get"; }
 
-    @GetMapping(value = "/user-post")
-    public String userPostPage() {
-        return "user_post";
+    @GetMapping(value = "/client-post")
+    public String clientPostPage() {
+        return "client_post";
     }
 
-    @GetMapping(value = "/user-delete")
-    public String userDeletePage() {
-        return "user_delete";
+    @GetMapping(value = "/client-delete")
+    public String clientDeletePage() {
+        return "client_delete";
     }
 
     @GetMapping(value = "/timeline-post")
@@ -39,9 +39,9 @@ public class WebController {
         return "timeline_post";
     }
 
-    @GetMapping(value = "/timeline-get-by-user-id")
-    public String timelineGETByUserIdPage() {
-        return "timeline_get_user";
+    @GetMapping(value = "/timeline-get-by-client-id")
+    public String timelineGETByClientIdPage() {
+        return "timeline_get_client";
     }
 
     @GetMapping(value = "/timeline-get-by-media-id")
@@ -49,8 +49,8 @@ public class WebController {
         return "timeline_get_media";
     }
 
-    @GetMapping(value = "/timeline-get-by-user-media-id")
-    public String timelineGETByUserMediaIdPage() {
+    @GetMapping(value = "/timeline-get-by-client-media-id")
+    public String timelineGETByClientMediaIdPage() {
         return "timeline_get_search";
     }
 

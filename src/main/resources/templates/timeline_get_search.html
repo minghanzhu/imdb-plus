@@ -51,7 +51,7 @@
     <div class ="col-md-3">
     </div>
     <div class ="col-md-6">
-        <p style = "font-size: 40px; text-align:center;"> Please Enter User ID and Media ID: </p>
+        <p style = "font-size: 40px; text-align:center;"> Please Enter Client ID and Media ID: </p>
     </div>
     <div class ="col-md-3">
     </div>
@@ -61,10 +61,10 @@
     <div class ="col-md-4" >
     </div>
     <div class ="col-md-1" style = "font-size: 18px;">
-        <span>User ID: </span>
+        <span>Client ID: </span>
     </div>
     <div class ="col-md-4">
-        <input type="text" name="user_id" id="user_id"/>
+        <input type="text" name="client_id" id="client_id"/>
     </div>
     <div class ="col-md-3">
     </div>
@@ -121,11 +121,11 @@
 	    $("#list").empty();//Clear old data before ajax
 
 	    $.ajax({
-	        url: "/timeline/" + $("#user_id").val() + "/" +  $("#media_id").val(),
+	        url: "/timeline/" + $("#client_id").val() + "/" +  $("#media_id").val(),
 	        type: "GET",
 	        success: function (data) {
 	        	var table = $("#list");
-                table.append("<b>USER ID: </b><p>" + data.userId + "</p>");
+                table.append("<b>USER ID: </b><p>" + data.clientId + "</p>");
                 table.append("<b>Timeline ID: </b><p>" + data.timelineId + "</p>");
                 table.append("<b>Media ID: </b><p>" + data.mediaId + "</p>");
                 table.append("<b>Creation Time: </b><p>" + data.creationTime + "</p>");

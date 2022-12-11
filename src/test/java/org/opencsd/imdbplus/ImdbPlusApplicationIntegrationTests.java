@@ -3,10 +3,10 @@ package org.opencsd.imdbplus;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.opencsd.imdbplus.entity.AccountSetting;
+import org.opencsd.imdbplus.entity.Client;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
-import org.opencsd.imdbplus.entity.User;
-import org.opencsd.imdbplus.repository.UserRepository;
+import org.opencsd.imdbplus.repository.ClientRepository;
 import org.opencsd.imdbplus.repository.MediaRepository;
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ImdbPlusApplicationIntegrationTests {
 
   @Autowired
-  private UserRepository userRepository;
+  private ClientRepository clientRepository;
 
   @Autowired
   private TimelineService timelineService;
@@ -32,48 +32,48 @@ class ImdbPlusApplicationIntegrationTests {
   @Autowired
   private MediaRepository mediaRepository;
 
-  public static User testUser = new User();
-  public static String testUsername = "testUser";
+  public static Client testClient = new Client();
+  public static String testClientname = "testClient";
   public static AccountSetting testAccountSetting = new AccountSetting();
-  public static String testUserId = "";
+  public static String testClientId = "";
   public static String testAccessToken = "";
-  public static User retrievedUser = new User();
+  public static Client retrievedClient = new Client();
   public static String testMediaId = "";
 
   static String dynamoDBEndpoint = "http://localhost:8083";
 
 
   /**
-   * Test the user sign up functionality with a single test user. The expected result is that the
-   * test user is added to the database.
+   * Test the client sign up functionality with a single test client. The expected result is that the
+   * test client is added to the database.
    */
   @Test
   @Order(1)
-  void testUserSave() {
-    testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+  void testClientSave() {
+    testClientname = UUID.randomUUID().toString().replace("-", "") + "-testClientname";
     testAccountSetting = new AccountSetting(false, true);
-    // Create a test user
-    testUser = new User(testUsername, "testEmail", testAccountSetting);
-    testUser = userRepository.save(testUser);
-    // Record the userId and accessToken of the test user
-    testUserId = testUser.getUserId();
-    testAccessToken = testUser.getAccessToken();
-    // Check testUserId and testAccessToken are not null
-    assertThat(testUserId).isNotNull();
+    // Create a test client
+    testClient = new Client(testClientname, "testEmail", testAccountSetting);
+    testClient = clientRepository.save(testClient);
+    // Record the clientId and accessToken of the test client
+    testClientId = testClient.getClientId();
+    testAccessToken = testClient.getAccessToken();
+    // Check testClientId and testAccessToken are not null
+    assertThat(testClientId).isNotNull();
     assertThat(testAccessToken).isNotNull();
   }
 
   /**
-   * Test the user sign up functionality with duplicate usernames. The expected behavior is that the
-   * second test user with the same username should not be added to the database and an
+   * Test the client sign up functionality with duplicate clientnames. The expected behavior is that the
+   * second test client with the same clientname should not be added to the database and an
    * ConditionalCheckFailedException should be thrown.
    */
   @Test
   @Order(2)
-  void testUserSaveDuplicatedUsername() {
-    // Try to save the second test user to the database and expect an ConditionalCheckFailedException exception to be thrown
+  void testClientSaveDuplicatedClientname() {
+    // Try to save the second test client to the database and expect an ConditionalCheckFailedException exception to be thrown
     try {
-      userRepository.save(testUser);
+      clientRepository.save(testClient);
     } catch (Exception e) {
       assert e.getClass()
           .equals(com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException.class);
@@ -82,46 +82,46 @@ class ImdbPlusApplicationIntegrationTests {
   }
 
   /**
-   * Test the user retrieval functionality with a single test user. The expected result is that the
-   * test user is retrieved from the database.
+   * Test the client retrieval functionality with a single test client. The expected result is that the
+   * test client is retrieved from the database.
    */
   @Test
   @Order(3)
-  void testGetUser() {
-    retrievedUser = userRepository.getUser(testUserId);
-    assertThat(retrievedUser.getUserId()).isEqualTo(testUserId);
+  void testGetClient() {
+    retrievedClient = clientRepository.getClient(testClientId);
+    assertThat(retrievedClient.getClientId()).isEqualTo(testClientId);
   }
 
   @Test
   @Order(4)
-  void testGetUserNotFound() {
-    retrievedUser = userRepository.getUser("testUserId");
-    assertThat(retrievedUser).isNull();
+  void testGetClientNotFound() {
+    retrievedClient = clientRepository.getClient("testClientId");
+    assertThat(retrievedClient).isNull();
   }
 
   @Test
   @Order(5)
-  void testUpdateUser() {
-    User testUser = new User(testUsername, "testEmailUpdated", testAccountSetting);
-    testUser.setUserId(testUserId);
-    testUser.setAccessToken(testAccessToken);
-    String userId = userRepository.update(testUserId, testUser);
-    assertThat(userId).isEqualTo(testUserId);
+  void testUpdateClient() {
+    Client testClient = new Client(testClientname, "testEmailUpdated", testAccountSetting);
+    testClient.setClientId(testClientId);
+    testClient.setAccessToken(testAccessToken);
+    String clientId = clientRepository.update(testClientId, testClient);
+    assertThat(clientId).isEqualTo(testClientId);
   }
 
   /**
-   * Test the timeline save functionality with a single test user and a single test timeline. The
+   * Test the timeline save functionality with a single test client and a single test timeline. The
    * expected behavior is that the test timeline is added to the database.
    */
   @Test
   @Order(6)
   void testTimelineSave() {
     testMediaId = UUID.randomUUID().toString().replace("-", "");
-    String testTimelineId = testUserId + "-" + testMediaId;
+    String testTimelineId = testClientId + "-" + testMediaId;
     String testStatus = "DONE";
     int testRating = 5;
     String testComment = "This is a test comment";
-    Timeline testTimeline = new Timeline(testTimelineId, testUserId, testMediaId, testStatus,
+    Timeline testTimeline = new Timeline(testTimelineId, testClientId, testMediaId, testStatus,
         testRating, testComment);
     Timeline response = timelineService.save(testTimeline, testAccessToken);
     assertThat(response).isNotNull();
@@ -130,27 +130,27 @@ class ImdbPlusApplicationIntegrationTests {
   @Test
   @Order(7)
   void testTimelineSaveInvalidAccessToken() {
-    String testTimelineId = testUserId + "-" + testMediaId;
+    String testTimelineId = testClientId + "-" + testMediaId;
     String testStatus = "DONE";
     int testRating = 5;
     String testComment = "This is a test comment";
-    Timeline testTimeline = new Timeline(testTimelineId, testUserId, testMediaId, testStatus,
+    Timeline testTimeline = new Timeline(testTimelineId, testClientId, testMediaId, testStatus,
         testRating, testComment);
     Timeline response = timelineService.save(testTimeline, "testAccessToken");
     assertThat(response).isNull();
   }
 
   /**
-   * Test the timeline retrieval functionality with a single test user and a single test timeline.
+   * Test the timeline retrieval functionality with a single test client and a single test timeline.
    * The expected behavior is that the test timeline is retrieved from the database.
    */
   @Test
   @Order(8)
-  void testTimelineGetTimelineByUserId() {
-    List<Timeline> response = timelineService.getTimelineByUserId(testUserId);
+  void testTimelineGetTimelineByClientId() {
+    List<Timeline> response = timelineService.getTimelineByClientId(testClientId);
     assertThat(response).isNotNull().hasSize(1);
-    assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
-    assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
+    assertThat(response.get(0).getTimelineId()).isEqualTo(testClientId + "-" + testMediaId);
+    assertThat(response.get(0).getClientId()).isEqualTo(testClientId);
     assertThat(response.get(0).getMediaId()).isEqualTo(testMediaId);
     assertThat(response.get(0).getStatus()).isEqualTo("DONE");
     assertThat(response.get(0).getRating()).isEqualTo(5);
@@ -162,8 +162,8 @@ class ImdbPlusApplicationIntegrationTests {
   void testTimelineGetTimelineByMediaId() {
     List<Timeline> response = timelineService.getTimelineByMediaId(testMediaId);
     assertThat(response).isNotNull().hasSize(1);
-    assertThat(response.get(0).getTimelineId()).isEqualTo(testUserId + "-" + testMediaId);
-    assertThat(response.get(0).getUserId()).isEqualTo(testUserId);
+    assertThat(response.get(0).getTimelineId()).isEqualTo(testClientId + "-" + testMediaId);
+    assertThat(response.get(0).getClientId()).isEqualTo(testClientId);
     assertThat(response.get(0).getMediaId()).isEqualTo(testMediaId);
     assertThat(response.get(0).getStatus()).isEqualTo("DONE");
     assertThat(response.get(0).getRating()).isEqualTo(5);
@@ -171,43 +171,43 @@ class ImdbPlusApplicationIntegrationTests {
   }
 
   /**
-   * Test the timeline delete functionality with a single test user and a single test timeline. The
+   * Test the timeline delete functionality with a single test client and a single test timeline. The
    * expected behavior is that the test timeline is deleted from the database.
    */
   @Test
   @Order(10)
   void testTimelineDelete() {
-    String response = timelineService.delete(testUserId+"-"+testMediaId, testAccessToken);
+    String response = timelineService.delete(testClientId+"-"+testMediaId, testAccessToken);
     assertThat(response).isEqualTo("Timeline deleted successfully");
   }
 
   /**
-   * Test the timeline retrieval functionality with a single test user with no associated timelines.
+   * Test the timeline retrieval functionality with a single test client with no associated timelines.
    * The expected behavior is that no timelines are retrieved from the database.
    */
   @Test
   @Order(11)
-  void testTimelineGetTimelineByUserIdNotFound() {
-    List<Timeline> response = timelineService.getTimelineByUserId(testUserId);
+  void testTimelineGetTimelineByClientIdNotFound() {
+    List<Timeline> response = timelineService.getTimelineByClientId(testClientId);
     assertThat(response).isEmpty();
   }
 
   /**
-   * Test the user delete functionality with a single test user. The expected behavior is that the
-   * test user is deleted from the database.
+   * Test the client delete functionality with a single test client. The expected behavior is that the
+   * test client is deleted from the database.
    */
   @Test
   @Order(12)
-  void testDeleteUserInvalidAccessToken() {
-    String deleteResult = userRepository.delete(testUserId, "testAccessToken");
+  void testDeleteClientInvalidAccessToken() {
+    String deleteResult = clientRepository.delete(testClientId, "testAccessToken");
     assertThat(deleteResult).isEqualTo("Invalid access token");
   }
 
   @Test
   @Order(13)
-  void testDeleteUser() {
-    String deleteResult = userRepository.delete(testUserId, testAccessToken);
-    assertThat(deleteResult).isEqualTo("User deleted successfully");
+  void testDeleteClient() {
+    String deleteResult = clientRepository.delete(testClientId, testAccessToken);
+    assertThat(deleteResult).isEqualTo("Client deleted successfully");
   }
 
   @Test
