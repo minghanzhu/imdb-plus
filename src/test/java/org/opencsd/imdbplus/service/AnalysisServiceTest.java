@@ -37,8 +37,8 @@ class AnalysisServiceTest {
   private List<Media> topTenListWatched;
   private List<Media> topTenListProgress;
   private List<Media> topTenListWished;
-  private Map<String, Long> userPrefered;
-  private List<Timeline> userList;
+  private Map<String, Long> clientPrefered;
+  private List<Timeline> clientList;
   private List<Timeline> allTimelines;
   private List<Media> allMedia;
   private List<Timeline> doneTimelines;
@@ -86,11 +86,11 @@ class AnalysisServiceTest {
     progressTimelines = Arrays.asList(t3, t8, t11);
     wishTimelines = Arrays.asList(t4,t5, t9, t10);
 
-    userList = Arrays.asList(t1, t2, t6, t7);
-    userPrefered = new HashMap<>();
-    userPrefered.put("Action", 2L);
-    userPrefered.put("Adventure", 1L);
-    userPrefered.put("Comedy", 1L);
+    clientList = Arrays.asList(t1, t2, t6, t7);
+    clientPrefered = new HashMap<>();
+    clientPrefered.put("Action", 2L);
+    clientPrefered.put("Adventure", 1L);
+    clientPrefered.put("Comedy", 1L);
   }
 
   @AfterEach
@@ -197,7 +197,7 @@ class AnalysisServiceTest {
   }
 
   @Test
-  void userPreference() {
+  void clientPreference() {
     when(analysisRepository.getAllTimelines()).thenReturn(doneTimelines);
     when(analysisRepository.getMedia(allMedia.get(0).getMediaId())).thenReturn(allMedia.get(0));
     when(analysisRepository.getMedia(allMedia.get(1).getMediaId())).thenReturn(allMedia.get(1));
@@ -205,7 +205,7 @@ class AnalysisServiceTest {
     when(analysisRepository.getMedia(allMedia.get(3).getMediaId())).thenReturn(allMedia.get(3));
     when(analysisRepository.getMedia(allMedia.get(4).getMediaId())).thenReturn(allMedia.get(4));
 
-    Map<String, Long> userLiked = analysisService.userPreference("u1");
-    assertEquals(userPrefered, userLiked);
+    Map<String, Long> clientLiked = analysisService.clientPreference("u1");
+    assertEquals(clientPrefered, clientLiked);
   }
 }

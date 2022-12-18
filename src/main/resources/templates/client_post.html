@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
 </head>
 <style>
-.button-create{
+.button-option{
             display: inline-block;
             height:50px;
             width:270px;
@@ -47,11 +47,12 @@
 }
 </style>
 <body>
+
 <div class = "row" style = "padding-top: 30px">
     <div class ="col-md-3">
     </div>
     <div class ="col-md-6">
-        <p style = "font-size: 40px;"> Please Enter Timeline Information: </p>
+        <p style = "font-size: 40px;"> Please Enter Client's Information: </p>
     </div>
     <div class ="col-md-3">
     </div>
@@ -61,10 +62,10 @@
     <div class ="col-md-3">
     </div>
     <div class ="col-md-2">
-        <span style = "font-size: 25px;">Timeline ID: </span>
+        <span style = "font-size: 25px;">Client Name: </span>
     </div>
     <div class ="col-md-4">
-        <input type="text" name="timeline_id" id="timeline_id"/>
+        <input type="text" name="client_name" id="client_name"/>
     </div>
     <div class ="col-md-3">
     </div>
@@ -74,10 +75,10 @@
     <div class ="col-md-3">
     </div>
     <div class ="col-md-2">
-        <span style = "font-size: 25px;">Client ID: </span>
+        <span style = "font-size: 25px;">Email: </span>
     </div>
     <div class ="col-md-4">
-        <input type="text" name="client_id" id="client_id"/>
+        <input type="text" name="client_email" id="client_email"/>
     </div>
     <div class ="col-md-3">
     </div>
@@ -87,10 +88,13 @@
     <div class ="col-md-3">
     </div>
     <div class ="col-md-2">
-        <span style = "font-size: 25px;">Media ID: </span>
+        <span style = "font-size: 25px;">Is Private? </span>
     </div>
     <div class ="col-md-4">
-        <input type="text" name="media_id" id="media_id"/>
+        <select id="selectIsPrivate">
+            <option value="false" selected="selected">No</option>
+            <option value="true">Yes</option>
+        </select>
     </div>
     <div class ="col-md-3">
     </div>
@@ -100,49 +104,13 @@
     <div class ="col-md-3">
     </div>
     <div class ="col-md-2">
-        <span style = "font-size: 25px;">Status: </span>
+        <span style = "font-size: 25px;">Is Adult? </span>
     </div>
     <div class ="col-md-4">
-        <input type="text" name="status" id="status"/>
-    </div>
-    <div class ="col-md-3">
-    </div>
-</div>
-
-<div class = "row">
-    <div class ="col-md-3">
-    </div>
-    <div class ="col-md-2">
-        <span style = "font-size: 25px;">Rating: </span>
-    </div>
-    <div class ="col-md-4">
-        <input type="text" name="rating" id="rating"/>
-    </div>
-    <div class ="col-md-3">
-    </div>
-</div>
-
-<div class = "row">
-    <div class ="col-md-3">
-    </div>
-    <div class ="col-md-2">
-        <span style = "font-size: 25px;">Comment: </span>
-    </div>
-    <div class ="col-md-4">
-        <input type="text" name="comment" id="comment"/>
-    </div>
-    <div class ="col-md-3">
-    </div>
-</div>
-
-<div class = "row">
-    <div class ="col-md-3">
-    </div>
-    <div class ="col-md-2">
-        <span style = "font-size: 25px;">Access Token: </span>
-    </div>
-    <div class ="col-md-4">
-        <input type="text" name="access_token" id="access_token"/>
+        <select id="selectIsAdult">
+            <option value="false" selected="selected">No</option>
+            <option value="true">Yes</option>
+        </select>
     </div>
     <div class ="col-md-3">
     </div>
@@ -152,7 +120,7 @@
     <div class ="col-md-4">
     </div>
     <div class ="col-md-4">
-        <input class = "button-create" type="button" name="postData" id="postData" value="Create Timeline" onclick="postDataFromAPI();"/>
+        <input class = "button-option" type="button" name="postData" id="postData" value="Create a Client" onclick="postDataFromAPI();"/>
     </div>
     <div class ="col-md-4">
     </div>
@@ -182,34 +150,30 @@
 
 <script>
 	function postDataFromAPI() {
-
+	    const bool1 = document.getElementById('selectIsPrivate').value == "true" ? true : false;
+	    const bool2 = document.getElementById('selectIsAdult').value == "true" ? true : false;
 	    var modelObj = {
-	        "timelineId": $("#timeline_id").val(),
-	        "clientId": $("#client_id").val(),
-	        "mediaId": $("#media_id").val(),
-	        "status": $("#status").val(),
-            "rating": parseInt($("#rating").val()),
-            "comment": $("#comment").val()
+            "clientname": $("#client_name").val(),
+            "email": $("#client_email").val(),
+            "accountSetting": {
+                "isPrivate": bool1,
+                "isAdult": bool2
+            }
         };
-
 		 $.ajax({
 	            type: "POST",
-	            beforeSend: function(request) {
-                    request.setRequestHeader("Authorization", $("#access_token").val());
-                 },
-	            url: "/timeline",
+	            url: "/client",
 	            headers: {
 	                "Content-Type": "application/json"
 	            },
 	            data: JSON.stringify(modelObj),
 	            success: function (data) {
                     var table = $("#list");
-                    table.append("<b>TIMELINE ID: </b><p>" + data.timelineId + "</p>");
-                    table.append("<b>MEDIA ID: </b><p>" + data.mediaId + "</p>");
-                    table.append("<b>CREATION TIME: </b><p>" + data.creationTime + "</p>");
-                    table.append("<b>STATUS: </b><p>" + data.status + "</p>");
-                    table.append("<b>RATING: </b><p>" + data.rating + "</p>");
-                    table.append("<b>COMMENT: </b><p>" + data.comment + "</p>");
+                    table.append("<b>USER ID: </b><p>" + data.clientId + "</p>");
+                    table.append("<b>USER NAME: </b><p>" + data.clientname + "</p>");
+                    table.append("<b>USER EMAIL: </b><p>" + data.email + "</p>");
+                    table.append("<b>USER IS PRIVATE: </b><p>" + data.accountSetting.isPrivate + "</p>");
+                    table.append("<b>USER IS ADULT: </b><p>" + data.accountSetting.isAdult + "</p>");
 	            },
 	            error: function (jqXHR, textStatus, errorThrown) {
 	            }

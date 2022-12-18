@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  Sample timeline item JSON (don't include creationTime):
  {
  "timelineId": "0b5dedb5-4b04-4c36-adda-e748e60bc20a-tt0000001",
- "userId": "ff5428e8-ae95-4b7c-ab16-9a602df182e4",
+ "clientId": "ff5428e8-ae95-4b7c-ab16-9a602df182e4",
  "mediaId": "tt0000001",
  "status": "DONE",
  "rating": 5,
@@ -28,12 +28,12 @@ import lombok.NoArgsConstructor;
 @DynamoDBTable(tableName = "timeline")
 public class Timeline {
 
-  // timelineId is the primary key, it is a combination of userId and mediaId (e.g. ff5428e8-ae95-4b7c-ab16-9a602df182e4-tt0000001)
-  // userId is the sort key to get all the timeline items of a user
+  // timelineId is the primary key, it is a combination of clientId and mediaId (e.g. ff5428e8-ae95-4b7c-ab16-9a602df182e4-tt0000001)
+  // clientId is the sort key to get all the timeline items of a client
   @DynamoDBHashKey
-  private String timelineId; // userId-mediaId: 0b5dedb5-4b04-4c36-adda-e748e60bc20a-tt0000001
+  private String timelineId; // clientId-mediaId: 0b5dedb5-4b04-4c36-adda-e748e60bc20a-tt0000001
   @DynamoDBAttribute
-  private String userId; // ff5428e8-ae95-4b7c-ab16-9a602df182e4 (UUID)
+  private String clientId; // ff5428e8-ae95-4b7c-ab16-9a602df182e4 (UUID)
   @DynamoDBAttribute
   private String mediaId; // tt0000001 (IMDB ID)
   private Date creationTime; // 1600000000 (epoch time)
@@ -53,10 +53,10 @@ public class Timeline {
   private Integer rating; // 1-5 (optional, only for DONE)
   @DynamoDBAttribute
   private String comment; // (optional, only for DONE)
-  public Timeline(String timelineId, String userId, String mediaId, String status,
+  public Timeline(String timelineId, String clientId, String mediaId, String status,
       int rating, String comment) {
     this.timelineId = timelineId;
-    this.userId = userId;
+    this.clientId = clientId;
     this.mediaId = mediaId;
     this.status = status;
     this.rating = rating;

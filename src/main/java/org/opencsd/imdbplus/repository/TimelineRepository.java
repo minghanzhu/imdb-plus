@@ -22,7 +22,7 @@ public class TimelineRepository {
   }
 
   public Timeline save(Timeline timeline) {
-    // Check if the user exists and the access token is valid
+    // Check if the client exists and the access token is valid
     try {
       dynamoDBMapper.save(timeline);
       return timeline;
@@ -36,7 +36,7 @@ public class TimelineRepository {
   }
 
   public void delete(String timelineId) {
-    // Check if the user exists and the access token is valid
+    // Check if the client exists and the access token is valid
     Timeline timeline = getTimeline(timelineId);
     if (timeline != null)
       dynamoDBMapper.batchDelete(timeline);
@@ -51,12 +51,12 @@ public class TimelineRepository {
     return dynamoDBMapper.scan(Timeline.class, expression);
   }
 
-  public List<Timeline> getTimelineByUserId(String userId) {
-    // scan the timeline table to get all timelines of the user
+  public List<Timeline> getTimelineByClientId(String clientId) {
+    // scan the timeline table to get all timelines of the client
     HashMap<String, AttributeValue> eav = new HashMap<>();
-    eav.put(":v1", new AttributeValue().withS(userId));
+    eav.put(":v1", new AttributeValue().withS(clientId));
     DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-        .withFilterExpression("userId = :v1")
+        .withFilterExpression("clientId = :v1")
         .withExpressionAttributeValues(eav);
     List<Timeline> timelines = scanDynamo(scanExpression);
     if (timelines != null && !timelines.isEmpty()) {
@@ -81,8 +81,8 @@ public class TimelineRepository {
     }
   }
 
-  public Timeline getTimelineByUserIdAndMediaId(String userId, String mediaId) {
-    Timeline timeline = dynamoDBMapper.load(Timeline.class, userId + "-" + mediaId);
+  public Timeline getTimelineByClientIdAndMediaId(String clientId, String mediaId) {
+    Timeline timeline = dynamoDBMapper.load(Timeline.class, clientId + "-" + mediaId);
     if (timeline != null) {
       return timeline;
     } else {

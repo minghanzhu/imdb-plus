@@ -110,98 +110,98 @@ class ImdbPlusApplicationSystemTests {
   }
 
   /**
-   * Test the user sign up functionality with a single test user. The expected result is that the
-   * test user is added to the database.
+   * Test the client sign up functionality with a single test client. The expected result is that the
+   * test client is added to the database.
    */
   @Test
   @Order(1)
-  void testUserSave() throws Exception {
+  void testClientSave() throws Exception {
 
-    String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+    String testClientname = UUID.randomUUID().toString().replace("-", "") + "-testClientname";
 
-    // POST request to add a new user
+    // POST request to add a new client
     String jsonInputString = "{\"" +
-        "username\":\"" + testUsername + "\"," +
+        "clientname\":\"" + testClientname + "\"," +
         "\"email\":\"   \"," +
         "\"accountSetting\":{" +
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
+    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/client", null);
 
     JSONObject jsonObject = new JSONObject(response);
-    String username = jsonObject.getString("username");
-    assertThat(username).isEqualTo(testUsername);
+    String clientname = jsonObject.getString("clientname");
+    assertThat(clientname).isEqualTo(testClientname);
 
-    // DELETE the added test user to clean up
-    String userId = jsonObject.getString("userId");
+    // DELETE the added test client to clean up
+    String clientId = jsonObject.getString("clientId");
     String accessToken = jsonObject.getString("accessToken");
-    deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
+    deleteRequest(dynamoDBEndpoint + "/client/" + clientId, accessToken);
   }
 
   /**
-   * Test the user sign up functionality with duplicate usernames. The expected behavior is that the
-   * second test user with the same username should not be added to the database.
+   * Test the client sign up functionality with duplicate clientnames. The expected behavior is that the
+   * second test client with the same clientname should not be added to the database.
    */
   @Test
   @Order(2)
-  void testUserSaveDuplicatedUsername() throws Exception {
+  void testClientSaveDuplicatedClientname() throws Exception {
 
-    String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+    String testClientname = UUID.randomUUID().toString().replace("-", "") + "-testClientname";
 
-    // POST request to add a new user
+    // POST request to add a new client
     String jsonInputString = "{\"" +
-        "username\":\"" + testUsername + "\"," +
+        "clientname\":\"" + testClientname + "\"," +
         "\"email\":\"   \"," +
         "\"accountSetting\":{" +
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
+    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/client", null);
 
-    // Assert POST request to add a new user with the same username should return HTTP 400
+    // Assert POST request to add a new client with the same clientname should return HTTP 400
     String response2 = null;
     try {
-      response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
+      response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/client", null);
     } catch (IOException e) {
       response2 = e.getMessage();
       assertThat(response2).contains("400");
     }
 
-    // DELETE the added test user to clean up
+    // DELETE the added test client to clean up
     JSONObject jsonObject = new JSONObject(response);
-    String userId = jsonObject.getString("userId");
+    String clientId = jsonObject.getString("clientId");
     String accessToken = jsonObject.getString("accessToken");
-    deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
+    deleteRequest(dynamoDBEndpoint + "/client/" + clientId, accessToken);
   }
 
   /**
-   * Test the timeline save functionality with a single test user and a single test timeline. The
+   * Test the timeline save functionality with a single test client and a single test timeline. The
    * expected behavior is that the test timeline is added to the database.
    */
   @Test
   @Order(3)
   void testTimelineSave() throws Exception {
 
-    String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+    String testClientname = UUID.randomUUID().toString().replace("-", "") + "-testClientname";
 
-    // POST request to add a new user
+    // POST request to add a new client
     String jsonInputString = "{\"" +
-        "username\":\"" + testUsername + "\"," +
+        "clientname\":\"" + testClientname + "\"," +
         "\"email\":\"   \"," +
         "\"accountSetting\":{" +
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
+    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/client", null);
 
     // POST request to add a new timeline
     JSONObject jsonObject = new JSONObject(response);
-    String userId = jsonObject.getString("userId");
+    String clientId = jsonObject.getString("clientId");
     String accessToken = jsonObject.getString("accessToken");
     jsonInputString = "{\"" +
-        "timelineId\":\"" + userId + "-tt0000001\"," +
-        "\"userId\":\"" + userId + "\"," +
+        "timelineId\":\"" + clientId + "-tt0000001\"," +
+        "\"clientId\":\"" + clientId + "\"," +
         "\"mediaId\":\"tt0000001\"," +
         "\"status\":\"DONE\"," +
         "\"rating\":5," +
@@ -210,38 +210,38 @@ class ImdbPlusApplicationSystemTests {
     String response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/timeline", accessToken);
     assertThat(response2).contains("tt0000001");
 
-    // DELETE the added test user and timeline item to clean up
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "-tt0000001", accessToken);
-    deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
+    // DELETE the added test client and timeline item to clean up
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + clientId + "-tt0000001", accessToken);
+    deleteRequest(dynamoDBEndpoint + "/client/" + clientId, accessToken);
   }
 
   /**
-   * Test the timeline get functionality with a single test user and multiple test timelines. The
-   * expected behavior is that all test timelines can be retrieved from the database by userId
+   * Test the timeline get functionality with a single test client and multiple test timelines. The
+   * expected behavior is that all test timelines can be retrieved from the database by clientId
    */
   @Test
   @Order(4)
-  void testTimelineGetByUserId() throws Exception {
+  void testTimelineGetByClientId() throws Exception {
 
-    String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+    String testClientname = UUID.randomUUID().toString().replace("-", "") + "-testClientname";
 
-    // POST request to add a new user
+    // POST request to add a new client
     String jsonInputString = "{\"" +
-        "username\":\"" + testUsername + "\"," +
+        "clientname\":\"" + testClientname + "\"," +
         "\"email\":\"   \"," +
         "\"accountSetting\":{" +
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
+    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/client", null);
 
     // POST request to add a new timeline
     JSONObject jsonObject = new JSONObject(response);
-    String userId = jsonObject.getString("userId");
+    String clientId = jsonObject.getString("clientId");
     String accessToken = jsonObject.getString("accessToken");
     jsonInputString = "{\"" +
-        "timelineId\":\"" + userId + "-tt0000001\"," +
-        "\"userId\":\"" + userId + "\"," +
+        "timelineId\":\"" + clientId + "-tt0000001\"," +
+        "\"clientId\":\"" + clientId + "\"," +
         "\"mediaId\":\"tt0000001\"," +
         "\"status\":\"DONE\"," +
         "\"rating\":5," +
@@ -252,8 +252,8 @@ class ImdbPlusApplicationSystemTests {
 
     // POST request to add another timeline
     jsonInputString = "{\"" +
-        "timelineId\":\"" + userId + "-tt0000002\"," +
-        "\"userId\":\"" + userId + "\"," +
+        "timelineId\":\"" + clientId + "-tt0000002\"," +
+        "\"clientId\":\"" + clientId + "\"," +
         "\"mediaId\":\"tt0000002\"," +
         "\"status\":\"DONE\"," +
         "\"rating\":1," +
@@ -262,20 +262,20 @@ class ImdbPlusApplicationSystemTests {
     String response3 = postRequest(jsonInputString, dynamoDBEndpoint + "/timeline", accessToken);
     assertThat(response3).contains("tt0000002");
 
-    // GET request to get all timelines by userId
-    String response4 = getRequest(dynamoDBEndpoint + "/timeline/user/" + userId, accessToken);
+    // GET request to get all timelines by clientId
+    String response4 = getRequest(dynamoDBEndpoint + "/timeline/client/" + clientId, accessToken);
     // Expected to return two timeline items with mediaId tt0000001 and tt0000002
     assertThat(response4).contains("tt0000001").contains("tt0000002");
 
-    // DELETE the added test user and timeline item to clean up
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "-tt0000001", accessToken);
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId +  "-tt0000002", accessToken);
-    deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
+    // DELETE the added test client and timeline item to clean up
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + clientId + "-tt0000001", accessToken);
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + clientId +  "-tt0000002", accessToken);
+    deleteRequest(dynamoDBEndpoint + "/client/" + clientId, accessToken);
   }
 
   /**
-   * Test the timeline get functionality with multiple test users add timelines for the same media
-   * (mediaId). For example, user1 adds a timeline for mediaId tt0000001, and user2 adds a timeline
+   * Test the timeline get functionality with multiple test clients add timelines for the same media
+   * (mediaId). For example, client1 adds a timeline for mediaId tt0000001, and client2 adds a timeline
    * for mediaId tt0000001. The expected behavior is that all test timelines can be retrieved from
    * the database by mediaId
    */
@@ -283,26 +283,26 @@ class ImdbPlusApplicationSystemTests {
   @Order(5)
   void testTimelineGetByMediaId() throws Exception {
 
-    String testUsername1 = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
-    String testUsername2 = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+    String testClientname1 = UUID.randomUUID().toString().replace("-", "") + "-testClientname";
+    String testClientname2 = UUID.randomUUID().toString().replace("-", "") + "-testClientname";
 
-    // POST request to add a new user
+    // POST request to add a new client
     String jsonInputString = "{\"" +
-        "username\":\"" + testUsername1 + "\"," +
+        "clientname\":\"" + testClientname1 + "\"," +
         "\"email\":\"   \"," +
         "\"accountSetting\":{" +
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
+    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/client", null);
 
-    // POST request to add a new timeline for user1
+    // POST request to add a new timeline for client1
     JSONObject jsonObject = new JSONObject(response);
-    String userId1 = jsonObject.getString("userId");
+    String clientId1 = jsonObject.getString("clientId");
     String accessToken1 = jsonObject.getString("accessToken");
     jsonInputString = "{\"" +
-        "timelineId\":\"" + userId1 + "-tt0000001\"," +
-        "\"userId\":\"" + userId1 + "\"," +
+        "timelineId\":\"" + clientId1 + "-tt0000001\"," +
+        "\"clientId\":\"" + clientId1 + "\"," +
         "\"mediaId\":\"tt0000001\"," +
         "\"status\":\"DONE\"," +
         "\"rating\":5," +
@@ -311,23 +311,23 @@ class ImdbPlusApplicationSystemTests {
     String response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/timeline", accessToken1);
     assertThat(response2).contains("tt0000001");
 
-    // POST request to add a new user
+    // POST request to add a new client
     jsonInputString = "{\"" +
-        "username\":\"" + testUsername2 + "\"," +
+        "clientname\":\"" + testClientname2 + "\"," +
         "\"email\":\"   \"," +
         "\"accountSetting\":{" +
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response3 = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
+    String response3 = postRequest(jsonInputString, dynamoDBEndpoint + "/client", null);
 
-    // POST request to add a new timeline for user2
+    // POST request to add a new timeline for client2
     JSONObject jsonObject2 = new JSONObject(response3);
-    String userId2 = jsonObject2.getString("userId");
+    String clientId2 = jsonObject2.getString("clientId");
     String accessToken2 = jsonObject2.getString("accessToken");
     jsonInputString = "{\"" +
-        "timelineId\":\"" + userId2 + "-tt0000002\"," +
-        "\"userId\":\"" + userId2 + "\"," +
+        "timelineId\":\"" + clientId2 + "-tt0000002\"," +
+        "\"clientId\":\"" + clientId2 + "\"," +
         "\"mediaId\":\"tt0000002\"," +
         "\"status\":\"DONE\"," +
         "\"rating\":1," +
@@ -337,39 +337,39 @@ class ImdbPlusApplicationSystemTests {
 
     String response5 = getRequest(dynamoDBEndpoint + "/timeline/media/" + "tt0000001", null);
     String response6 = getRequest(dynamoDBEndpoint + "/timeline/media/" + "tt0000002", null);
-    assertThat(response5).contains("tt0000001").contains(userId1);
-    assertThat(response6).contains("tt0000002").contains(userId2);
+    assertThat(response5).contains("tt0000001").contains(clientId1);
+    assertThat(response6).contains("tt0000002").contains(clientId2);
 
-    // DELETE the added test user and timeline item to clean up
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId1 + "-tt0000001", accessToken1);
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId2 + "-tt0000002", accessToken2);
-    deleteRequest(dynamoDBEndpoint + "/user/" + userId1, accessToken1);
-    deleteRequest(dynamoDBEndpoint + "/user/" + userId2, accessToken2);
+    // DELETE the added test client and timeline item to clean up
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + clientId1 + "-tt0000001", accessToken1);
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + clientId2 + "-tt0000002", accessToken2);
+    deleteRequest(dynamoDBEndpoint + "/client/" + clientId1, accessToken1);
+    deleteRequest(dynamoDBEndpoint + "/client/" + clientId2, accessToken2);
   }
 
   @Test
   @Order(6)
-  void testTimelineGetTimelineByUserIdAndMediaId() throws Exception {
+  void testTimelineGetTimelineByClientIdAndMediaId() throws Exception {
 
-    String testUsername = UUID.randomUUID().toString().replace("-", "") + "-testUsername";
+    String testClientname = UUID.randomUUID().toString().replace("-", "") + "-testClientname";
 
-    // POST request to add a new user
+    // POST request to add a new client
     String jsonInputString = "{\"" +
-        "username\":\"" + testUsername + "\"," +
+        "clientname\":\"" + testClientname + "\"," +
         "\"email\":\"   \"," +
         "\"accountSetting\":{" +
         "\"isPrivate\":false," +
         "\"isAdult\":true}" +
         "}";
-    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/user", null);
+    String response = postRequest(jsonInputString, dynamoDBEndpoint + "/client", null);
 
     // POST request to add a new timeline
     JSONObject jsonObject = new JSONObject(response);
-    String userId = jsonObject.getString("userId");
+    String clientId = jsonObject.getString("clientId");
     String accessToken = jsonObject.getString("accessToken");
     jsonInputString = "{\"" +
-        "timelineId\":\"" + userId + "-tt0000001\"," +
-        "\"userId\":\"" + userId + "\"," +
+        "timelineId\":\"" + clientId + "-tt0000001\"," +
+        "\"clientId\":\"" + clientId + "\"," +
         "\"mediaId\":\"tt0000001\"," +
         "\"status\":\"DONE\"," +
         "\"rating\":5," +
@@ -377,13 +377,13 @@ class ImdbPlusApplicationSystemTests {
         "}";
     String response2 = postRequest(jsonInputString, dynamoDBEndpoint + "/timeline", accessToken);
 
-    // GET request to retrieve the added timeline by userId and mediaId
-    String response3 = getRequest(dynamoDBEndpoint + "/timeline/" + userId + "/" + "tt0000001",
+    // GET request to retrieve the added timeline by clientId and mediaId
+    String response3 = getRequest(dynamoDBEndpoint + "/timeline/" + clientId + "/" + "tt0000001",
         accessToken);
     assertThat(response3).contains("tt0000001");
 
-    // DELETE the added test user and timeline item to clean up
-    deleteRequest(dynamoDBEndpoint + "/timeline/" + userId + "-tt0000001", accessToken);
-    deleteRequest(dynamoDBEndpoint + "/user/" + userId, accessToken);
+    // DELETE the added test client and timeline item to clean up
+    deleteRequest(dynamoDBEndpoint + "/timeline/" + clientId + "-tt0000001", accessToken);
+    deleteRequest(dynamoDBEndpoint + "/client/" + clientId, accessToken);
   }
 }

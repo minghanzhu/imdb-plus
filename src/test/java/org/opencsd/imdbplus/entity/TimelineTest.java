@@ -72,11 +72,11 @@ class TimelineTest {
   }
 
   @Test
-  void getUserId() {
-    String[] userId = {"u1", "u1", "u3", "u2", "u1"};
+  void getClientId() {
+    String[] clientId = {"u1", "u1", "u3", "u2", "u1"};
     for(int i=0; i<timelines.length; i++){
-      String result = timelines[i].getUserId();
-      String expectedId = userId[i];
+      String result = timelines[i].getClientId();
+      String expectedId = clientId[i];
       assertEquals(result, expectedId);
     }
   }

@@ -137,21 +137,21 @@ public class AnalysisService {
     return topTenList;
   }
 
-  public Map<String, Long> userPreference(String userId) {
+  public Map<String, Long> clientPreference(String clientId) {
     List<Timeline> timelineList = analysisRepository.getAllTimelines();
-    Map<String, Long> userPreferenceMap = new HashMap<>();
+    Map<String, Long> clientPreferenceMap = new HashMap<>();
     for(Timeline line: timelineList){
-      if(line.getUserId().equals(userId)) {
+      if(line.getClientId().equals(clientId)) {
         String mediaId = line.getMediaId();
         Media media = analysisRepository.getMedia(mediaId);
         String genre = media.getGenre();
-        long count = userPreferenceMap.containsKey(genre) ? userPreferenceMap.get(genre) : 0;
-        userPreferenceMap.put(genre, count + 1);
+        long count = clientPreferenceMap.containsKey(genre) ? clientPreferenceMap.get(genre) : 0;
+        clientPreferenceMap.put(genre, count + 1);
       }
     }
-    serviceAnalysisLogger.info("retrieved preference list for user {}", userId);
+    serviceAnalysisLogger.info("retrieved preference list for client {}", clientId);
 
-    return userPreferenceMap;
+    return clientPreferenceMap;
   }
 
   /**

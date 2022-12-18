@@ -63,14 +63,14 @@ public class AnalysisController {
   }
 
   /**
-   * endpoint domain.com/api/v1/analysis/userprofile/{userId}
-   * returns  a map of media and the user's genre preference and number of media with that
+   * endpoint domain.com/api/v1/analysis/clientprofile/{clientId}
+   * returns  a map of media and the client's genre preference and number of media with that
    * */
-  @GetMapping("/userprofile/{id}")
-  public ResponseEntity<Map<String, Long>> getUserPreference(@PathVariable("id") String userId){
-    Map<String, Long> mediaUserLikes = analysisService.userPreference(userId);
-    if(!mediaUserLikes.isEmpty())
-      return ResponseEntity.ok(mediaUserLikes);
+  @GetMapping("/clientprofile/{id}")
+  public ResponseEntity<Map<String, Long>> getClientPreference(@PathVariable("id") String clientId){
+    Map<String, Long> mediaClientLikes = analysisService.clientPreference(clientId);
+    if(!mediaClientLikes.isEmpty())
+      return ResponseEntity.ok(mediaClientLikes);
     else
       return ResponseEntity.badRequest().build();
   }

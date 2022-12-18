@@ -1,7 +1,7 @@
 package org.opencsd.imdbplus.controller;
 
-import org.opencsd.imdbplus.entity.User;
-import org.opencsd.imdbplus.repository.UserRepository;
+import org.opencsd.imdbplus.entity.Client;
+import org.opencsd.imdbplus.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController {
+public class ClientController {
 
   @Autowired
-  private UserRepository userRepository;
+  private ClientRepository clientRepository;
 
-  // Add new user to the database
-  @PostMapping("/user")
-  public ResponseEntity<User> save(@RequestBody User user) {
-    User response = userRepository.save(user);
+  // Add new client to the database
+  @PostMapping("/client")
+  public ResponseEntity<Client> save(@RequestBody Client client) {
+    Client response = clientRepository.save(client);
     if (response == null) {
       return ResponseEntity.badRequest().body(null);
     } else {
@@ -30,10 +30,11 @@ public class UserController {
     }
   }
 
-  // Get user by userId
-  @GetMapping("/user/{id}")
-  public ResponseEntity<User> getUser(@PathVariable("id") String userId) {
-    User response = userRepository.getUser(userId);
+  // Get client by clientId
+  @GetMapping("/client/{id}")
+  public ResponseEntity<Client> getClient(@PathVariable("id") String clientId,
+      @RequestHeader("Authorization") String accessToken) {
+    Client response = clientRepository.getClient(clientId, accessToken);
     if (response == null) {
       return ResponseEntity.notFound().build();
     } else {
@@ -41,18 +42,18 @@ public class UserController {
     }
   }
 
-  // Delete user by userId
-  @DeleteMapping("/user/{id}")
-  public ResponseEntity<String> deleteUser(@PathVariable("id") String userId,
+  // Delete client by clientId
+  @DeleteMapping("/client/{id}")
+  public ResponseEntity<String> deleteClient(@PathVariable("id") String clientId,
       @RequestHeader("Authorization") String accessToken) {
-    String response = userRepository.delete(userId, accessToken);
+    String response = clientRepository.delete(clientId, accessToken);
     return ResponseEntity.ok(response);
   }
 
-  // Update user by userId
-  @PutMapping("/user/{id}")
-  public ResponseEntity<String> updateUser(@PathVariable("id") String userId, @RequestBody User user) {
-    String response = userRepository.update(userId, user);
+  // Update client by clientId
+  @PutMapping("/client/{id}")
+  public ResponseEntity<String> updateClient(@PathVariable("id") String clientId, @RequestBody Client client) {
+    String response = clientRepository.update(clientId, client);
     return ResponseEntity.ok(response);
   }
 }

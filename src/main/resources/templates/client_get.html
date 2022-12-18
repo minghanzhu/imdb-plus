@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
 </head>
 <style>
-.button-option{
+.button-get{
             display: inline-block;
             height:50px;
-            width:500px;
+            width:270px;
             outline: 0;
             border:0;
             cursor: pointer;
@@ -26,6 +26,7 @@
             box-shadow: rgb(255, 198, 0) -2px -2px 0px 2px, rgb(246, 84, 174) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
             transition: all 0.2s;
 }
+
 .home-button {
             display: inline-block;
             height:50px;
@@ -48,67 +49,41 @@
 }
 </style>
 <body>
-<div class = "row" style = "padding-top: 70px">
-    <div class ="col-md-3" >
+
+<div class = "row" style = "padding-top: 30px">
+    <div class ="col-md-3">
     </div>
-    <div class ="col-md-6" >
-        <button class="button-option" onclick="window.location.href='http://localhost:8083/timeline-post';">
-            Create a Timeline
-        </button>
+    <div class ="col-md-6">
+        <p style = "font-size: 40px; text-align:center;"> Please Enter Client's ID: </p>
     </div>
-    <div class ="col-md-3" >
+    <div class ="col-md-3">
     </div>
 </div>
 
-<div class = "row" style = "padding-top: 40px">
-    <div class ="col-md-3" >
+<div class = "row" style = "padding-top: 20px">
+    <div class ="col-md-4" >
     </div>
-    <div class ="col-md-6" >
-        <button class="button-option" onclick="window.location.href='http://localhost:8083/timeline-get-by-client-id';">
-            Find a Timeline By Client ID
-        </button>
+    <div class ="col-md-1" style = "font-size: 20px;">
+        <span>Client ID: </span>
     </div>
-    <div class ="col-md-3" >
+    <div class ="col-md-4">
+        <input type="text" name="client_id" id="client_id"/>
     </div>
-</div>
-
-<div class = "row" style = "padding-top: 40px">
-    <div class ="col-md-3" >
-    </div>
-    <div class ="col-md-6" >
-        <button class="button-option" onclick="window.location.href='http://localhost:8083/timeline-get-by-media-id';">
-            Find a Timeline By Media ID
-        </button>
-    </div>
-    <div class ="col-md-3" >
+    <div class ="col-md-3">
     </div>
 </div>
 
-<div class = "row" style = "padding-top: 40px">
-    <div class ="col-md-3" >
+<div class = "row" style = "padding-top: 50px">
+    <div class ="col-md-4">
     </div>
-    <div class ="col-md-6" >
-        <button class="button-option" onclick="window.location.href='http://localhost:8083/timeline-get-by-client-media-id';">
-            Find a Timeline By Client ID and Client ID
-        </button>
+    <div class ="col-md-4">
+        <input class = "button-get" type="button" name="getData" id="getData" value="Get Information" onclick="getDataFromAPI();"/>
     </div>
-    <div class ="col-md-3" >
+    <div class ="col-md-4">
     </div>
 </div>
 
-<div class = "row" style = "padding-top: 40px">
-    <div class ="col-md-3" >
-    </div>
-    <div class ="col-md-6" >
-        <button class="button-option" onclick="window.location.href='http://localhost:8083/timeline-delete';">
-            Delete a Timeline
-        </button>
-    </div>
-    <div class ="col-md-3" >
-    </div>
-</div>
-
-<div class = "row" style = "padding-top: 70px">
+<div class = "row" style = "padding-top: 60px">
     <div class ="col-md-4">
     </div>
     <div class ="col-md-4">
@@ -119,7 +94,35 @@
     <div class ="col-md-4">
     </div>
 </div>
+
+<div class = "row">
+    <div class ="col-md-4">
+    </div>
+    <div class ="col-md-4">
+        <div id="list" style = "padding-top: 50px; font-size: 20px;"></div>
+    </div>
+    <div class ="col-md-4">
+    </div>
+</div>
+
 <script>
+	function getDataFromAPI() {
+
+	    $("#list").empty();//Clear old data before ajax
+	    $.ajax({
+	        url: "/client/" + $("#client_id").val(),
+	        type: "GET",
+	        success: function (data) {
+	        	var table = $("#list");
+                table.append("<b>USER ID: </b><p>" + data.clientId + "</p>");
+                table.append("<b>USER NAME: </b><p>" + data.clientname + "</p>");
+                table.append("<b>USER EMAIL: </b><p>" + data.email + "</p>");
+	        },
+	        error: function (jqXHR, textStatus, errorThrown) {
+	        }
+		});
+	}
+
 </script>
 </body>
 </html>
