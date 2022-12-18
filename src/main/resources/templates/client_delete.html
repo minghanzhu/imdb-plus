@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
 </head>
 <style>
-.button-get{
+.button-delete{
             display: inline-block;
             height:50px;
             width:270px;
@@ -26,7 +26,6 @@
             box-shadow: rgb(255, 198, 0) -2px -2px 0px 2px, rgb(246, 84, 174) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
             transition: all 0.2s;
 }
-
 .home-button {
             display: inline-block;
             height:50px;
@@ -48,24 +47,38 @@
 }
 </style>
 <body>
+
 <div class = "row" style = "padding-top: 30px">
     <div class ="col-md-3">
     </div>
     <div class ="col-md-6">
-        <p style = "font-size: 40px; text-align:center;"> Please Enter Media ID: </p>
+        <p style = "font-size: 40px; text-align:center;"> Please Enter Client ID and Token: </p>
     </div>
     <div class ="col-md-3">
     </div>
 </div>
 
 <div class = "row" style = "padding-top: 20px">
-    <div class ="col-md-4" >
+    <div class ="col-md-3" >
     </div>
-    <div class ="col-md-1" style = "font-size: 18px;">
-        <span>Media ID: </span>
+    <div class ="col-md-2">
+        <span style = "font-size: 25px;">Client ID: </span>
     </div>
     <div class ="col-md-4">
-        <input type="text" name="media_id" id="media_id"/>
+        <input type="text" name="client_id" id="client_id"/>
+    </div>
+    <div class ="col-md-3">
+    </div>
+</div>
+
+<div class = "row">
+    <div class ="col-md-3">
+    </div>
+    <div class ="col-md-2">
+        <span style = "font-size: 25px;">Access Token: </span>
+    </div>
+    <div class ="col-md-4">
+        <input type="text" name="access_token" id="access_token"/>
     </div>
     <div class ="col-md-3">
     </div>
@@ -75,7 +88,7 @@
     <div class ="col-md-4">
     </div>
     <div class ="col-md-4">
-        <input class = "button-get" type="button" name="getData" id="getData" value="Get Information" onclick="getDataFromAPI();"/>
+        <input class = "button-delete" type="button" name="deleteData" id="deleteData" value="DELETE" onclick="deleteDataFromAPI();"/>
     </div>
     <div class ="col-md-4">
     </div>
@@ -103,28 +116,30 @@
     </div>
 </div>
 
+
 <script>
-	function getDataFromAPI() {
+	function deleteDataFromAPI() {
+         $("#list").empty();//Clear old data before ajax
 
-	    $("#list").empty();//Clear old data before ajax
-
-	    $.ajax({
-	        url: "/timeline/media/" + $("#media_id").val(),
-	        type: "GET",
-	        success: function (data) {
-	        	var table = $("#list");
-                table.append("<b>USER ID: </b><p>" + data[0].clientId + "</p>");
-                table.append("<b>Timeline ID: </b><p>" + data[0].timelineId + "</p>");
-                table.append("<b>Media ID: </b><p>" + data[0].mediaId + "</p>");
-                table.append("<b>Creation Time: </b><p>" + data[0].creationTime + "</p>");
-                table.append("<b>Status: </b><p>" + data[0].status + "</p>");
-                table.append("<b>Rating: </b><p>" + data[0].rating + "</p>");
-                table.append("<b>Comment: </b><p>" + data[0].comment + "</p>");
-	        },
-	        error: function (jqXHR, textStatus, errorThrown) {
-	        }
-		});
+		 $.ajax({
+	            type: "DELETE",
+	            beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", $("#access_token").val());
+                 },
+	            url: "/client/" + $("#client_id").val(),
+	            headers: {
+	                "Content-Type": "application/json"
+	            },
+	            success: function (data) {
+	                console.log(data)
+	            	console.log("Client Delete Successfully!");
+                    var table = $("#list");
+                    table.append("<b>USER DELETE SUCCESSFULLY!</b>");
+	            },
+	            error: function (jqXHR, textStatus, errorThrown) {
+	            }
+	        });
 	}
-	</script>
+</script>
 </body>
 </html>

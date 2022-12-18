@@ -1,24 +1,24 @@
 # Description
 
-**User**
+**Client**
 
-`GET /user/{id}`
+`GET /client/{id}`
 
-* Description: This endpoint retrieves the user that matches the specified `userId`.
-* Sample request: `http://localhost:8083/user/9f26fbec-a289-48cb-a569-04e39f6b187f`
+* Description: This endpoint retrieves the client that matches the specified `clientId`.
+* Sample request: `http://localhost:8083/client/9f26fbec-a289-48cb-a569-04e39f6b187f`
 
-`POST /user/`
+`POST /client/`
 
-* Description: This endpoint receives the user data for a new user to be created and returns the
-  added user item plus the DynamoDB auto-generated `userId` and `accessToken` on successful
+* Description: This endpoint receives the client data for a new client to be created and returns the
+  added client item plus the DynamoDB auto-generated `clientId` and `accessToken` on successful
   operation.
-* Sample request: `http://localhost:8083/user`
+* Sample request: `http://localhost:8083/client`
 * Sample request body:
 
 ```
     {
-        "username": "newUser",
-        "email": "newUser@on.com",
+        "clientname": "newClient",
+        "email": "newClient@on.com",
         "accountSetting": {
             "isPrivate": true,
             "isAdult": true
@@ -26,16 +26,16 @@
     }
 ```
 
-`PUT /user/{id}`
+`PUT /client/{id}`
 
-* Description: This endpoint updates the user data for an existing user with `userId` equal to `id`.
-* Sample request: `http://localhost:8083/user/9f26fbec-a289-48cb-a569-04e39f6b187f`
+* Description: This endpoint updates the client data for an existing client with `clientId` equal to `id`.
+* Sample request: `http://localhost:8083/client/9f26fbec-a289-48cb-a569-04e39f6b187f`
 * Sample request body:
 
 ```
     {
-        "username": "newUser",
-        "email": "newUser@on.com",
+        "clientname": "newClient",
+        "email": "newClient@on.com",
         "accountSetting": {
             "isPrivate": true,
             "isAdult": true
@@ -43,19 +43,19 @@
     }
 ```
 
-`DELETE /user/{id}`
+`DELETE /client/{id}`
 
-* Description: This endpoint deletes the user data for an existing user with `userId` equal to `id`
-  . (Requied a header that has `"Authorization"` as key and user `accessToken` as value).
-* Sample request: `http://localhost:8083/user/9f26fbec-a289-48cb-a569-04e39f6b187f`
+* Description: This endpoint deletes the client data for an existing client with `clientId` equal to `id`
+  . (Requied a header that has `"Authorization"` as key and client `accessToken` as value).
+* Sample request: `http://localhost:8083/client/9f26fbec-a289-48cb-a569-04e39f6b187f`
 
 **Timeline**
 
-`GET /timeline/user/{userId}`
+`GET /timeline/client/{clientId}`
 
-* Description: This endpoint retrieves the timeline for the user whose `userId` matches the
-  given `userId`.
-* Sample request: `http://localhost:8083/timeline/user/9f26fbec-a289-48cb-a569-04e39f6b187f`
+* Description: This endpoint retrieves the timeline for the client whose `clientId` matches the
+  given `clientId`.
+* Sample request: `http://localhost:8083/timeline/client/9f26fbec-a289-48cb-a569-04e39f6b187f`
 
 `GET /timeline/media/{mediaId}`
 
@@ -63,23 +63,23 @@
   given `mediaId`.
 * Sample request: `http://localhost:8083/timeline/media/tt0000001`
 
-`GET /timeline/{userId}/{mediaId}`
+`GET /timeline/{clientId}/{mediaId}`
 
 * Description: This endpoint retrieves the timeline for the media whose `mediaId` matches the
-  given `mediaId` as well as the user whose `userId` matched `userId`.
+  given `mediaId` as well as the client whose `clientId` matched `clientId`.
 * Sample request: `http://localhost:8083/timeline/9f26fbec-a289-48cb-a569-04e39f6b187f/tt0000001`
 
 `POST /timeline/`
 
 * Description: This endpoint receives the timeline data for a new timeline to be created. (Requied a
-  header that has `"Authorization"` as key and user `accessToken` as value)
+  header that has `"Authorization"` as key and client `accessToken` as value)
 * Sample request: `http://localhost:8083/timeline`
 * Sample request body:
 
 ```
 {
     "timelineId": "9c84d4c4-609e-4db3-b95d-976673985e23-tt0000001",
-    "userId": "9c84d4c4-609e-4db3-b95d-976673985e23",
+    "clientId": "9c84d4c4-609e-4db3-b95d-976673985e23",
     "mediaId": "tt0000001",
     "status": "DONE",
     "rating": 1,
@@ -87,11 +87,11 @@
 }
 ```
 
-`DELETE /timeline/{userId}/{mediaId}`
+`DELETE /timeline/{clientId}/{mediaId}`
 
-* Description: This endpoint deletes the timeline data for an existing timeline with user with
-  specified `userId` and `mediaId`. (Requied a header that has `"Authorization"` as key and
-  user `accessToken` as value)
+* Description: This endpoint deletes the timeline data for an existing timeline with client with
+  specified `clientId` and `mediaId`. (Requied a header that has `"Authorization"` as key and
+  client `accessToken` as value)
 * Sample request:
   `http://localhost:8083/timeline/9f26fbec-a289-48cb-a569-04e39f6b187f/tt0000001`
 
@@ -104,22 +104,22 @@ To run all the tests in IntelliJ IDEA: Replace the empty string in `DynamoDBConf
 access key and secret key. Then run the main method in `ImdbPlusApplication.java` file. Then run the
 test file `ImdbPlusApplicationTests.java`.
 
-- `testUserSave()` tests the user `POST` save endpoint with a single test user. The expected result
-  is that the test user is added to the database.
-- `testUserSaveDuplicatedUsername()` tests the user save `POST` endpoint with duplicate usernames.
-  The expected behavior is that the second test user with the same username should not be added to
+- `testClientSave()` tests the client `POST` save endpoint with a single test client. The expected result
+  is that the test client is added to the database.
+- `testClientSaveDuplicatedClientname()` tests the client save `POST` endpoint with duplicate clientnames.
+  The expected behavior is that the second test client with the same clientname should not be added to
   the database.
-- `testTimelineSave()` tests the timeline `POST` save endpoint with a single test user and a single
+- `testTimelineSave()` tests the timeline `POST` save endpoint with a single test client and a single
   test timeline. The expected behavior is that the test timeline is added to the database.
-- `testTimelineGetByUserId()` tests the timeline `GET` endpoint with a single test user and multiple
+- `testTimelineGetByClientId()` tests the timeline `GET` endpoint with a single test client and multiple
   test timelines. The expected behavior is that all test timelines can be retrieved from the
-  database by `userId`.
-- `testTimelineGetByMediaId()` tests the timeline `GET` endpoint with multiple test users add
-  timelines for the same media (`mediaId`). For example, `user1` adds a timeline
-  for `mediaId` `tt0000001`, and `user2` also adds a timeline for `mediaId` `tt0000001`. The
+  database by `clientId`.
+- `testTimelineGetByMediaId()` tests the timeline `GET` endpoint with multiple test clients add
+  timelines for the same media (`mediaId`). For example, `client1` adds a timeline
+  for `mediaId` `tt0000001`, and `client2` also adds a timeline for `mediaId` `tt0000001`. The
   expected behavior is that both test timelines can be retrieved from the database by `mediaId`.
-- `testTimelineGetTimelineByUserIdAndMediaId()` tests the timeline `GET` endpoint that retrieves a
-  single timeline item by a `userId` and a `mediaId`.
+- `testTimelineGetTimelineByClientIdAndMediaId()` tests the timeline `GET` endpoint that retrieves a
+  single timeline item by a `clientId` and a `mediaId`.
 
 **Test Configuration**:
 

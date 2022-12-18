@@ -49,7 +49,7 @@ class AnalysisControllerTest {
   private List<Media> topTenListWanted;
   private List<Media> topTenListProgress;
   private List<Media> topTenListWished;
-  private Map<String, Long> userPrefered;
+  private Map<String, Long> clientPrefered;
 
 
   @BeforeEach
@@ -65,10 +65,10 @@ class AnalysisControllerTest {
     topTenListWished = Arrays.asList(popularMedia, wishedMedia);
     topTenListProgress = Arrays.asList(progressMedia, other);
 
-    userPrefered = new HashMap<>();
-    userPrefered.put("Action", 2L);
-    userPrefered.put("Adventure", 1L);
-    userPrefered.put("Comedy", 1L);
+    clientPrefered = new HashMap<>();
+    clientPrefered.put("Action", 2L);
+    clientPrefered.put("Adventure", 1L);
+    clientPrefered.put("Comedy", 1L);
 
   }
 
@@ -258,18 +258,18 @@ class AnalysisControllerTest {
   }
 
   @Test
-  void getUserPerference() throws Exception {
-    when(mockAnalysisService.userPreference("u1")).thenReturn(userPrefered);
-    RequestBuilder request = get("/api/v1/analysis/userprofile/{id}", "u1");
+  void getClientPerference() throws Exception {
+    when(mockAnalysisService.clientPreference("u1")).thenReturn(clientPrefered);
+    RequestBuilder request = get("/api/v1/analysis/clientprofile/{id}", "u1");
 
     mockMvc.perform(request).andDo(print())
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.Action").value(userPrefered.get("Action")))
+            jsonPath("$.Action").value(clientPrefered.get("Action")))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.Adventure").value(userPrefered.get("Adventure")))
+            jsonPath("$.Adventure").value(clientPrefered.get("Adventure")))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.Comedy").value(userPrefered.get("Comedy")));
+            jsonPath("$.Comedy").value(clientPrefered.get("Comedy")));
   }
 
 

@@ -1,8 +1,8 @@
 package org.opencsd.imdbplus.controller;
 
 import org.opencsd.imdbplus.entity.AccountSetting;
-import org.opencsd.imdbplus.entity.User;
-import org.opencsd.imdbplus.repository.UserRepository;
+import org.opencsd.imdbplus.entity.Client;
+import org.opencsd.imdbplus.repository.ClientRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,61 +27,61 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(ClientController.class)
 @ExtendWith(SpringExtension.class)
-class UserControllerTest {
+class ClientControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
   @MockBean
-  private UserRepository mockUserRepository;
-  private User userTest1;
-  private User userReturn1;
-  private User userTest4;
-  private User userTest5;
+  private ClientRepository mockClientRepository;
+  private Client clientTest1;
+  private Client clientReturn1;
+  private Client clientTest4;
+  private Client clientTest5;
   private AccountSetting accountSetting;
 
   @BeforeEach
   void setUp() {
     accountSetting = new AccountSetting(true, true);
 
-    userTest1 = new User("newUser1", "newUser1@gmail.com", accountSetting);
+    clientTest1 = new Client("newClient1", "newClient1@gmail.com", accountSetting);
 
-    userReturn1 = new User("newUser1", "newUser1@gmail.com", accountSetting);
-    userReturn1.setUserId("f7e4fb88-b59c-4c73-ad36-21fb5107646c");
-    userReturn1.setAccessToken("8ed4cea1-eee6-41bc-97f1-12a6095b51aa");
+    clientReturn1 = new Client("newClient1", "newClient1@gmail.com", accountSetting);
+    clientReturn1.setClientId("f7e4fb88-b59c-4c73-ad36-21fb5107646c");
+    clientReturn1.setAccessToken("8ed4cea1-eee6-41bc-97f1-12a6095b51aa");
 
-    userTest4 = new User("existUser", "existUser@gmail.com", accountSetting);
+    clientTest4 = new Client("existClient", "existClient@gmail.com", accountSetting);
 
-    userTest5 = new User("validTokenUser", "validTokenUser@gmail.com", accountSetting);
-    userTest5.setUserId("aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c");
-    userTest5.setAccessToken("ccced4cea1-eee6-41bc-97f1-12a6095b51aa");
+    clientTest5 = new Client("validTokenClient", "validTokenClient@gmail.com", accountSetting);
+    clientTest5.setClientId("aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c");
+    clientTest5.setAccessToken("ccced4cea1-eee6-41bc-97f1-12a6095b51aa");
   }
 
   @AfterEach
   void tearDown() {
-    userTest1 = null;
-    userReturn1 = null;
-    userTest4 = null;
+    clientTest1 = null;
+    clientReturn1 = null;
+    clientTest4 = null;
   }
 
   @Order(1)
   @Test
-  void getUser() throws Exception {
-    when(mockUserRepository.getUser("f7e4fb88-b59c-4c73-ad36-21fb5107646c")).thenReturn(
-        userReturn1);
-    when(mockUserRepository.getUser("a7e4fb88-b59c-4c73-ad36-21fb5107646c")).thenReturn(null);
+  void getClient() throws Exception {
+    when(mockClientRepository.getClient("f7e4fb88-b59c-4c73-ad36-21fb5107646c", "8ed4cea1-eee6-41bc-97f1-12a6095b51aa")).thenReturn(
+        clientReturn1);
+    when(mockClientRepository.getClient("a7e4fb88-b59c-4c73-ad36-21fb5107646c", "ccced4cea1-eee6-41bc-97f1-12a6095b51aa")).thenReturn(null);
 
-    RequestBuilder requestBuilder1 = get("/user/{id}", "f7e4fb88-b59c-4c73-ad36-21fb5107646c");
-    RequestBuilder requestBuilder2 = get("/user/{id}", "a7e4fb88-b59c-4c73-ad36-21fb5107646c");
+    RequestBuilder requestBuilder1 = get("/client/{id}", "f7e4fb88-b59c-4c73-ad36-21fb5107646c").header("Authorization","8ed4cea1-eee6-41bc-97f1-12a6095b51aa");
+    RequestBuilder requestBuilder2 = get("/client/{id}", "a7e4fb88-b59c-4c73-ad36-21fb5107646c").header("Authorization","ccced4cea1-eee6-41bc-97f1-12a6095b51aa");
 
     mockMvc.perform(requestBuilder1)
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.username").value("newUser1"))
+            jsonPath("$.clientname").value("newClient1"))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.email").value("newUser1@gmail.com"))
+            jsonPath("$.email").value("newClient1@gmail.com"))
         .andExpect(MockMvcResultMatchers.
             jsonPath("$.accountSetting.isPrivate").value(true))
         .andExpect(MockMvcResultMatchers.
@@ -94,30 +94,30 @@ class UserControllerTest {
 
   @Order(2)
   @Test
-  void saveUser() throws Exception {
-    when(mockUserRepository.save(userTest1)).thenReturn(userReturn1);
-    when(mockUserRepository.save(userTest4)).thenReturn(null);
+  void saveClient() throws Exception {
+    when(mockClientRepository.save(clientTest1)).thenReturn(clientReturn1);
+    when(mockClientRepository.save(clientTest4)).thenReturn(null);
 
-    RequestBuilder requestBuilder3 = post("/user")
-        .content(asJsonString(userTest1))
+    RequestBuilder requestBuilder3 = post("/client")
+        .content(asJsonString(clientTest1))
         .contentType(MediaType.APPLICATION_JSON);
-    RequestBuilder requestBuilder4 = post("/user")
-        .content(asJsonString(userTest4))
+    RequestBuilder requestBuilder4 = post("/client")
+        .content(asJsonString(clientTest4))
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(requestBuilder3)
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.username").value("newUser1"))
+            jsonPath("$.clientname").value("newClient1"))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.email").value("newUser1@gmail.com"))
+            jsonPath("$.email").value("newClient1@gmail.com"))
         .andExpect(MockMvcResultMatchers.
             jsonPath("$.accountSetting.isPrivate").value(true))
         .andExpect(MockMvcResultMatchers.
             jsonPath("$.accountSetting.isAdult").value(true))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.userId").value("f7e4fb88-b59c-4c73-ad36-21fb5107646c"))
+            jsonPath("$.clientId").value("f7e4fb88-b59c-4c73-ad36-21fb5107646c"))
         .andExpect(MockMvcResultMatchers.
             jsonPath("$.accessToken").value("8ed4cea1-eee6-41bc-97f1-12a6095b51aa"));
 
@@ -128,21 +128,21 @@ class UserControllerTest {
 
   @Order(3)
   @Test
-  void deleteUser() throws Exception {
-    when(mockUserRepository.delete("vaf7e4fb88-b59c-4c73-ad36-21fb5107646c",
-        "9ed4cea1-eee6-41bc-97f1-12a6095b51aa")).thenReturn("User deleted successfully");
-    when(mockUserRepository.delete("inf7e4fb88-b59c-4c73-ad36-21fb5107646c",
+  void deleteClient() throws Exception {
+    when(mockClientRepository.delete("vaf7e4fb88-b59c-4c73-ad36-21fb5107646c",
+        "9ed4cea1-eee6-41bc-97f1-12a6095b51aa")).thenReturn("Client deleted successfully");
+    when(mockClientRepository.delete("inf7e4fb88-b59c-4c73-ad36-21fb5107646c",
         "in9ed4cea1-eee6-41bc-97f1-12a6095b51aa")).thenReturn("Invalid access token");
 
-    RequestBuilder requestBuilder1 = delete("/user/{id}", "vaf7e4fb88-b59c-4c73-ad36-21fb5107646c")
+    RequestBuilder requestBuilder1 = delete("/client/{id}", "vaf7e4fb88-b59c-4c73-ad36-21fb5107646c")
         .header("Authorization", "9ed4cea1-eee6-41bc-97f1-12a6095b51aa");
-    RequestBuilder requestBuilder2 = delete("/user/{id}", "inf7e4fb88-b59c-4c73-ad36-21fb5107646c")
+    RequestBuilder requestBuilder2 = delete("/client/{id}", "inf7e4fb88-b59c-4c73-ad36-21fb5107646c")
         .header("Authorization", "in9ed4cea1-eee6-41bc-97f1-12a6095b51aa");
 
     mockMvc.perform(requestBuilder1)
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(content().string("User deleted successfully"));
+        .andExpect(content().string("Client deleted successfully"));
 
     mockMvc.perform(requestBuilder2)
         .andDo(print())
@@ -152,12 +152,12 @@ class UserControllerTest {
 
   @Order(4)
   @Test
-  void updateUser() throws Exception {
-    when(mockUserRepository.update("aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c", userTest5))
+  void updateClient() throws Exception {
+    when(mockClientRepository.update("aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c", clientTest5))
         .thenReturn("aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c");
 
-    RequestBuilder requestBuilder1 = put("/user/{id}", "aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c")
-        .content(asJsonString(userTest5))
+    RequestBuilder requestBuilder1 = put("/client/{id}", "aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c")
+        .content(asJsonString(clientTest5))
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(requestBuilder1)

@@ -1,7 +1,7 @@
 package org.opencsd.imdbplus.controller;
 
 import static org.mockito.Mockito.when;
-import static org.opencsd.imdbplus.controller.UserControllerTest.asJsonString;
+import static org.opencsd.imdbplus.controller.ClientControllerTest.asJsonString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -16,10 +16,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opencsd.imdbplus.entity.Media;
 import org.opencsd.imdbplus.entity.Timeline;
-import org.opencsd.imdbplus.entity.User;
+import org.opencsd.imdbplus.entity.Client;
 import org.opencsd.imdbplus.repository.MediaRepository;
 import org.opencsd.imdbplus.repository.TimelineRepository;
-import org.opencsd.imdbplus.repository.UserRepository;
+import org.opencsd.imdbplus.repository.ClientRepository;
 import org.opencsd.imdbplus.service.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,7 +37,7 @@ class TimelineControllerTest {
   @MockBean
   TimelineService timelineService;
   @MockBean
-  private UserRepository userRepository;
+  private ClientRepository clientRepository;
   @MockBean
   private MediaRepository mediaRepository;
   @MockBean
@@ -47,10 +47,10 @@ class TimelineControllerTest {
   MockMvc mockMvc;
 
   private Media testMedia;
-  private User testUser;
-  private String userToken;
+  private Client testClient;
+  private String clientToken;
   private Timeline postedTimeline;
-  private List<Timeline> userTimelines;
+  private List<Timeline> clientTimelines;
   private List<Timeline> mediaTimelines;
   private List<Timeline> allTimelines;
 
@@ -67,11 +67,11 @@ class TimelineControllerTest {
     testMedia = new Media("m1", "movie", "2012-07-17", "Action");
     postedTimeline = t2;
 
-    userTimelines = Arrays.asList(t1, t5);
+    clientTimelines = Arrays.asList(t1, t5);
     mediaTimelines = Arrays.asList(t1, t4);
     allTimelines = Arrays.asList(t1, t2, t3, t4, t5);
 
-    userToken = "6d16c160-715e-4393-b3a4-0d5de90ad7e4";
+    clientToken = "6d16c160-715e-4393-b3a4-0d5de90ad7e4";
   }
 
   void tearDown(){
@@ -99,7 +99,7 @@ class TimelineControllerTest {
         .andExpect(MockMvcResultMatchers.
             jsonPath("$.mediaId").value(postedTimeline.getMediaId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.userId").value(postedTimeline.getUserId()))
+            jsonPath("$.clientId").value(postedTimeline.getClientId()))
         .andExpect(MockMvcResultMatchers.
             jsonPath("$.rating").value(postedTimeline.getRating()));
 
@@ -120,12 +120,12 @@ class TimelineControllerTest {
   @Test
   void deleteTimelineSuccess() throws Exception {
 
-    when(timelineService.delete(allTimelines.get(4).getTimelineId(), userToken)).thenReturn("Timeline deleted successfully");
-//    String userId = allTimelines.get(4).getUserId();
+    when(timelineService.delete(allTimelines.get(4).getTimelineId(), clientToken)).thenReturn("Timeline deleted successfully");
+//    String clientId = allTimelines.get(4).getClientId();
     String timelineId = allTimelines.get(4).getTimelineId();
     RequestBuilder deleteRequestSucess = delete("/timeline/{timelineId}", timelineId)
         .content(asJsonString(allTimelines.get(4)))
-        .header("Authorization", userToken)
+        .header("Authorization", clientToken)
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(deleteRequestSucess)
@@ -137,12 +137,12 @@ class TimelineControllerTest {
 
   @Test
   void deleteTimelineFailed() throws Exception {
-    when(timelineService.delete(allTimelines.get(3).getTimelineId(), userToken)).thenReturn("Invalid access token");
+    when(timelineService.delete(allTimelines.get(3).getTimelineId(), clientToken)).thenReturn("Invalid access token");
 
 
     RequestBuilder deleteRequestSucess = delete("/timeline/{timelineId}", allTimelines.get(3).getTimelineId())
         .content(asJsonString(allTimelines.get(2)))
-        .header("Authorization", userToken)
+        .header("Authorization", clientToken)
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(deleteRequestSucess)
@@ -154,12 +154,12 @@ class TimelineControllerTest {
 
   @Test
   void deleteTimelineNotFound() throws Exception {
-    when(timelineService.delete(allTimelines.get(3).getTimelineId(), userToken)).thenReturn("Timeline not found");
+    when(timelineService.delete(allTimelines.get(3).getTimelineId(), clientToken)).thenReturn("Timeline not found");
 
 
     RequestBuilder deleteRequestSucess = delete("/timeline/{timelineId}", allTimelines.get(3).getTimelineId())
         .content(asJsonString(allTimelines.get(2)))
-        .header("Authorization", userToken)
+        .header("Authorization", clientToken)
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(deleteRequestSucess)
@@ -171,11 +171,11 @@ class TimelineControllerTest {
 
   @Test
   void getTimeline() throws Exception {
-    String userId = "u3";
-    when(timelineService.getTimelineByUserId(userId)).thenReturn(userTimelines);
+    String clientId = "u3";
+    when(timelineService.getTimelineByClientId(clientId)).thenReturn(clientTimelines);
 
-    RequestBuilder getRequest = get("/timeline/user/{userId}", userId)
-        .header("Authorization", userToken)
+    RequestBuilder getRequest = get("/timeline/client/{clientId}", clientId)
+        .header("Authorization", clientToken)
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(getRequest)
@@ -185,34 +185,34 @@ class TimelineControllerTest {
         .andExpect(MockMvcResultMatchers.
             jsonPath("$[*].timelineId").isArray())
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[0].timelineId").value(userTimelines.get(0).getTimelineId()))
+            jsonPath("$[0].timelineId").value(clientTimelines.get(0).getTimelineId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[1].timelineId").value(userTimelines.get(1).getTimelineId()))
+            jsonPath("$[1].timelineId").value(clientTimelines.get(1).getTimelineId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[0].userId").value(userTimelines.get(0).getUserId()))
+            jsonPath("$[0].clientId").value(clientTimelines.get(0).getClientId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[1].userId").value(userTimelines.get(1).getUserId()))
+            jsonPath("$[1].clientId").value(clientTimelines.get(1).getClientId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[0].mediaId").value(userTimelines.get(0).getMediaId()))
+            jsonPath("$[0].mediaId").value(clientTimelines.get(0).getMediaId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[1].mediaId").value(userTimelines.get(1).getMediaId()))
+            jsonPath("$[1].mediaId").value(clientTimelines.get(1).getMediaId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[0].status").value(userTimelines.get(0).getStatus()))
+            jsonPath("$[0].status").value(clientTimelines.get(0).getStatus()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[1].status").value(userTimelines.get(1).getStatus()))
+            jsonPath("$[1].status").value(clientTimelines.get(1).getStatus()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[0].comment").value(userTimelines.get(0).getComment()))
+            jsonPath("$[0].comment").value(clientTimelines.get(0).getComment()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[1].comment").value(userTimelines.get(1).getComment()));
+            jsonPath("$[1].comment").value(clientTimelines.get(1).getComment()));
   }
 
   @Test
   void getTimelineNotFound() throws Exception {
-    String userId = "u3";
-    when(timelineService.getTimelineByUserId(userId)).thenReturn(null);
+    String clientId = "u3";
+    when(timelineService.getTimelineByClientId(clientId)).thenReturn(null);
 
-    RequestBuilder getRequest = get("/timeline/user/{userId}", userId)
-        .header("Authorization", userToken)
+    RequestBuilder getRequest = get("/timeline/client/{clientId}", clientId)
+        .header("Authorization", clientToken)
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(getRequest)
@@ -227,7 +227,7 @@ class TimelineControllerTest {
     when(timelineService.getTimelineByMediaId(mediaId)).thenReturn(mediaTimelines);
 
     RequestBuilder getRequest = get("/timeline/media/{mediaId}", mediaId)
-        .header("Authorization", userToken)
+        .header("Authorization", clientToken)
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(getRequest)
@@ -241,9 +241,9 @@ class TimelineControllerTest {
         .andExpect(MockMvcResultMatchers.
             jsonPath("$[1].timelineId").value(mediaTimelines.get(1).getTimelineId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[0].userId").value(mediaTimelines.get(0).getUserId()))
+            jsonPath("$[0].clientId").value(mediaTimelines.get(0).getClientId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$[1].userId").value(mediaTimelines.get(1).getUserId()))
+            jsonPath("$[1].clientId").value(mediaTimelines.get(1).getClientId()))
         .andExpect(MockMvcResultMatchers.
             jsonPath("$[0].mediaId").value(mediaTimelines.get(0).getMediaId()))
         .andExpect(MockMvcResultMatchers.
@@ -262,8 +262,8 @@ class TimelineControllerTest {
     String mediaId = "m3-non";
     when(timelineService.getTimelineByMediaId(mediaId)).thenReturn(null);
 
-    RequestBuilder getRequest = get("/timeline/media/{userId}", mediaId)
-        .header("Authorization", userToken)
+    RequestBuilder getRequest = get("/timeline/media/{clientId}", mediaId)
+        .header("Authorization", clientToken)
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(getRequest)
@@ -273,13 +273,13 @@ class TimelineControllerTest {
   }
 
   @Test
-  void getTimelineByUserIdAndMediaId() throws Exception {
+  void getTimelineByClientIdAndMediaId() throws Exception {
     String mediaId = "41";
-    String userId = "u1";
-    when(timelineService.getTimelineByUserIdAndMediaId(userId, mediaId)).thenReturn(postedTimeline);
+    String clientId = "u1";
+    when(timelineService.getTimelineByClientIdAndMediaId(clientId, mediaId)).thenReturn(postedTimeline);
 
-    RequestBuilder getRequest = get("/timeline/{userId}/{mediaId}", userId, mediaId)
-        .header("Authorization", userToken)
+    RequestBuilder getRequest = get("/timeline/{clientId}/{mediaId}", clientId, mediaId)
+        .header("Authorization", clientToken)
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(getRequest)
@@ -289,7 +289,7 @@ class TimelineControllerTest {
         .andExpect(MockMvcResultMatchers.
             jsonPath("$.timelineId").value(postedTimeline.getTimelineId()))
         .andExpect(MockMvcResultMatchers.
-            jsonPath("$.userId").value(postedTimeline.getUserId()))
+            jsonPath("$.clientId").value(postedTimeline.getClientId()))
         .andExpect(MockMvcResultMatchers.
             jsonPath("$.mediaId").value(postedTimeline.getMediaId()))
         .andExpect(MockMvcResultMatchers.
@@ -300,13 +300,13 @@ class TimelineControllerTest {
           jsonPath("$.comment").value(postedTimeline.getComment()));
   }
   @Test
-  void getTimelineByUserMediaNotFound() throws Exception {
+  void getTimelineByClientMediaNotFound() throws Exception {
     String mediaId = "m3-23";
-    String userId = "u3-h4";
-    when(timelineService.getTimelineByUserIdAndMediaId(userId, mediaId)).thenReturn(null);
+    String clientId = "u3-h4";
+    when(timelineService.getTimelineByClientIdAndMediaId(clientId, mediaId)).thenReturn(null);
 
-    RequestBuilder getRequest = get("/timeline/{userId}/{mediaId}", userId, mediaId)
-        .header("Authorization", userToken)
+    RequestBuilder getRequest = get("/timeline/{clientId}/{mediaId}", clientId, mediaId)
+        .header("Authorization", clientToken)
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(getRequest)

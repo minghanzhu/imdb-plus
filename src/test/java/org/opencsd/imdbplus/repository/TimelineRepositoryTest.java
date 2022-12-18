@@ -31,7 +31,7 @@ class TimelineRepositoryTest {
   private Timeline testLine;
   private PaginatedScanList<Timeline> mediaTimelines;
 
-  private PaginatedScanList<Timeline> userTimelines;
+  private PaginatedScanList<Timeline> clientTimelines;
 
 
   @BeforeEach
@@ -57,7 +57,7 @@ class TimelineRepositoryTest {
   @Test
   void save() {
     Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", new Date(), new Date(), "DONE", 5, "It was great");
-    String userToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
+    String clientToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
     mockDynamo.save(testLine);
 
     Timeline result =  timelineRepository.save(testLine);
@@ -81,7 +81,7 @@ class TimelineRepositoryTest {
   @Test
   void update() {
     Timeline testLine = new Timeline("t1-u1-m1", "u1", "m1", new Date(), new Date(), "DONE", 3, "It was great");
-    String userToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
+    String clientToken = "8ed4cea1-eee6-41bc-97f1-12a6095b51aa";
     mockDynamo.save(testLine);
 
     Timeline result =  timelineRepository.update(testLine);
@@ -89,16 +89,16 @@ class TimelineRepositoryTest {
   }
 
   @Test
-  void getTimelineByUserId() {
+  void getTimelineByClientId() {
     HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
     eav.put(":v1", new AttributeValue().withS("u2"));
     DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-        .withFilterExpression("userId = :v1")
+        .withFilterExpression("clientId = :v1")
         .withExpressionAttributeValues(eav);
 
-    when(mockDynamo.scan(Timeline.class, scanExpression)).thenReturn(userTimelines);
+    when(mockDynamo.scan(Timeline.class, scanExpression)).thenReturn(clientTimelines);
 
-    List<Timeline> result = timelineRepository.getTimelineByUserId("u2");
+    List<Timeline> result = timelineRepository.getTimelineByClientId("u2");
     assert result.isEmpty();
     assertEquals(new ArrayList<>(), result);
   }
@@ -119,10 +119,10 @@ class TimelineRepositoryTest {
   }
 
   @Test
-  void getTimelineByUserIdAndMediaId() {
+  void getTimelineByClientIdAndMediaId() {
     when(mockDynamo.load(Timeline.class, "u1-m1")).thenReturn(testLine);
 
-    Timeline result = timelineRepository.getTimelineByUserIdAndMediaId("u1", "m1");
+    Timeline result = timelineRepository.getTimelineByClientIdAndMediaId("u1", "m1");
     assertEquals(testLine, result);
   }
 }
