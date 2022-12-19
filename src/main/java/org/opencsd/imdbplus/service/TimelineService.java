@@ -46,8 +46,8 @@ public class TimelineService {
     }
     Media media = mediaRepository.getEntity(mediaId);
     serviceLogger.debug("client : {} \n media: {}", client, media);
-    String id = clientId+"-"+mediaId;
-    timeline.setTimelineId(id);
+//    String id = clientId+"-"+mediaId;
+//    timeline.setTimelineId(id);
     timeline.getCreationTime();
     timeline.getLastUpdate();
     Timeline saveTimeline = timelineRepository.save(timeline);
