@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import org.opencsd.imdbplus.entity.Client;
 import java.util.HashMap;
@@ -63,12 +64,18 @@ public class ClientRepository {
     }
   }
 
-  public String update(String clientId, Client client) {
-    dynamoDBMapper.save(client, new DynamoDBSaveExpression()
-        .withExpectedEntry("clientId",
-            new ExpectedAttributeValue(
-                new AttributeValue().withS(clientId)
-            )));
-    return clientId;
+  public Client update(String clientId, Client client, String accessToken) {
+    try {
+      dynamoDBMapper.save(client, new DynamoDBSaveExpression()
+          .withExpectedEntry("clientId",
+              new ExpectedAttributeValue(
+                  new AttributeValue().withS(clientId)
+              ))
+          .withExpectedEntry("accessToken",
+              new ExpectedAttributeValue(new AttributeValue().withS(accessToken))));
+      return client;
+    } catch (ConditionalCheckFailedException e){
+      return client;
+    }
   }
 }

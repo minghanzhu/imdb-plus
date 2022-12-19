@@ -153,17 +153,21 @@ class ClientControllerTest {
   @Order(4)
   @Test
   void updateClient() throws Exception {
-    when(mockClientRepository.update("aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c", clientTest5))
-        .thenReturn("aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c");
+    when(mockClientRepository.update("aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c", clientTest5, "ccced4cea1-eee6-41bc-97f1-12a6095b51aa"))
+        .thenReturn(clientTest5);
 
     RequestBuilder requestBuilder1 = put("/client/{id}", "aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c")
+        .header("Authorization", "ccced4cea1-eee6-41bc-97f1-12a6095b51aa")
         .content(asJsonString(clientTest5))
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(requestBuilder1)
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(content().string("aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c"));
+        .andExpect(MockMvcResultMatchers.
+            jsonPath("$.clientId").value("aaaf7e4fb88-b59c-4c73-ad36-21fb5107646c"))
+        .andExpect(MockMvcResultMatchers.
+            jsonPath("$.accessToken").value("ccced4cea1-eee6-41bc-97f1-12a6095b51aa"));
   }
 
   public static String asJsonString(final Object obj) {

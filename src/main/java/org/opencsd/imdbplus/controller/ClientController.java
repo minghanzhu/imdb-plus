@@ -52,8 +52,11 @@ public class ClientController {
 
   // Update client by clientId
   @PutMapping("/client/{id}")
-  public ResponseEntity<String> updateClient(@PathVariable("id") String clientId, @RequestBody Client client) {
-    String response = clientRepository.update(clientId, client);
+  public ResponseEntity<Client> updateClient(@PathVariable("id") String clientId,
+      @RequestHeader("Authorization") String accessToken, @RequestBody Client client) {
+    client.setClientId(clientId);
+    client.setAccessToken(accessToken);
+    Client response = clientRepository.update(clientId, client, accessToken);
     return ResponseEntity.ok(response);
   }
 }

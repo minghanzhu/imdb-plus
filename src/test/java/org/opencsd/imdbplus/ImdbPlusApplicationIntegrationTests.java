@@ -105,8 +105,8 @@ class ImdbPlusApplicationIntegrationTests {
     Client testClient = new Client(testClientname, "testEmailUpdated", testAccountSetting);
     testClient.setClientId(testClientId);
     testClient.setAccessToken(testAccessToken);
-    String clientId = clientRepository.update(testClientId, testClient);
-    assertThat(clientId).isEqualTo(testClientId);
+    Client updatedClient = clientRepository.update(testClientId, testClient, testAccessToken );
+    assertThat(updatedClient).isEqualTo(testClient);
   }
 
   /**
