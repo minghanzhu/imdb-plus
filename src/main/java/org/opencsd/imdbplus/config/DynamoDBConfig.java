@@ -29,8 +29,8 @@ public class DynamoDBConfig {
         .standard()
         .withEndpointConfiguration(
             new AwsClientBuilder.EndpointConfiguration(
-                "dynamodb.us-west-2.amazonaws.com",
-                "us-west-2"
+                "dynamodb.us-east-1.amazonaws.com",
+                "us-east-1"
             )
         )
         .withCredentials(
